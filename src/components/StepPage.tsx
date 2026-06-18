@@ -133,7 +133,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             <div className="flex items-center gap-2 mb-3">
               <span className="pill-chip pill-chip-coral">שלב {String(step.num).padStart(2, "0")}</span>
               <span className="pill-chip pill-chip-outline">{step.num} / {TOTAL_STEPS}</span>
-              {completed && <span className="pill-chip pill-chip-mint">✓ הושלם</span>}
+              {completed && <span className="pill-chip pill-chip-mint">הושלם</span>}
             </div>
             <h1 className="display-huge mb-1">
               {step.title}

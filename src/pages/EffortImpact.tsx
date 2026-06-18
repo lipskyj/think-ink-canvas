@@ -351,6 +351,7 @@ const EffortImpact = () => {
           )}
         </div>
       )}
+      </>)}
     </StepPage>
   );
 };

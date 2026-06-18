@@ -70,7 +70,7 @@ const PrototypeBrief = () => {
         ...saved,
         must: saved.must || saved.keyFeatures || "",
       }));
-      if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures);
+      if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures.map((f: any) => ({ ...f, id: f.id || crypto.randomUUID() })));
     }
   }, [getStepData]);
 

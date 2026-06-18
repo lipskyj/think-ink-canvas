@@ -399,21 +399,23 @@ const Ideation = () => {
           {/* Ideas list */}
           <div className="space-y-3">
             {currentIdeas.map((idea, i) => (
-              <div key={i} className="flex items-center gap-2 animate-fade-in">
+              <div key={i} className="flex items-center gap-2 animate-fade-in w-full">
                 <button
                   onClick={() => toggleStar(i)}
-                  className={`p-2 rounded-sm transition-colors ${idea.starred ? "bg-foreground text-primary-foreground" : "hover:bg-accent"}`}
+                  title={idea.starred ? "בטל סימון" : "סמן רעיון מנצח"}
+                  className={`flex-shrink-0 p-2.5 rounded-md transition-colors ${idea.starred ? "bg-foreground text-background" : "border-2 border-foreground/30 hover:border-foreground hover:bg-accent/40"}`}
                 >
                   <Sparkles className="h-4 w-4" />
                 </button>
                 <input
-                  className="sketch-input flex-1"
+                  dir="rtl"
+                  className="sketch-input flex-1 min-w-0 text-lg py-3"
                   placeholder={currentRound.placeholders[i % currentRound.placeholders.length]}
                   value={idea.text}
                   onChange={(e) => updateIdea(i, e.target.value)}
                 />
                 {currentIdeas.length > 1 && (
-                  <button onClick={() => removeIdea(i)} className="p-1 hover:bg-accent rounded-sm">
+                  <button onClick={() => removeIdea(i)} title="הסר" className="flex-shrink-0 p-2 hover:bg-accent rounded-md text-muted-foreground hover:text-foreground">
                     <X className="h-4 w-4" />
                   </button>
                 )}

@@ -38,10 +38,19 @@ const STYLE_VIBES = [
 ];
 
 interface SuggestedFeature {
+  id: string;
   name: string;
   description: string;
   bucket: Bucket | "unassigned";
 }
+
+const BUCKETS: { key: Bucket | "unassigned"; label: string; desc: string; bg: string }[] = [
+  { key: "unassigned", label: "תכונות מוצעות", desc: "גררו לאחת הקטגוריות מימין/למטה", bg: "bg-secondary/30" },
+  { key: "must", label: "Must — חובה", desc: "בלי זה אין מוצר", bg: "bg-[hsl(var(--primary)/0.10)]" },
+  { key: "should", label: "Should — חשוב", desc: "חשוב אך לא חוסם", bg: "bg-[hsl(var(--accent)/0.18)]" },
+  { key: "could", label: "Could — אם יש זמן", desc: "Nice-to-have", bg: "bg-[hsl(var(--highlight)/0.15)]" },
+  { key: "wont", label: "Won't — לא הפעם", desc: "מחוץ להיקף", bg: "bg-foreground/[0.05]" },
+];
 
 const PrototypeBrief = () => {
   const { getStepData, getAllPreviousData } = useProject();

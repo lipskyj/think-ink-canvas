@@ -346,11 +346,11 @@ function ClassPanel({
   const getLabel = (key: string): string => fieldLabels[key] || key;
 
   const methodLabels: Record<string, string> = {
-    worst_ideas: "🤮 הרעיונות הכי גרועים",
-    no_budget: "💰 בלי הגבלת תקציב",
-    copy_improve: "🔄 העתק ושפר",
-    rapid_fire: "⚡ ירי מהיר",
-    reverse: "🔃 הפוך על הפוך",
+    worst_ideas: "הרעיונות הכי גרועים",
+    no_budget: "בלי הגבלת תקציב",
+    copy_improve: "העתק ושפר",
+    rapid_fire: "ירי מהיר",
+    reverse: "הפוך על הפוך",
   };
 
   const renderIdeaItem = (item: any, i: number): React.ReactNode => {
@@ -361,7 +361,7 @@ function ClassPanel({
     if (!text) return null;
     return (
       <div key={i} className={`sketch-border-thin p-2 rounded-sm mb-1 flex items-start gap-2 ${starred ? "bg-yellow-100/60 dark:bg-yellow-900/20 border-yellow-400/50" : "bg-secondary/10"}`}>
-        {starred && <span className="text-yellow-500 mt-0.5">⭐</span>}
+        {starred && <span className="text-yellow-500 mt-0.5"></span>}
         <div className="flex-1 min-w-0">
           <p className="font-hand text-sm whitespace-pre-wrap">{text}</p>
           {method && <span className="font-sketch text-xs text-muted-foreground">{method}</span>}
@@ -385,7 +385,7 @@ function ClassPanel({
           <div className="space-y-1">
             {starredIdeas.length > 0 && (
               <div className="mb-2">
-                <p className="font-sketch text-xs text-yellow-600 dark:text-yellow-400 mb-1">⭐ רעיונות מסומנים ({starredIdeas.length})</p>
+                <p className="font-sketch text-xs text-yellow-600 dark:text-yellow-400 mb-1"> רעיונות מסומנים ({starredIdeas.length})</p>
                 {starredIdeas.map((item, i) => renderIdeaItem(item, i))}
               </div>
             )}

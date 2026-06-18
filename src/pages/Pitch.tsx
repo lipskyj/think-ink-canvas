@@ -8,7 +8,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Copy, Play, Pause, RotateCcw, Mic, Download, FileText, ArrowRight, Volume2, Image as ImageIcon, ExternalLink } from "lucide-react";
 import PitchStylePicker from "@/components/PitchStylePicker";
-import LearnSeeDoPanel from "@/components/LearnSeeDoPanel";
 import { getPitchStyle, PitchStyleKey } from "@/lib/pitchStyles";
 import { buildPitchDeck } from "@/lib/pitchDeck";
 
@@ -219,7 +218,6 @@ const Pitch = () => {
           </p>
         </div>
 
-        <LearnSeeDoPanel phase="pitch" />
 
         {/* Step 1: pick style */}
         <div className="sketch-card p-5">

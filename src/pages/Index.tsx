@@ -141,6 +141,45 @@ const Index = () => {
           </p>
         </section>
 
+        {/* PUBLIC EVENT BANNER — always visible, fed from admin */}
+        {publicEvent && (
+          <section className="sketch-card mb-8 flex items-start gap-4 flex-wrap">
+            {publicEvent.organizer_logo_url && (
+              <img src={publicEvent.organizer_logo_url} alt="לוגו המארגן" className="h-16 max-w-[120px] object-contain sketch-border-thin bg-background p-1 rounded shrink-0" />
+            )}
+            <div className="flex-1 min-w-[240px]">
+              {publicEvent.event_topic && (
+                <h2 className="display-huge mb-2" style={{ fontSize: "clamp(1.4rem,2.5vw,2rem)" }}>
+                  {publicEvent.event_topic}
+                </h2>
+              )}
+              <div className="flex flex-wrap gap-x-5 gap-y-1 font-hand text-base text-foreground/80">
+                {(publicEvent.event_date || publicEvent.event_time) && (
+                  <span className="inline-flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
+                  </span>
+                )}
+                {publicEvent.event_location && (
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="h-4 w-4" /> {publicEvent.event_location}
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1">
+                  <Users className="h-4 w-4" /> {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
+                </span>
+              </div>
+              {publicEvent.event_description && (
+                <p className="font-hand text-sm text-muted-foreground mt-2 whitespace-pre-wrap">
+                  {publicEvent.event_description}
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+
+
+
         {/* JOIN BY CODE — only when not yet in a group */}
         {!isClassMode && (
           <section className="sketch-card mb-12 max-w-md mx-auto">

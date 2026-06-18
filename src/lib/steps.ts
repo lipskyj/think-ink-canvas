@@ -153,6 +153,18 @@ export const STEPS: StepConfig[] = [
     description: "שלב הפיצ' הופך את כל מה שעשיתם להצגה משכנעת — סקריפט, שקפים וויזואלים. אפשר להתחיל אותו במקביל לבנייה ולחדד אחרי שה-MVP מוכן.",
     whyItMatters: "פתרון מצוין שלא יודעים להציג נשכח. פיצ' חד הופך עבודת עומק להזדמנות אמיתית — אצל שופטים, מנטורים או משתמשים פוטנציאליים.",
   },
+  {
+    key: "deliver",
+    num: 11,
+    title: "הגשה לגלריה",
+    url: "/submissions",
+    icon: Trophy,
+    emoji: "",
+    learnMoreUrl: "https://www.interaction-design.org/literature/topics/design-thinking",
+    phase: "presentation",
+    description: "סוגרים את התהליך: מעלים את המצגת ואת קישור הפיתוח לגלריה המשותפת. כל הקבוצות רואות את כולן.",
+    whyItMatters: "פרסום מסכם את העבודה ומאפשר לכולם ללמוד מכולם. זה גם הרגע שבו המוצר הופך מ׳משהו פנימי׳ למשהו שאפשר לשתף.",
+  },
 ];
 
 export const TOTAL_STEPS = STEPS.length;

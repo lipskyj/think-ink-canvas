@@ -60,40 +60,55 @@ export type Database = {
           ai_enabled: boolean
           created_at: string
           event_date: string | null
+          event_description: string | null
           event_location: string | null
           event_time: string | null
           event_topic: string | null
           id: string
+          join_code: string | null
           leader_name: string | null
           locked_steps: Json
           name: string
+          organizer_logo_url: string | null
           student_names: string[]
+          team_avatar_prompt: string | null
+          team_avatar_url: string | null
         }
         Insert: {
           ai_enabled?: boolean
           created_at?: string
           event_date?: string | null
+          event_description?: string | null
           event_location?: string | null
           event_time?: string | null
           event_topic?: string | null
           id?: string
+          join_code?: string | null
           leader_name?: string | null
           locked_steps?: Json
           name: string
+          organizer_logo_url?: string | null
           student_names?: string[]
+          team_avatar_prompt?: string | null
+          team_avatar_url?: string | null
         }
         Update: {
           ai_enabled?: boolean
           created_at?: string
           event_date?: string | null
+          event_description?: string | null
           event_location?: string | null
           event_time?: string | null
           event_topic?: string | null
           id?: string
+          join_code?: string | null
           leader_name?: string | null
           locked_steps?: Json
           name?: string
+          organizer_logo_url?: string | null
           student_names?: string[]
+          team_avatar_prompt?: string | null
+          team_avatar_url?: string | null
         }
         Relationships: []
       }
@@ -164,6 +179,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_join_code: { Args: never; Returns: string }
       is_project_owner: { Args: { p_project_id: string }; Returns: boolean }
     }
     Enums: {

@@ -192,11 +192,11 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
                 <div className="flex items-start gap-3">
                   <Info className="h-5 w-5 mt-0.5 flex-shrink-0 text-muted-foreground" />
                   <div>
-                    <p className="text-sm leading-relaxed mb-2">
+                    <p className="text-base leading-relaxed mb-2">
                       {step.description}
                     </p>
                     <p className="text-sm font-semibold text-muted-foreground">
-                      💡 למה זה חשוב: <span className="font-normal">{step.whyItMatters}</span>
+                      למה זה חשוב: <span className="font-normal">{step.whyItMatters}</span>
                     </p>
                   </div>
                 </div>

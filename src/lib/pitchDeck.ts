@@ -21,6 +21,7 @@ export async function buildPitchDeck(
   teamName: string,
   styleTitle: string,
   demoUrl?: string,
+  coverImage?: string, // base64 data URL
 ): Promise<void> {
   const pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_WIDE"; // 13.33 x 7.5
@@ -35,9 +36,12 @@ export async function buildPitchDeck(
   // --- Cover slide ---
   const cover = pptx.addSlide();
   cover.background = { color: BG };
+  if (coverImage) {
+    cover.addImage({ data: coverImage, x: 4.67, y: 0.5, w: 4, h: 2.2, sizing: { type: "contain", w: 4, h: 2.2 } });
+  }
   cover.addText(teamName || "הצוות שלנו", {
     x: 0.5,
-    y: 2.6,
+    y: coverImage ? 3.0 : 2.6,
     w: 12.3,
     h: 1.2,
     fontFace: "Arial",
@@ -49,7 +53,7 @@ export async function buildPitchDeck(
   });
   cover.addText(styleTitle, {
     x: 0.5,
-    y: 3.9,
+    y: coverImage ? 4.3 : 3.9,
     w: 12.3,
     h: 0.6,
     fontFace: "Arial",
@@ -60,11 +64,12 @@ export async function buildPitchDeck(
   });
   cover.addShape("line", {
     x: 5.5,
-    y: 4.8,
+    y: coverImage ? 5.2 : 4.8,
     w: 2.3,
     h: 0,
     line: { color: TEXT, width: 2 },
   });
+
 
   // --- Content slides ---
   pitch.slides.forEach((slide, i) => {

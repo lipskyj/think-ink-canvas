@@ -127,6 +127,7 @@ const PrototypeBrief = () => {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         setSuggestedFeatures(parsed.map((f: any) => ({
+          id: crypto.randomUUID(),
           name: String(f.name || "").trim(),
           description: String(f.description || "").trim(),
           bucket: "unassigned" as const,

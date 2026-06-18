@@ -70,28 +70,20 @@ const PrototypeBrief = () => {
           <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="אילו הנחות אנחנו בודקים?" value={brief.assumptions} onChange={(e) => update("assumptions", e.target.value)} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="sketch-card">
-            <div className="flex items-center relative">
-              <label className="font-sketch text-lg block mb-2">🎨 רמת נאמנות</label>
-              <SectionHelper stepKey="prototype_brief" sectionKey="fidelity" currentData={brief} previousData={previousData} />
-            </div>
-            <div className="flex gap-2">
-              {[{ key: "low", label: "נמוכה" }, { key: "medium", label: "בינונית" }, { key: "high", label: "גבוהה" }].map((level) => (
-                <button key={level.key} onClick={() => update("fidelity", level.key)} className={`flex-1 py-2 text-sm font-sketch ${brief.fidelity === level.key ? "sketch-border bg-foreground text-primary-foreground" : "sketch-border-thin"}`}>
-                  {level.label}
-                </button>
-              ))}
-            </div>
+        <div className="sketch-card">
+          <div className="flex items-center relative">
+            <label className="font-sketch text-lg block mb-2">🎨 רמת נאמנות</label>
+            <SectionHelper stepKey="prototype_brief" sectionKey="fidelity" currentData={brief} previousData={previousData} />
           </div>
-          <div className="sketch-card">
-            <div className="flex items-center relative">
-              <label className="font-sketch text-lg block mb-2">⏰ לוח זמנים</label>
-              <SectionHelper stepKey="prototype_brief" sectionKey="timeline" currentData={brief} previousData={previousData} />
-            </div>
-            <input className="sketch-input" placeholder="לדוגמה: ספרינט של שבוע..." value={brief.timeline} onChange={(e) => update("timeline", e.target.value)} />
+          <div className="flex gap-2">
+            {[{ key: "low", label: "נמוכה" }, { key: "medium", label: "בינונית" }, { key: "high", label: "גבוהה" }].map((level) => (
+              <button key={level.key} onClick={() => update("fidelity", level.key)} className={`flex-1 py-2 text-sm font-sketch ${brief.fidelity === level.key ? "sketch-border bg-foreground text-primary-foreground" : "sketch-border-thin"}`}>
+                {level.label}
+              </button>
+            ))}
           </div>
         </div>
+
 
         <div className="sketch-card">
           <div className="flex items-center relative">

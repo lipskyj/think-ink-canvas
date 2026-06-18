@@ -176,17 +176,33 @@ const EffortImpact = () => {
       <LinkedDataBanner stepKey="effort_impact" />
       <CoherenceTracker stepKey="effort_impact" currentData={{ ideas }} />
 
-      {/* Instructions */}
+      {/* Instructions + mode toggle */}
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
-        <h3 className="font-bold mb-2">📊 איך עושים את זה?</h3>
-        <ol className="space-y-1 text-sm text-muted-foreground">
-          <li>1. הרעיונות שלכם מהשלב הקודם מופיעים למטה</li>
-          <li>2. <strong>גררו כל רעיון</strong> למקום המתאים על הגרף</li>
-          <li>3. ציר X = כמה מאמץ נדרש (שמאל=קל, ימין=קשה)</li>
-          <li>4. ציר Y = כמה השפעה יש לפתרון (למעלה=הרבה, למטה=מעט)</li>
-          <li>5. 🏆 <strong>ניצחונות מהירים</strong> = למעלה-שמאל — זה מה שכדאי לבנות קודם!</li>
-        </ol>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <h3 className="font-bold mb-2">🎯 מה לבנות עכשיו?</h3>
+            {!advancedMode ? (
+              <p className="text-sm text-muted-foreground">
+                ענו על 3 שאלות מהירות לכל רעיון. הרעיון הכי "בנו את זה" יוקפץ למעלה.
+              </p>
+            ) : (
+              <ol className="space-y-1 text-sm text-muted-foreground">
+                <li>1. גררו כל רעיון למקום על הגרף</li>
+                <li>2. ציר X = מאמץ (שמאל=קל) · ציר Y = השפעה (למעלה=מעט)</li>
+                <li>3. 🏆 ניצחונות מהירים = למעלה-שמאל — לבנות קודם!</li>
+              </ol>
+            )}
+          </div>
+          <button
+            onClick={() => setAdvancedMode((v) => !v)}
+            className="text-xs text-muted-foreground hover:text-foreground sketch-border-thin px-2 py-1 whitespace-nowrap"
+            type="button"
+          >
+            {advancedMode ? "מצב פשוט" : "מצב מתקדם (מטריצה)"}
+          </button>
+        </div>
       </div>
+
 
       {/* Add new idea */}
       <div className="flex items-center gap-2 mb-4">

@@ -507,6 +507,44 @@ function ClassPanel({
           {/* Settings tab */}
           {tab === "settings" && (
             <div className="space-y-4">
+              {/* Event details */}
+              <div className="sketch-border-thin p-3 space-y-2">
+                <p className="font-sketch text-xs uppercase tracking-wider text-muted-foreground">פרטי האירוע</p>
+                <Input
+                  placeholder="נושא / אתגר (למשל: בריאות נפש בנוער)"
+                  defaultValue={cls.event_topic || ""}
+                  onBlur={(e) => e.target.value !== (cls.event_topic || "") && onUpdate(cls.id, { event_topic: e.target.value })}
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    placeholder="תאריך"
+                    defaultValue={cls.event_date || ""}
+                    onBlur={(e) => e.target.value !== (cls.event_date || "") && onUpdate(cls.id, { event_date: e.target.value })}
+                  />
+                  <Input
+                    placeholder="שעה"
+                    defaultValue={cls.event_time || ""}
+                    onBlur={(e) => e.target.value !== (cls.event_time || "") && onUpdate(cls.id, { event_time: e.target.value })}
+                  />
+                </div>
+                <Input
+                  placeholder="בית ספר / עיר / מיקום"
+                  defaultValue={cls.event_location || ""}
+                  onBlur={(e) => e.target.value !== (cls.event_location || "") && onUpdate(cls.id, { event_location: e.target.value })}
+                />
+                {cls.leader_name && (
+                  <p className="text-xs font-hand text-muted-foreground pt-1">
+                    ראש קבוצה: <strong>{cls.leader_name}</strong>
+                    <button
+                      onClick={() => onUpdate(cls.id, { leader_name: null as any })}
+                      className="mr-2 text-destructive underline"
+                    >
+                      איפוס
+                    </button>
+                  </p>
+                )}
+              </div>
+
               {/* AI toggle */}
               <div className="flex items-center justify-between py-3 px-3 rounded-md bg-secondary/30">
                 <div className="flex items-center gap-2">

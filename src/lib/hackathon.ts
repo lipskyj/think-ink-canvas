@@ -123,6 +123,15 @@ export const DEFAULT_DURATION_MIN = 360; // 6h
 // ── localStorage state ─────────────────────────────────────────────────
 const KEY = "hackathon-mode-v1";
 
+export interface LsdCacheEntry {
+  sig: string;
+  content: {
+    learn: string;
+    see: { context: string; execution: string };
+    do: { objective: string; steps: string[]; formula: string };
+  };
+}
+
 export interface HackathonState {
   enabled: boolean;
   startedAt: number | null; // ms epoch
@@ -131,6 +140,8 @@ export interface HackathonState {
   myRole: TeamRole | null;
   teamName: string;
   currentBlock: BlockKey;
+  theme: string;
+  lsdCache: Partial<Record<BlockKey, LsdCacheEntry>>;
 }
 
 export const DEFAULT_STATE: HackathonState = {
@@ -141,6 +152,8 @@ export const DEFAULT_STATE: HackathonState = {
   myRole: null,
   teamName: "",
   currentBlock: "problem",
+  theme: "",
+  lsdCache: {},
 };
 
 export function loadHackathonState(): HackathonState {

@@ -4,6 +4,7 @@ import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import LinkedDataBanner from "@/components/LinkedDataBanner";
 import SectionHelper from "@/components/SectionHelper";
+import LearnSeeDoPanel from "@/components/LearnSeeDoPanel";
 import { useAutoFill } from "@/hooks/useAutoFill";
 import { getLinkedData } from "@/lib/dataLinks";
 
@@ -86,6 +87,7 @@ const HowMightWe = () => {
 
   return (
     <StepPage stepKey="how_might_we" onSave={getData} canComplete={hasContent}>
+      <LearnSeeDoPanel phase="solution" />
       <LinkedDataBanner stepKey="how_might_we" />
 
       {/* POV Section */}

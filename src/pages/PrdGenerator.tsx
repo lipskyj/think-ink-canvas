@@ -184,15 +184,27 @@ const PrdGenerator = () => {
       {/* PRD Output */}
       {prdOutput && (
         <div className="sketch-card">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <label className="font-sketch text-lg">📄 ה-PRD שנוצר</label>
-            <button
-              onClick={copyToClipboard}
-              className="sketch-btn-outline text-sm flex items-center gap-1.5 px-3 py-1.5"
-            >
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              {copied ? "הועתק!" : "העתק ללוח"}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={copyToClipboard}
+                className="sketch-btn-outline text-sm flex items-center gap-1.5 px-3 py-1.5"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? "הועתק!" : "העתק ללוח"}
+              </button>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(prdOutput);
+                  window.open("https://lovable.dev/", "_blank");
+                  toast({ title: "הפרומפט הועתק — הדביקו ב-Lovable 🚀" });
+                }}
+                className="sketch-btn text-sm flex items-center gap-1.5 px-3 py-1.5"
+              >
+                🚀 פתחו ב-Lovable
+              </button>
+            </div>
           </div>
           <textarea
             className="sketch-input min-h-[400px] resize-y notebook-lines font-mono text-sm leading-relaxed"
@@ -200,6 +212,15 @@ const PrdGenerator = () => {
             onChange={(e) => setPrdOutput(e.target.value)}
             dir="ltr"
           />
+          <div className="mt-4 sketch-border-thin p-3 bg-secondary/20">
+            <p className="font-sketch text-sm mb-2">✅ צ׳קליסט דמו (לפני שעולים לבמה):</p>
+            <ul className="font-hand text-sm space-y-1">
+              <li>☐ זרימה ראשית עובדת מקצה לקצה</li>
+              <li>☐ נתונים פיקטיביים יפים (לא Lorem)</li>
+              <li>☐ צילום מסך / מובייל מוכן לפיץ׳</li>
+              <li>☐ רגע אחד של ״וואו״ — אנימציה, AI, או הפתעה</li>
+            </ul>
+          </div>
         </div>
       )}
     </StepPage>

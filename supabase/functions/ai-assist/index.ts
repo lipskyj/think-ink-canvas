@@ -43,7 +43,7 @@ serve(async (req) => {
   }
 
   try {
-    const { stepKey, stepTitle, mode, currentData, previousData, sectionKey, sectionPrompt } = await req.json();
+    const { stepKey, stepTitle, mode, currentData, previousData, sectionKey, sectionPrompt, pitchStyle, pitchStyleTitle, pitchStyleHint, pitchSlideTitles } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -223,14 +223,25 @@ ${contextBlock}${currentBlock}
       userMessage = "תקוף את העבודה הנוכחית שלנו.";
 
     } else if (mode === "pitch_generate") {
-      systemPrompt = `You generate hackathon pitch artifacts in Hebrew.
+      const slideTitlesList = Array.isArray(pitchSlideTitles) && pitchSlideTitles.length
+        ? pitchSlideTitles
+        : ["הבעיה", "המשתמש", "התובנה", "הפתרון", "דמו + ASK"];
+      const slidesSchema = slideTitlesList
+        .map((t: string, i: number) => `    {"title":"${t}", "subtitle":"...", "bullets":["...","...","..."], "visualHint":"..."}${i < slideTitlesList.length - 1 ? "," : ""}`)
+        .join("\n");
 
-Using the team's design thinking data below, produce a JSON object with this exact shape (no markdown, no prose, just JSON):
+      systemPrompt = `You generate a hackathon pitch in Hebrew in the style: ${pitchStyleTitle || "Classic"}.
+Style guidance: ${pitchStyleHint || "Energetic, problem→solution."}
+
+Using the team's design thinking data below, return JSON with EXACTLY this shape (no markdown fences, no prose, just JSON):
 {
-  "script": "60-second pitch script in Hebrew, ~150 words, structure: hook → problem → who → insight → solution → demo line → ask. Plain text with line breaks.",
+  "script": "60-second pitch script in Hebrew, ~150 words, matching the style above. Plain text with line breaks.",
   "slides": [
-    {"title":"השקף", "bullets":["...","...","..."]},
-    ... 5 slides total: Problem, User, Insight, Solution, Demo+Ask
+${slidesSchema}
+  ],
+  "speakerNotes": [
+    "1-2 sentences of speaker notes for slide 1",
+    "... one per slide, same length as slides array"
   ],
   "judging": [
     {"criterion":"בהירות הבעיה","question":"האם ברור מי המשתמש ומה כואב?"},
@@ -240,9 +251,15 @@ Using the team's design thinking data below, produce a JSON object with this exa
     {"criterion":"אנרגיית הצוות","question":"הם מאמינים בזה?"}
   ]
 }
-Hebrew throughout. Concrete, drawn from the team's actual data. No placeholder text. Return ONLY the JSON.
+
+CRITICAL RULES:
+- Use EXACTLY the slide titles provided, in order: ${slideTitlesList.join(" / ")}
+- Use concrete details from the team's actual data. Never invent a domain or user that isn't in their data.
+- Each slide: 2-3 short bullets (max 8 words each). visualHint is one short suggestion for an image/icon.
+- Hebrew throughout. Energetic, age-appropriate for young adults (16-25).
+- Return ONLY the JSON object.
 ${contextBlock}`;
-      userMessage = "Generate the pitch JSON for our team.";
+      userMessage = `Generate the pitch JSON in the "${pitchStyleTitle}" style for our team.`;
 
     } else if (mode === "suggest") {
       systemPrompt = `You are a design thinking facilitator helping with: ${stepDesc}

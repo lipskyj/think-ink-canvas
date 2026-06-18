@@ -55,7 +55,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "pov_statement",
-    num: 4,
+    num: 3,
     title: "הצהרת נקודת מבט",
     url: "/pov",
     icon: Target,
@@ -67,7 +67,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "how_might_we",
-    num: 5,
+    num: 4,
     title: "איך נוכל",
     url: "/hmw",
     icon: HelpCircle,
@@ -79,7 +79,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "five_whys",
-    num: 6,
+    num: 5,
     title: "חמישה למה",
     url: "/five-whys",
     icon: Search,
@@ -92,7 +92,7 @@ export const STEPS: StepConfig[] = [
   // ── שלב 2: גיבוש הפתרון ──
   {
     key: "ideation",
-    num: 7,
+    num: 6,
     title: "יצירת רעיונות",
     url: "/ideation",
     icon: Lightbulb,
@@ -104,7 +104,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "effort_impact",
-    num: 8,
+    num: 7,
     title: "מטריצת מאמץ-השפעה",
     url: "/effort-impact",
     icon: Target,
@@ -117,7 +117,7 @@ export const STEPS: StepConfig[] = [
   // ── שלב 3: פיתוח הפתרון ──
   {
     key: "prototype_brief",
-    num: 10,
+    num: 8,
     title: "בריף אב-טיפוס",
     url: "/prototype-brief",
     icon: FileText,
@@ -129,7 +129,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "user_testing",
-    num: 11,
+    num: 9,
     title: "בדיקות משתמשים",
     url: "/user-testing",
     icon: FlaskConical,
@@ -141,7 +141,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "pitch",
-    num: 12,
+    num: 10,
     title: "פיצ' והצגה",
     url: "/pitch",
     icon: Presentation,
@@ -153,7 +153,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "prd_generator",
-    num: 13,
+    num: 11,
     title: "PRD / פרומפט לקוד",
     url: "/prd",
     icon: FileOutput,

@@ -102,6 +102,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
 
   return (
     <Layout>
+      <StepIntroModal stepKey={stepKey} />
       <div className="max-w-4xl mx-auto">
         {/* באנר נעילה */}
         {locked && (

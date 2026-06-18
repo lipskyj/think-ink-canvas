@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { Sparkles, Loader2, Plus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAdmin } from "@/contexts/AdminContext";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
@@ -12,21 +15,23 @@ interface BriefState {
   could: string;
   wont: string;
   assumptions: string;
-  fidelity: string;
   styleVibe: string;
   styleNotes: string;
   successCriteria: string;
   // legacy
   keyFeatures?: string;
+  fidelity?: string;
 }
 
+type Bucket = "must" | "should" | "could" | "wont";
+
 const STYLE_VIBES = [
-  { key: "minimal", label: "מינימליסטי" },
-  { key: "playful", label: "שובב / חי" },
-  { key: "editorial", label: "אדיטוריאל / מגזין" },
-  { key: "tech", label: "טכנולוגי / נקי" },
-  { key: "brutalist", label: "ברוטליסטי" },
-  { key: "warm", label: "חם / אנושי" },
+  { key: "minimal", label: "מינימליסטי", swatch: ["#ffffff", "#111111", "#e5e5e5"], font: "'Heebo', sans-serif" },
+  { key: "playful", label: "שובב / חי", swatch: ["#ff6b6b", "#ffd166", "#06d6a0"], font: "'Heebo', sans-serif" },
+  { key: "editorial", label: "אדיטוריאל", swatch: ["#1a1a1a", "#f5f1e8", "#c9a87a"], font: "'Heebo', serif" },
+  { key: "tech", label: "טכנולוגי / נקי", swatch: ["#0a0e27", "#3b82f6", "#e2e8f0"], font: "'Heebo', sans-serif" },
+  { key: "brutalist", label: "ברוטליסטי", swatch: ["#000000", "#ffff00", "#ffffff"], font: "'Heebo', monospace" },
+  { key: "warm", label: "חם / אנושי", swatch: ["#fef3e8", "#ff8c42", "#5a3825"], font: "'Heebo', sans-serif" },
 ];
 
 const PrototypeBrief = () => {

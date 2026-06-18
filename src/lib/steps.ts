@@ -116,18 +116,6 @@ export const STEPS: StepConfig[] = [
   },
   // ── שלב 3: פיתוח הפתרון ──
   {
-    key: "storyboard",
-    num: 9,
-    title: "סטוריבורד",
-    url: "/storyboard",
-    icon: Film,
-    emoji: "🎬",
-    learnMoreUrl: "https://www.interaction-design.org/literature/topics/storyboards",
-    phase: "development",
-    description: "סטוריבורד מדמיין כיצד המשתמש יחווה את הפתרון בהקשר. באמצעות פריימים פשוטים, אתם משרטטים את המסע מהטריגר לתוצאה — והופכים רעיונות מופשטים למוחשיים.",
-    whyItMatters: "רעיונות בראש תמיד נראים מושלמים. סטוריבורד מכריח אתכם לחשוב על החוויה האמיתית, ולחשוף פערים לפני שמשקיעים בבנייה.",
-  },
-  {
     key: "prototype_brief",
     num: 10,
     title: "בריף אב-טיפוס",

@@ -61,6 +61,7 @@ export function HackathonProvider({ children }: { children: ReactNode }) {
       teamSize: opts?.teamSize ?? s.teamSize,
       myRole: opts?.myRole ?? s.myRole,
       teamName: opts?.teamName ?? s.teamName,
+      theme: opts?.theme ?? s.theme,
     }));
   }, []);
 
@@ -81,9 +82,17 @@ export function HackathonProvider({ children }: { children: ReactNode }) {
     setNow(Date.now());
   }, []);
 
+  const setTheme = useCallback((t: string) => {
+    setState((s) => ({ ...s, theme: t }));
+  }, []);
+
+  const setLsdCache = useCallback((phase: BlockKey, entry: LsdCacheEntry) => {
+    setState((s) => ({ ...s, lsdCache: { ...s.lsdCache, [phase]: entry } }));
+  }, []);
+
   return (
     <HackathonContext.Provider
-      value={{ state, remainingSec, enableMode, disableMode, setCurrentBlock, setRole, resetTimer }}
+      value={{ state, remainingSec, enableMode, disableMode, setCurrentBlock, setRole, resetTimer, setTheme, setLsdCache }}
     >
       {children}
     </HackathonContext.Provider>

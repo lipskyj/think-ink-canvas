@@ -51,7 +51,7 @@ const EffortImpact = () => {
   const { getStepData, getAllPreviousData } = useProject();
   const [ideas, setIdeas] = useState<MatrixIdea[]>([]);
   const [newIdeaText, setNewIdeaText] = useState("");
-  const [advancedMode, setAdvancedMode] = useState(false);
+  const [advancedMode, setAdvancedMode] = useState(true);
   const matrixRef = useRef<HTMLDivElement>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });

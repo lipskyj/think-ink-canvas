@@ -38,10 +38,19 @@ const STYLE_VIBES = [
 ];
 
 interface SuggestedFeature {
+  id: string;
   name: string;
   description: string;
   bucket: Bucket | "unassigned";
 }
+
+const BUCKETS: { key: Bucket | "unassigned"; label: string; desc: string; bg: string }[] = [
+  { key: "unassigned", label: "תכונות מוצעות", desc: "גררו לאחת הקטגוריות מימין/למטה", bg: "bg-secondary/30" },
+  { key: "must", label: "Must — חובה", desc: "בלי זה אין מוצר", bg: "bg-[hsl(var(--primary)/0.10)]" },
+  { key: "should", label: "Should — חשוב", desc: "חשוב אך לא חוסם", bg: "bg-[hsl(var(--accent)/0.18)]" },
+  { key: "could", label: "Could — אם יש זמן", desc: "Nice-to-have", bg: "bg-[hsl(var(--highlight)/0.15)]" },
+  { key: "wont", label: "Won't — לא הפעם", desc: "מחוץ להיקף", bg: "bg-foreground/[0.05]" },
+];
 
 const PrototypeBrief = () => {
   const { getStepData, getAllPreviousData } = useProject();
@@ -61,9 +70,26 @@ const PrototypeBrief = () => {
         ...saved,
         must: saved.must || saved.keyFeatures || "",
       }));
-      if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures);
+      if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures.map((f: any) => ({ ...f, id: f.id || crypto.randomUUID() })));
     }
   }, [getStepData]);
+
+  // Keep textual must/should/could/wont in sync with the drag-and-drop board.
+  useEffect(() => {
+    if (suggestedFeatures.length === 0) return;
+    const lines = (b: Bucket) =>
+      suggestedFeatures
+        .filter((f) => f.bucket === b)
+        .map((f) => `• ${f.name}${f.description ? ` — ${f.description}` : ""}`)
+        .join("\n");
+    setBrief((prev) => ({
+      ...prev,
+      must: lines("must"),
+      should: lines("should"),
+      could: lines("could"),
+      wont: lines("wont"),
+    }));
+  }, [suggestedFeatures]);
 
   const update = (field: keyof BriefState, value: string) => {
     setBrief((prev) => ({ ...prev, [field]: value }));
@@ -118,6 +144,7 @@ const PrototypeBrief = () => {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         setSuggestedFeatures(parsed.map((f: any) => ({
+          id: crypto.randomUUID(),
           name: String(f.name || "").trim(),
           description: String(f.description || "").trim(),
           bucket: "unassigned" as const,
@@ -152,101 +179,49 @@ const PrototypeBrief = () => {
           <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="לדוגמה: לוודא שמשתמשים מבינים את הצעת הערך תוך 10 שניות..." value={brief.objective} onChange={(e) => update("objective", e.target.value)} />
         </div>
 
-        {/* MoSCoW */}
+        {/* MoSCoW — drag-and-drop board with AI-suggested features */}
         <div className="sketch-card">
           <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
             <label className="font-sketch text-xl">MoSCoW — תיעדוף תכונות</label>
-            <span className="pill-chip pill-chip-outline text-[10px]">Must · Should · Could · Won't</span>
-          </div>
-          <p className="font-hand text-muted-foreground text-sm mb-4">
-            מיינו את התכונות לארבע קטגוריות. זה מה שמבדיל MVP ממוצר נפוח.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="sketch-border-thin p-3 bg-[hsl(var(--primary)/0.08)]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Must — חובה</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="must" currentData={brief} previousData={previousData} onApply={(v) => update("must", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">בלי זה אין מוצר. ליבת ה-MVP.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="התכונות הקריטיות..." value={brief.must} onChange={(e) => update("must", e.target.value)} />
-            </div>
-
-            <div className="sketch-border-thin p-3 bg-[hsl(var(--accent)/0.15)]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Should — חשוב</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="should" currentData={brief} previousData={previousData} onApply={(v) => update("should", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">חשוב מאוד, אך לא מעכב השקה.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="תכונות שתשתדלו להכניס..." value={brief.should} onChange={(e) => update("should", e.target.value)} />
-            </div>
-
-            <div className="sketch-border-thin p-3 bg-[hsl(var(--highlight)/0.12)]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Could — אם יש זמן</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="could" currentData={brief} previousData={previousData} onApply={(v) => update("could", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">Nice-to-have. רק אם נשאר זמן.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="תכונות בונוס..." value={brief.could} onChange={(e) => update("could", e.target.value)} />
-            </div>
-
-            <div className="sketch-border-thin p-3 bg-foreground/[0.04]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Won't — לא הפעם</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="wont" currentData={brief} previousData={previousData} onApply={(v) => update("wont", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">מחוץ להיקף. שומרים לגרסה הבאה.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="מה במפורש לא בונים עכשיו..." value={brief.wont} onChange={(e) => update("wont", e.target.value)} />
-            </div>
-          </div>
-        </div>
-
-        {/* AI feature suggestion → categorize */}
-        {aiEnabled && (
-          <div className="sketch-card">
-            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-              <label className="font-sketch text-xl">הצעות תכונות מה-AI</label>
+            {aiEnabled && (
               <button
                 onClick={generateAiFeatures}
                 disabled={aiFeaturesLoading}
                 className="sketch-btn flex items-center gap-2 text-sm"
               >
                 {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {suggestedFeatures.length ? "ייצר מחדש" : "הצע תכונות לפי כיוון הפתרון"}
+                {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
               </button>
-            </div>
-            <p className="font-hand text-muted-foreground text-sm mb-3">
-              ה-AI יציע תכונות אפשריות (leaderboard, צ׳אט קבוצתי, גלריה...). שייכו כל אחת ל-Must / Should / Could / Won't.
-            </p>
-            {suggestedFeatures.length > 0 && (
-              <div className="space-y-2">
-                {suggestedFeatures.map((f, i) => (
-                  <div key={i} className="sketch-border-thin p-3 flex items-start gap-3 flex-wrap">
-                    <div className="flex-1 min-w-[180px]">
-                      <div className="font-sketch text-base">{f.name}</div>
-                      {f.description && <div className="text-sm text-muted-foreground">{f.description}</div>}
-                    </div>
-                    <div className="flex gap-1 flex-wrap">
-                      {(["must", "should", "could", "wont"] as Bucket[]).map((b) => (
-                        <button
-                          key={b}
-                          onClick={() => assignFeature(i, b)}
-                          className={`px-2 py-1 text-xs rounded border-2 transition-all ${
-                            f.bucket === b
-                              ? "bg-foreground text-background border-foreground"
-                              : "border-foreground/30 hover:border-foreground"
-                          }`}
-                        >
-                          {b === "must" ? "Must" : b === "should" ? "Should" : b === "could" ? "Could" : "Won't"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
             )}
           </div>
-        )}
+          <p className="font-hand text-muted-foreground text-sm mb-2">
+            ה-AI מציע תכונות (leaderboard, צ׳אט, גלריה, התראות...). גררו כל תכונה ל-Must / Should / Could / Won't.
+          </p>
+
+          <AddFeatureRow
+            onAdd={(name) => setSuggestedFeatures((prev) => [...prev, { id: crypto.randomUUID(), name, description: "", bucket: "unassigned" }])}
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+            {BUCKETS.map((b) => (
+              <BucketLane
+                key={b.key}
+                config={b}
+                features={suggestedFeatures.filter((f) => f.bucket === b.key)}
+                onDrop={(id) => setSuggestedFeatures((prev) => prev.map((f) => (f.id === id ? { ...f, bucket: b.key } : f)))}
+                onRemove={(id) => setSuggestedFeatures((prev) => prev.filter((f) => f.id !== id))}
+              />
+            ))}
+          </div>
+
+          {suggestedFeatures.length === 0 && (
+            <p className="font-hand text-sm text-muted-foreground mt-3 text-center">
+              עדיין אין תכונות. לחצו על "הצע תכונות עם AI" או הוסיפו ידנית.
+            </p>
+          )}
+        </div>
+
+
 
         {/* Style / vibe with visual swatches */}
         <div className="sketch-card">
@@ -307,5 +282,87 @@ const PrototypeBrief = () => {
     </StepPage>
   );
 };
+
+function AddFeatureRow({ onAdd }: { onAdd: (name: string) => void }) {
+  const [value, setValue] = useState("");
+  return (
+    <div className="flex items-center gap-2 mt-2">
+      <input
+        className="sketch-input flex-1"
+        placeholder="הוסיפו תכונה משלכם..."
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && value.trim()) {
+            onAdd(value.trim());
+            setValue("");
+          }
+        }}
+      />
+      <button
+        type="button"
+        onClick={() => { if (value.trim()) { onAdd(value.trim()); setValue(""); } }}
+        className="sketch-btn-outline flex items-center gap-1 text-sm px-3 py-2"
+      >
+        <Plus className="h-4 w-4" /> הוסף
+      </button>
+    </div>
+  );
+}
+
+function BucketLane({
+  config,
+  features,
+  onDrop,
+  onRemove,
+}: {
+  config: { key: Bucket | "unassigned"; label: string; desc: string; bg: string };
+  features: SuggestedFeature[];
+  onDrop: (id: string) => void;
+  onRemove: (id: string) => void;
+}) {
+  const [over, setOver] = useState(false);
+  return (
+    <div
+      className={`sketch-border-thin p-3 min-h-[140px] transition-all ${config.bg} ${over ? "ring-2 ring-foreground" : ""}`}
+      onDragOver={(e) => { e.preventDefault(); setOver(true); }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setOver(false);
+        const id = e.dataTransfer.getData("text/plain");
+        if (id) onDrop(id);
+      }}
+    >
+      <div className="mb-2">
+        <div className="font-sketch text-base">{config.label}</div>
+        <div className="font-hand text-xs text-muted-foreground">{config.desc}</div>
+      </div>
+      <div className="space-y-2">
+        {features.map((f) => (
+          <div
+            key={f.id}
+            draggable
+            onDragStart={(e) => e.dataTransfer.setData("text/plain", f.id)}
+            className="bg-background sketch-border-thin px-3 py-2 cursor-grab active:cursor-grabbing flex items-start gap-2"
+          >
+            <div className="flex-1 min-w-0">
+              <div className="font-sketch text-sm truncate">{f.name}</div>
+              {f.description && <div className="text-xs text-muted-foreground line-clamp-2">{f.description}</div>}
+            </div>
+            <button onClick={() => onRemove(f.id)} className="text-muted-foreground hover:text-foreground p-0.5">
+              <span className="text-xs">×</span>
+            </button>
+          </div>
+        ))}
+        {features.length === 0 && (
+          <div className="text-xs text-muted-foreground font-hand text-center py-3 border-2 border-dashed border-foreground/15 rounded">
+            גררו לכאן
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default PrototypeBrief;

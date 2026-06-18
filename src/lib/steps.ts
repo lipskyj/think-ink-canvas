@@ -1,4 +1,4 @@
-import { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, type LucideIcon } from "lucide-react";
+import { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, Trophy, type LucideIcon } from "lucide-react";
 
 export type ProcessPhase = "problem" | "solution" | "development" | "presentation";
 
@@ -152,6 +152,18 @@ export const STEPS: StepConfig[] = [
     phase: "presentation",
     description: "שלב הפיצ' הופך את כל מה שעשיתם להצגה משכנעת — סקריפט, שקפים וויזואלים. אפשר להתחיל אותו במקביל לבנייה ולחדד אחרי שה-MVP מוכן.",
     whyItMatters: "פתרון מצוין שלא יודעים להציג נשכח. פיצ' חד הופך עבודת עומק להזדמנות אמיתית — אצל שופטים, מנטורים או משתמשים פוטנציאליים.",
+  },
+  {
+    key: "deliver",
+    num: 11,
+    title: "הגשה לגלריה",
+    url: "/submissions",
+    icon: Trophy,
+    emoji: "",
+    learnMoreUrl: "https://www.interaction-design.org/literature/topics/design-thinking",
+    phase: "presentation",
+    description: "סוגרים את התהליך: מעלים את המצגת ואת קישור הפיתוח לגלריה המשותפת. כל הקבוצות רואות את כולן.",
+    whyItMatters: "פרסום מסכם את העבודה ומאפשר לכולם ללמוד מכולם. זה גם הרגע שבו המוצר הופך מ׳משהו פנימי׳ למשהו שאפשר לשתף.",
   },
 ];
 

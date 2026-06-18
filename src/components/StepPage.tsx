@@ -128,28 +128,29 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         )}
 
         {/* כותרת */}
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-sketch mb-1">
-              {step.title} {step.emoji}
+        <div className="flex items-start justify-between mb-8 gap-4 flex-wrap">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="pill-chip pill-chip-coral">שלב {String(step.num).padStart(2, "0")}</span>
+              <span className="pill-chip pill-chip-outline">{step.num} / {TOTAL_STEPS}</span>
+              {completed && <span className="pill-chip pill-chip-mint">✓ הושלם</span>}
+            </div>
+            <h1 className="display-huge mb-1">
+              {step.title} <span className="inline-block align-baseline">{step.emoji}</span>
             </h1>
-            <p className="font-hand text-xl text-muted-foreground">
-              שלב {step.num} מתוך {TOTAL_STEPS}
-              {completed && <span className="mr-2 text-foreground">✅ הושלם</span>}
-            </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
               className="sketch-btn-outline text-sm flex items-center gap-1"
-              title="הקדמה: Learn → See"
+              title="הקדמה"
             >
               <BookOpen className="h-3 w-3" /> הקדמה
             </button>
             {aiEnabled && (
               <button
                 onClick={() => setShowAI(!showAI)}
-                className={`sketch-btn-outline text-sm flex items-center gap-1 ${showAI ? "bg-foreground text-primary-foreground" : ""}`}
+                className={`sketch-btn-outline text-sm flex items-center gap-1 ${showAI ? "bg-foreground text-background" : ""}`}
               >
                 <Sparkles className="h-3 w-3" /> סייע AI
               </button>
@@ -164,6 +165,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             </a>
           </div>
         </div>
+
 
         {/* מידע מקדים */}
         {step.description && (

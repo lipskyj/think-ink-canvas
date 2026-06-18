@@ -221,21 +221,23 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         {children}
         </fieldset>
 
-        {/* סרגל תחתון */}
+        {/* סרגל תחתון — RTL: קודם בצד ימין, הבא בצד שמאל */}
         <div className="mt-8 flex items-center justify-between flex-wrap gap-3">
+          {/* ימין: חזרה אחורה */}
           <div className="flex items-center gap-2">
-            {next && (
+            {prev && (
               <button
-                onClick={() => navigate(next.url)}
+                onClick={() => navigate(prev.url)}
                 className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-                aria-label="השלב הבא"
-                title="הבא"
+                aria-label="השלב הקודם"
+                title="הקודם"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
               </button>
             )}
           </div>
 
+          {/* אמצע / שמאל: בית, השלמה והשלב הבא */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate("/")}
@@ -261,14 +263,14 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
               )
             )}
 
-            {prev && (
+            {next && (
               <button
-                onClick={() => navigate(prev.url)}
+                onClick={() => navigate(next.url)}
                 className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-                aria-label="השלב הקודם"
-                title="הקודם"
+                aria-label="השלב הבא"
+                title="הבא"
               >
-                <ArrowRight className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
               </button>
             )}
           </div>

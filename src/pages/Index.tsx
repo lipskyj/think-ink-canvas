@@ -66,7 +66,7 @@ const Index = () => {
         <section className="text-center pt-6 pb-12">
           <span className="pill-chip pill-chip-coral mb-6 inline-block">האקתון לחשיבה עיצובית</span>
           <h1 className="display-mega leading-[0.85] mb-4">
-            חשוב.<br/>צור.<br/>שבור.
+            חשוב.<br/>צור.<br/>הצג.
           </h1>
           <p className="font-hand text-2xl md:text-3xl max-w-2xl mx-auto leading-snug text-foreground/80">
             לוקחים בעיה אמיתית, חופרים בה לעומק, ובונים פתרון שאפשר להראות —
@@ -168,36 +168,8 @@ const Index = () => {
           </div>
         </section>
 
-        {/* 10 STEPS LIST */}
-        <section className="mb-12">
-          <span className="pill-chip pill-chip-outline mb-3 inline-block">המסע המלא</span>
-          <h2 className="display-huge mb-6">{STEPS.length} שלבים, סיפור אחד.</h2>
-          <div className="space-y-2">
-            {STEPS.map((step) => {
-              const completed = isStepCompleted(step.key);
-              const phaseIdx = PHASES.findIndex((p) => p.key === step.phase);
-              return (
-                <Link
-                  key={step.key}
-                  to={step.url}
-                  className="sketch-border-thin bg-card hover:bg-accent/30 transition-colors flex items-center gap-4 p-3 group"
-                >
-                  <span className="font-sketch text-2xl tabular-nums w-10 text-foreground/50">
-                    {String(step.num).padStart(2, "0")}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-sketch text-lg leading-tight">{step.title}</div>
-                    <div className="text-xs font-sketch tracking-wider uppercase text-muted-foreground">
-                      פאזה {phaseIdx + 1} · {PHASES[phaseIdx].title}
-                    </div>
-                  </div>
-                  {completed && <span className="pill-chip pill-chip-mint text-[10px]">הושלם</span>}
-                  <ArrowLeft className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
-                </Link>
-              );
-            })}
-          </div>
-        </section>
+        {/* 10 steps list removed — too much info on the landing page */}
+
 
         {/* CTA */}
         <section className="sketch-card text-center bg-gradient-to-br from-card to-secondary/40">

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Plus, Sparkles, X, Timer, Play, RotateCcw, ChevronLeft, ChevronRight, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Plus, Sparkles, Star, X, Timer, Play, RotateCcw, ChevronLeft, ChevronRight, CheckCircle2, ArrowLeft, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAdmin } from "@/contexts/AdminContext";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import LinkedDataBanner from "@/components/LinkedDataBanner";
@@ -93,6 +95,7 @@ const ALL_ROUNDS: IdeationRound[] = [
 
 const Ideation = () => {
   const { getStepData, getAllPreviousData } = useProject();
+  const { aiEnabled } = useAdmin();
   const [allIdeas, setAllIdeas] = useState<Record<string, Idea[]>>({});
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [roundStarted, setRoundStarted] = useState(false);
@@ -100,6 +103,7 @@ const Ideation = () => {
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const ROUNDS = showBonus ? ALL_ROUNDS : ALL_ROUNDS.slice(0, 2);
@@ -405,7 +409,7 @@ const Ideation = () => {
                   title={idea.starred ? "בטל סימון" : "סמן רעיון מנצח"}
                   className={`flex-shrink-0 p-2.5 rounded-md transition-colors ${idea.starred ? "bg-foreground text-background" : "border-2 border-foreground/30 hover:border-foreground hover:bg-accent/40"}`}
                 >
-                  <Sparkles className="h-4 w-4" />
+                  <Star className={`h-4 w-4 ${idea.starred ? "fill-current" : ""}`} />
                 </button>
                 <input
                   dir="rtl"
@@ -423,9 +427,49 @@ const Ideation = () => {
             ))}
           </div>
 
-          <button onClick={addIdea} className="sketch-btn-outline mt-4 flex items-center gap-2 text-sm">
-            <Plus className="h-4 w-4" /> הוסף רעיון
-          </button>
+          <div className="flex items-center gap-2 mt-4 flex-wrap">
+            <button onClick={addIdea} className="sketch-btn-outline flex items-center gap-2 text-sm">
+              <Plus className="h-4 w-4" /> הוסף רעיון
+            </button>
+            {aiEnabled && (
+              <button
+                onClick={async () => {
+                  setAiLoading(true);
+                  try {
+                    const { data, error } = await supabase.functions.invoke("ai-assist", {
+                      body: {
+                        stepKey: "ideation",
+                        stepTitle: currentRound.title,
+                        mode: "section",
+                        sectionKey: "idea",
+                        sectionPrompt: `צור רעיון יצירתי לסבב '${currentRound.title}'. ${currentRound.description}`,
+                        currentData: { ideas: flatIdeas, currentRound: currentRound.id },
+                        previousData,
+                      },
+                    });
+                    if (error) throw error;
+                    const text = (data?.content || "").trim();
+                    if (text) {
+                      setAllIdeas((prev) => ({
+                        ...prev,
+                        [currentRound.id]: [...(prev[currentRound.id] || []), { text, starred: false, method: currentRound.id }],
+                      }));
+                    }
+                  } catch (e) {
+                    console.error("AI idea generation failed:", e);
+                  } finally {
+                    setAiLoading(false);
+                  }
+                }}
+                disabled={aiLoading}
+                className="sketch-btn flex items-center gap-2 text-sm"
+                title="קבלו רעיון מה-AI"
+              >
+                {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                הצע רעיון עם AI
+              </button>
+            )}
+          </div>
 
           {/* Navigation buttons */}
           <div className="flex items-center justify-between mt-8">

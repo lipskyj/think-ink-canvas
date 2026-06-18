@@ -38,7 +38,7 @@ export function AppSidebar() {
             <span className="pill-chip pill-chip-coral text-[10px]">ערכת חש״ע</span>
           </div>
           <h1 className="display-huge leading-none" style={{ fontSize: "clamp(1.8rem,3vw,2.4rem)" }}>
-            חשוב.<br/>צור.<br/>שבור.
+            חשוב.<br/>צור.<br/>הצג.
           </h1>
         </div>
 

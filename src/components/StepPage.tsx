@@ -225,15 +225,26 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         <div className="mt-8 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-2">
             {next && (
-              <button onClick={() => navigate(next.url)} className="sketch-btn-outline text-sm flex items-center gap-1">
-                {next.title} <ArrowLeft className="h-3 w-3" />
+              <button
+                onClick={() => navigate(next.url)}
+                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
+                aria-label="השלב הבא"
+                title="הבא"
+              >
+                <ArrowLeft className="h-4 w-4" />
               </button>
             )}
           </div>
 
           <div className="flex items-center gap-2">
-            <button onClick={() => navigate("/")} className="sketch-btn-outline text-sm flex items-center gap-1">
-              מפה
+            <button
+              onClick={() => navigate("/")}
+              className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
+              aria-label="חזרה למפת השלבים"
+              title="מפה"
+            >
+              <Info className="h-4 w-4 rotate-0" />
+              <span className="sr-only">מפה</span>
             </button>
 
             {!locked && (
@@ -251,8 +262,13 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             )}
 
             {prev && (
-              <button onClick={() => navigate(prev.url)} className="sketch-btn-outline text-sm flex items-center gap-1">
-                <ArrowRight className="h-3 w-3" /> {prev.title}
+              <button
+                onClick={() => navigate(prev.url)}
+                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
+                aria-label="השלב הקודם"
+                title="הקודם"
+              >
+                <ArrowRight className="h-4 w-4" />
               </button>
             )}
           </div>

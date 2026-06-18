@@ -74,14 +74,11 @@ export default function StepIntroModal({ stepKey }: Props) {
   const [stage, setStage] = useState<Stage>("learn");
   const { content, loading, isFallback, regenerate } = useStepLSD(stepKey, open);
 
+  // Always open the intro on step mount — users don't remember step names/contents
   useEffect(() => {
-    try {
-      if (!localStorage.getItem(seenKey)) {
-        setOpen(true);
-        setStage("learn");
-      }
-    } catch {}
-  }, [seenKey]);
+    setOpen(true);
+    setStage("learn");
+  }, [stepKey]);
 
   useEffect(() => {
     const handler = (e: Event) => {

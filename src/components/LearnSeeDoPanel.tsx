@@ -67,7 +67,7 @@ const LearnSeeDoPanel = ({ phase }: Props) => {
           </section>
 
           <section className="sketch-card">
-            <div className="font-sketch text-lg mb-2">🛠️ DO — התור שלכם בזירה</div>
+            <div className="font-sketch text-lg mb-2">DO — התור שלכם בזירה</div>
             <div className="font-hand text-base mb-2">
               <span className="font-sketch">המטרה: </span>
               {content.do.objective}

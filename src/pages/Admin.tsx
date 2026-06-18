@@ -177,6 +177,83 @@ export default function Admin() {
           הגדירו את פרטי האירוע, צרו קבוצות, ושלחו לתלמידים קישור הצטרפות.
         </p>
 
+        {/* Event details — shared by every group */}
+        <div className="sketch-card mb-6">
+          <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+            <div>
+              <h2 className="font-sketch text-lg">פרטי האירוע</h2>
+              <p className="text-xs text-muted-foreground font-hand">
+                הפרטים האלה יוצגו לכל הקבוצות בדף הבית ובמסך ההצטרפות.
+              </p>
+            </div>
+            {eventDraft.organizer_logo_url && (
+              <img src={eventDraft.organizer_logo_url} alt="לוגו המארגן" className="h-12 max-w-[120px] object-contain sketch-border-thin bg-background p-1 rounded" />
+            )}
+          </div>
+          <div className="space-y-3">
+            <Input
+              placeholder="נושא מרכזי / אתגר האירוע"
+              value={eventDraft.event_topic}
+              onChange={(e) => setEventDraft((prev) => ({ ...prev, event_topic: e.target.value }))}
+              onBlur={(e) => updateEventForAllGroups({ event_topic: e.target.value })}
+            />
+            <Textarea
+              placeholder="תיאור האירוע, רקע, נכסים חשובים או הנחיות למשתתפים"
+              value={eventDraft.event_description}
+              rows={3}
+              className="text-sm"
+              onChange={(e) => setEventDraft((prev) => ({ ...prev, event_description: e.target.value }))}
+              onBlur={(e) => updateEventForAllGroups({ event_description: e.target.value })}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              <Input
+                placeholder="תאריך"
+                value={eventDraft.event_date}
+                onChange={(e) => setEventDraft((prev) => ({ ...prev, event_date: e.target.value }))}
+                onBlur={(e) => updateEventForAllGroups({ event_date: e.target.value })}
+              />
+              <Input
+                placeholder="שעה"
+                value={eventDraft.event_time}
+                onChange={(e) => setEventDraft((prev) => ({ ...prev, event_time: e.target.value }))}
+                onBlur={(e) => updateEventForAllGroups({ event_time: e.target.value })}
+              />
+              <Input
+                placeholder="מקום / עיר / חדר"
+                value={eventDraft.event_location}
+                onChange={(e) => setEventDraft((prev) => ({ ...prev, event_location: e.target.value }))}
+                onBlur={(e) => updateEventForAllGroups({ event_location: e.target.value })}
+              />
+            </div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <label className="sketch-btn-outline text-xs cursor-pointer px-3 py-1.5">
+                העלאת לוגו מארגן
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 1024 * 1024) {
+                      alert("גודל מקסימלי: 1MB");
+                      return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => updateEventForAllGroups({ organizer_logo_url: String(reader.result) });
+                    reader.readAsDataURL(file);
+                  }}
+                />
+              </label>
+              {eventDraft.organizer_logo_url && (
+                <button onClick={() => updateEventForAllGroups({ organizer_logo_url: null as any })} className="text-xs text-destructive underline">
+                  הסר לוגו
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Create new group */}
         <div className="sketch-card mb-6">
           <div className="flex items-center gap-3 mb-2">

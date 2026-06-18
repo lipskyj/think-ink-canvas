@@ -325,13 +325,7 @@ const EffortImpact = () => {
       {/* Summary by quadrant */}
       {hasContent && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          {/* end advanced wrapper opens above */}
-          </div>
-      )}
-      </>)}
-      {/* eslint-disable-next-line */}
-      {advancedMode && hasContent && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+
 
           {[
             { title: "🏆 ניצחונות מהירים", items: quickWins, highlight: true },

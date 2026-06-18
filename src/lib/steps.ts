@@ -9,9 +9,9 @@ export interface PhaseConfig {
 }
 
 export const PHASES: PhaseConfig[] = [
-  { key: "problem", title: "הגדרת הבעיה", emoji: "🔍" },
-  { key: "solution", title: "גיבוש הפתרון", emoji: "💡" },
-  { key: "development", title: "פיתוח הפתרון", emoji: "🚀" },
+  { key: "problem", title: "הגדרת הבעיה", emoji: "" },
+  { key: "solution", title: "גיבוש הפתרון", emoji: "" },
+  { key: "development", title: "פיתוח הפתרון", emoji: "" },
 ];
 
 export interface StepConfig {

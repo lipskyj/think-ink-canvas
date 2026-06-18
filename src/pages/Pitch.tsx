@@ -48,9 +48,11 @@ const Pitch = () => {
         const parsed = JSON.parse(raw);
         setPitch(parsed);
         if (parsed.styleKey) setStyleKey(parsed.styleKey);
+        if (parsed.coverImage) setCoverImage(parsed.coverImage);
       }
     } catch {}
   }, []);
+
 
   useEffect(() => {
     if (!running) return;

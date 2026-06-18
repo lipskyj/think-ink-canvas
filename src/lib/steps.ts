@@ -149,7 +149,7 @@ export const STEPS: StepConfig[] = [
     icon: Presentation,
     emoji: "",
     learnMoreUrl: "https://www.ycombinator.com/library/6h-how-to-pitch-your-startup",
-    phase: "development",
+    phase: "presentation",
     description: "שלב הפיצ' הופך את כל מה שעשיתם להצגה משכנעת — סקריפט, שקפים וויזואלים. אפשר להתחיל אותו במקביל לבנייה ולחדד אחרי שה-MVP מוכן.",
     whyItMatters: "פתרון מצוין שלא יודעים להציג נשכח. פיצ' חד הופך עבודת עומק להזדמנות אמיתית — אצל שופטים, מנטורים או משתמשים פוטנציאליים.",
   },

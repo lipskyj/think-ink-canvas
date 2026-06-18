@@ -138,6 +138,13 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
+              className="sketch-btn-outline text-sm flex items-center gap-1"
+              title="הקדמה: Learn → See"
+            >
+              <BookOpen className="h-3 w-3" /> הקדמה
+            </button>
             {aiEnabled && (
               <button
                 onClick={() => setShowAI(!showAI)}

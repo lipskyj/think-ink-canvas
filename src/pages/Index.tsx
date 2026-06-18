@@ -257,6 +257,19 @@ const Index = () => {
         {/* 10 steps list removed — too much info on the landing page */}
 
 
+        {/* SUBMISSIONS LINK */}
+        <section className="sketch-card mb-8 bg-secondary/20 flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h3 className="font-sketch text-xl mb-1">הגשת תוצרים</h3>
+            <p className="font-hand text-base text-muted-foreground">
+              מצגת + קישור לפיתוח. כל הקבוצות, במקום אחד.
+            </p>
+          </div>
+          <Link to="/submissions" className="sketch-btn inline-flex items-center gap-2">
+            לחדר ההגשות <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </section>
+
         {/* CTA */}
         <section className="sketch-card text-center bg-gradient-to-br from-card to-secondary/40">
           <Lightbulb className="h-10 w-10 mx-auto mb-3" strokeWidth={2.2} />

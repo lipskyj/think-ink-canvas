@@ -219,22 +219,21 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
   const saveStepData = useCallback(
     async (stepKey: string, data: any, silent?: boolean) => {
+      const wasCompleted = stepDataRef.current[stepKey]?.completed ?? false;
       setStepData((prev) => {
-        const existing = prev[stepKey];
         const next = {
           ...prev,
           [stepKey]: {
             step_key: stepKey,
             data,
-            completed: existing?.completed ?? false,
+            completed: prev[stepKey]?.completed ?? wasCompleted,
           },
         };
         stepDataRef.current = next;
         return next;
       });
       if (isClassMode) {
-        const existing = stepDataRef.current[stepKey];
-        await upsertToDb(stepKey, data, existing?.completed ?? false);
+        await upsertToDb(stepKey, data, wasCompleted);
       }
       if (!silent) {
         toast({ title: "נשמר ", description: "ההתקדמות שלך נשמרה." });
@@ -246,14 +245,18 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const completeStep = useCallback(
     async (stepKey: string) => {
       const latestData = stepDataRef.current[stepKey]?.data ?? {};
-      setStepData((prev) => ({
-        ...prev,
-        [stepKey]: {
-          step_key: stepKey,
-          data: latestData,
-          completed: true,
-        },
-      }));
+      setStepData((prev) => {
+        const next = {
+          ...prev,
+          [stepKey]: {
+            step_key: stepKey,
+            data: latestData,
+            completed: true,
+          },
+        };
+        stepDataRef.current = next;
+        return next;
+      });
       if (isClassMode) {
         setClassCompletion((prev) => ({ ...prev, [stepKey]: true }));
         await upsertToDb(stepKey, latestData, true);

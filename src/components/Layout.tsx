@@ -18,9 +18,7 @@ const Layout = ({ children }: LayoutProps) => {
         <main className="flex-1 flex flex-col">
           <HackathonTimerBar />
           <header className="h-12 flex items-center border-b border-foreground/20 px-4 gap-2">
-            <SidebarTrigger title="מפה של כל השלבים">
-              <Map className="h-4 w-4" />
-            </SidebarTrigger>
+            <SidebarTrigger title="מפת כל השלבים" />
             <span className="font-sketch text-sm text-muted-foreground">מפת השלבים</span>
             <span className="mr-auto font-sketch text-xs text-muted-foreground">ערכת חשיבה עיצובית</span>
           </header>

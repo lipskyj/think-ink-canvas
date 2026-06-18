@@ -50,7 +50,7 @@ const PointOfView = () => {
       <div className="space-y-4">
         <div className="sketch-card">
           <div className="flex items-center relative">
-            <label className="font-semibold text-lg block mb-2">👤 משתמש</label>
+            <label className="font-semibold text-lg block mb-2"> משתמש</label>
             <SectionHelper stepKey="pov_statement" sectionKey="user" currentData={{ user, need, insight }} previousData={previousData} onApply={(v) => setUser(v)} />
           </div>
           <p className="text-muted-foreground text-sm mb-2">מיהו המשתמש הספציפי שאתם מעצבים עבורו?</p>
@@ -66,7 +66,7 @@ const PointOfView = () => {
         </div>
         <div className="sketch-card">
           <div className="flex items-center relative">
-            <label className="font-semibold text-lg block mb-2">🔍 תובנה</label>
+            <label className="font-semibold text-lg block mb-2"> תובנה</label>
             <SectionHelper stepKey="pov_statement" sectionKey="insight" currentData={{ user, need, insight }} previousData={previousData} onApply={(v) => setInsight(v)} />
           </div>
           <p className="text-muted-foreground text-sm mb-2">למה? איזו תובנה מפתיעה גיליתם?</p>

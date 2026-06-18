@@ -39,7 +39,7 @@ export const PITCH_STYLES: PitchStyle[] = [
   },
   {
     key: "story",
-    emoji: "💔",
+    emoji: "",
     title: "סיפור אישי",
     subtitle: "רגש קודם, לוגיקה אחר כך",
     whenToUse: "כשהבעיה רגשית/חברתית — בריאות נפש, בדידות, נגישות.",
@@ -56,7 +56,7 @@ export const PITCH_STYLES: PitchStyle[] = [
   },
   {
     key: "demo",
-    emoji: "🎬",
+    emoji: "",
     title: "דמו ראשון",
     subtitle: "תראו, אל תספרו",
     whenToUse: "כשהמוצר ויזואלי ויש דמו שעובד וואו.",
@@ -73,7 +73,7 @@ export const PITCH_STYLES: PitchStyle[] = [
   },
   {
     key: "compare",
-    emoji: "⚖️",
+    emoji: "️",
     title: "השוואתי",
     subtitle: "ככה היום / ככה איתנו",
     whenToUse: "כשאתם משפרים תהליך שכבר קיים. השוואה ויזואלית.",
@@ -107,7 +107,7 @@ export const PITCH_STYLES: PitchStyle[] = [
   },
   {
     key: "data",
-    emoji: "📊",
+    emoji: "",
     title: "דאטה-פאנץ׳",
     subtitle: "מספר שמכה → סיפור",
     whenToUse: "כשיש סטטיסטיקה חזקה או שוק גדול.",

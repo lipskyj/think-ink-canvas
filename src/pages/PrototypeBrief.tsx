@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { Sparkles, Loader2, Plus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAdmin } from "@/contexts/AdminContext";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
@@ -12,29 +15,40 @@ interface BriefState {
   could: string;
   wont: string;
   assumptions: string;
-  fidelity: string;
   styleVibe: string;
   styleNotes: string;
   successCriteria: string;
   // legacy
   keyFeatures?: string;
+  fidelity?: string;
 }
 
+type Bucket = "must" | "should" | "could" | "wont";
+
 const STYLE_VIBES = [
-  { key: "minimal", label: "מינימליסטי" },
-  { key: "playful", label: "שובב / חי" },
-  { key: "editorial", label: "אדיטוריאל / מגזין" },
-  { key: "tech", label: "טכנולוגי / נקי" },
-  { key: "brutalist", label: "ברוטליסטי" },
-  { key: "warm", label: "חם / אנושי" },
+  { key: "minimal", label: "מינימליסטי", swatch: ["#ffffff", "#111111", "#e5e5e5"], font: "'Heebo', sans-serif" },
+  { key: "playful", label: "שובב / חי", swatch: ["#ff6b6b", "#ffd166", "#06d6a0"], font: "'Heebo', sans-serif" },
+  { key: "editorial", label: "אדיטוריאל", swatch: ["#1a1a1a", "#f5f1e8", "#c9a87a"], font: "'Heebo', serif" },
+  { key: "tech", label: "טכנולוגי / נקי", swatch: ["#0a0e27", "#3b82f6", "#e2e8f0"], font: "'Heebo', sans-serif" },
+  { key: "brutalist", label: "ברוטליסטי", swatch: ["#000000", "#ffff00", "#ffffff"], font: "'Heebo', monospace" },
+  { key: "warm", label: "חם / אנושי", swatch: ["#fef3e8", "#ff8c42", "#5a3825"], font: "'Heebo', sans-serif" },
 ];
+
+interface SuggestedFeature {
+  name: string;
+  description: string;
+  bucket: Bucket | "unassigned";
+}
 
 const PrototypeBrief = () => {
   const { getStepData, getAllPreviousData } = useProject();
+  const { aiEnabled } = useAdmin();
   const [brief, setBrief] = useState<BriefState>({
     objective: "", must: "", should: "", could: "", wont: "",
-    assumptions: "", fidelity: "low", styleVibe: "", styleNotes: "", successCriteria: "",
+    assumptions: "", styleVibe: "", styleNotes: "", successCriteria: "",
   });
+  const [suggestedFeatures, setSuggestedFeatures] = useState<SuggestedFeature[]>([]);
+  const [aiFeaturesLoading, setAiFeaturesLoading] = useState(false);
 
   useEffect(() => {
     const saved = getStepData("prototype_brief");
@@ -42,9 +56,9 @@ const PrototypeBrief = () => {
       setBrief((prev) => ({
         ...prev,
         ...saved,
-        // migrate legacy keyFeatures into "must"
         must: saved.must || saved.keyFeatures || "",
       }));
+      if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures);
     }
   }, [getStepData]);
 
@@ -59,9 +73,60 @@ const PrototypeBrief = () => {
   }), [brief.objective, brief.must, brief.assumptions]);
   useAutoFill("prototype_brief", autoFillFields);
 
-  const getData = useCallback(() => brief, [brief]);
+  const getData = useCallback(() => ({ ...brief, suggestedFeatures }), [brief, suggestedFeatures]);
   const hasContent = !!(brief.objective.trim() || brief.must.trim());
   const previousData = getAllPreviousData("prototype_brief");
+
+  const appendToBucket = (bucket: Bucket, line: string) => {
+    setBrief((prev) => {
+      const existing = (prev[bucket] || "").trim();
+      const next = existing ? `${existing}\n• ${line}` : `• ${line}`;
+      return { ...prev, [bucket]: next };
+    });
+  };
+
+  const assignFeature = (index: number, bucket: Bucket) => {
+    setSuggestedFeatures((prev) => {
+      const copy = [...prev];
+      const f = copy[index];
+      if (!f) return prev;
+      copy[index] = { ...f, bucket };
+      appendToBucket(bucket, `${f.name}${f.description ? ` — ${f.description}` : ""}`);
+      return copy;
+    });
+  };
+
+  const generateAiFeatures = async () => {
+    setAiFeaturesLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-assist", {
+        body: {
+          stepKey: "prototype_brief",
+          stepTitle: "Brief — תכונות מוצעות",
+          mode: "section",
+          sectionKey: "features_json",
+          sectionPrompt: `על בסיס כיוון הפתרון של הצוות, הצע 6 תכונות מוצר קונקרטיות שיכולות להתאים (לדוגמה: leaderboard, צ׳אט קבוצתי, גלריה, התראות, פרופיל, שיתוף, וכו'). החזר אך ורק מערך JSON תקין בפורמט: [{"name":"שם התכונה","description":"משפט קצר בעברית"}]. בלי טקסט נוסף, בלי code fences.`,
+          currentData: { objective: brief.objective, must: brief.must },
+          previousData,
+        },
+      });
+      if (error) throw error;
+      const raw = (data?.content || "").trim().replace(/```json?/g, "").replace(/```/g, "").trim();
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        setSuggestedFeatures(parsed.map((f: any) => ({
+          name: String(f.name || "").trim(),
+          description: String(f.description || "").trim(),
+          bucket: "unassigned" as const,
+        })).filter((f) => f.name));
+      }
+    } catch (e) {
+      console.error("AI features failed", e);
+    } finally {
+      setAiFeaturesLoading(false);
+    }
+  };
+
 
   return (
     <StepPage stepKey="prototype_brief" onSave={getData} canComplete={hasContent}>
@@ -133,25 +198,81 @@ const PrototypeBrief = () => {
           </div>
         </div>
 
-        {/* Style / vibe */}
+        {/* AI feature suggestion → categorize */}
+        {aiEnabled && (
+          <div className="sketch-card">
+            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+              <label className="font-sketch text-xl">הצעות תכונות מה-AI</label>
+              <button
+                onClick={generateAiFeatures}
+                disabled={aiFeaturesLoading}
+                className="sketch-btn flex items-center gap-2 text-sm"
+              >
+                {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                {suggestedFeatures.length ? "ייצר מחדש" : "הצע תכונות לפי כיוון הפתרון"}
+              </button>
+            </div>
+            <p className="font-hand text-muted-foreground text-sm mb-3">
+              ה-AI יציע תכונות אפשריות (leaderboard, צ׳אט קבוצתי, גלריה...). שייכו כל אחת ל-Must / Should / Could / Won't.
+            </p>
+            {suggestedFeatures.length > 0 && (
+              <div className="space-y-2">
+                {suggestedFeatures.map((f, i) => (
+                  <div key={i} className="sketch-border-thin p-3 flex items-start gap-3 flex-wrap">
+                    <div className="flex-1 min-w-[180px]">
+                      <div className="font-sketch text-base">{f.name}</div>
+                      {f.description && <div className="text-sm text-muted-foreground">{f.description}</div>}
+                    </div>
+                    <div className="flex gap-1 flex-wrap">
+                      {(["must", "should", "could", "wont"] as Bucket[]).map((b) => (
+                        <button
+                          key={b}
+                          onClick={() => assignFeature(i, b)}
+                          className={`px-2 py-1 text-xs rounded border-2 transition-all ${
+                            f.bucket === b
+                              ? "bg-foreground text-background border-foreground"
+                              : "border-foreground/30 hover:border-foreground"
+                          }`}
+                        >
+                          {b === "must" ? "Must" : b === "should" ? "Should" : b === "could" ? "Could" : "Won't"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Style / vibe with visual swatches */}
         <div className="sketch-card">
           <label className="font-sketch text-xl block mb-1">סגנון והעדפות עיצוב</label>
-          <p className="font-hand text-muted-foreground text-sm mb-3">בחרו vibe מוביל — והוסיפו פירוט.</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {STYLE_VIBES.map((v) => (
-              <button
-                key={v.key}
-                type="button"
-                onClick={() => update("styleVibe", brief.styleVibe === v.key ? "" : v.key)}
-                className={`px-3 py-1.5 rounded-full font-sketch text-sm border-2 transition-all ${
-                  brief.styleVibe === v.key
-                    ? "bg-foreground text-background border-foreground"
-                    : "bg-card border-foreground/30 hover:border-foreground"
-                }`}
-              >
-                {v.label}
-              </button>
-            ))}
+          <p className="font-hand text-muted-foreground text-sm mb-3">בחרו טעם ויזואלי — והוסיפו פירוט.</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+            {STYLE_VIBES.map((v) => {
+              const active = brief.styleVibe === v.key;
+              return (
+                <button
+                  key={v.key}
+                  type="button"
+                  onClick={() => update("styleVibe", active ? "" : v.key)}
+                  className={`text-right border-2 rounded-md p-3 transition-all ${
+                    active ? "border-foreground bg-secondary/40" : "border-foreground/20 hover:border-foreground/60"
+                  }`}
+                >
+                  <div className="flex items-center gap-1 mb-2">
+                    {v.swatch.map((c, idx) => (
+                      <div key={idx} className="w-6 h-6 rounded-sm border border-foreground/20" style={{ background: c }} />
+                    ))}
+                  </div>
+                  <div className="font-sketch text-base" style={{ fontFamily: v.font }}>{v.label}</div>
+                  <div className="text-[10px] text-muted-foreground mt-1" style={{ fontFamily: v.font }}>
+                    Aa — שלום עולם
+                  </div>
+                </button>
+              );
+            })}
           </div>
           <textarea
             className="sketch-input min-h-[80px] resize-none notebook-lines"
@@ -161,17 +282,6 @@ const PrototypeBrief = () => {
           />
         </div>
 
-        {/* Fidelity */}
-        <div className="sketch-card">
-          <label className="font-sketch text-xl block mb-3">רמת נאמנות</label>
-          <div className="flex gap-2">
-            {[{ key: "low", label: "נמוכה" }, { key: "medium", label: "בינונית" }, { key: "high", label: "גבוהה" }].map((level) => (
-              <button key={level.key} onClick={() => update("fidelity", level.key)} className={`flex-1 py-2.5 text-base font-sketch ${brief.fidelity === level.key ? "sketch-border bg-foreground text-background" : "sketch-border-thin"}`}>
-                {level.label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Assumptions */}
         <div className="sketch-card">

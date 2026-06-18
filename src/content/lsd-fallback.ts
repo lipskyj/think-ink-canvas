@@ -85,7 +85,7 @@ export const LSD_FALLBACK: Record<BlockKey, LSDContent> = {
 };
 
 export const PHASE_LABELS: Record<BlockKey, { emoji: string; title: string }> = {
-  problem: { emoji: "🔍", title: "הבעיה" },
+  problem: { emoji: "", title: "הבעיה" },
   solution: { emoji: "", title: "הפתרון" },
   build: { emoji: "", title: "הבנייה" },
   pitch: { emoji: "", title: "הפיץ׳" },

@@ -100,7 +100,7 @@ const FiveWhys = () => {
 
       <div className="sketch-card mb-6">
         <div className="flex items-center relative">
-          <label className="font-semibold text-lg block mb-2">📌 הבעיה</label>
+          <label className="font-semibold text-lg block mb-2"> הבעיה</label>
           <SectionHelper stepKey="five_whys" sectionKey="problem" currentData={{ problem, whys }} previousData={previousData} onApply={(v) => setProblem(v)} />
         </div>
         <input className="sketch-input" placeholder="נסחו את הבעיה שברצונכם לחקור..." value={problem} onChange={(e) => setProblem(e.target.value)} />

@@ -68,7 +68,7 @@ export default function Admin() {
     if (error) {
       toast({ title: "שגיאה", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "הכיתה נוצרה ✓" });
+      toast({ title: "הכיתה נוצרה " });
       setNewClassName("");
       setNewStudentNames("");
       fetchClasses();
@@ -91,7 +91,7 @@ export default function Admin() {
     const url = `${origin}/join/${id}`;
     navigator.clipboard.writeText(url);
     setCopiedId(id);
-    toast({ title: "הקישור הועתק ✓" });
+    toast({ title: "הקישור הועתק " });
     setTimeout(() => setCopiedId(null), 2000);
   };
 
@@ -374,7 +374,7 @@ function ClassPanel({
     if (value === null || value === undefined || value === "") return <span className="text-muted-foreground/50 italic">—</span>;
     if (typeof value === "string") return <p className="font-hand text-sm whitespace-pre-wrap">{value}</p>;
     if (typeof value === "number") return <p className="font-hand text-sm">{String(value)}</p>;
-    if (typeof value === "boolean") return <p className="font-hand text-sm">{value ? "כן ✓" : "לא"}</p>;
+    if (typeof value === "boolean") return <p className="font-hand text-sm">{value ? "כן " : "לא"}</p>;
     if (Array.isArray(value)) {
       if (value.length === 0) return <span className="text-muted-foreground/50 italic">—</span>;
       // Special rendering for ideation ideas array
@@ -667,7 +667,7 @@ function ClassPanel({
                                       title="לחצו לצפייה בתוכן"
                                     >
                                       {completed ? (
-                                        <span className="text-foreground font-bold">✓</span>
+                                        <span className="text-foreground font-bold"></span>
                                       ) : (
                                         <span className="text-muted-foreground">◐</span>
                                       )}
@@ -696,7 +696,7 @@ function ClassPanel({
                     ))}
                   </div>
                   <div className="mt-2 flex gap-3 text-[10px] text-muted-foreground">
-                    <span>✓ = הושלם</span>
+                    <span> = הושלם</span>
                     <span>◐ = בתהליך</span>
                     <span>· = טרם התחיל</span>
                   </div>

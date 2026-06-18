@@ -102,7 +102,7 @@ const UserTesting = () => {
       {/* סשנים */}
       <div className="mb-6">
         <div className="flex items-center relative">
-          <h2 className="font-sketch text-lg mb-3">👥 סשני בדיקה</h2>
+          <h2 className="font-sketch text-lg mb-3"> סשני בדיקה</h2>
           <SectionHelper stepKey="user_testing" sectionKey="session" currentData={getData()} previousData={previousData} onApply={(v) => updateSession(0, "observations", v)} />
         </div>
         <div className="space-y-4">
@@ -111,7 +111,7 @@ const UserTesting = () => {
               <div className="flex items-center justify-between mb-3">
                 <span className="font-sketch text-sm">משתתף {i + 1}</span>
                 {sessions.length > 1 && (
-                  <button onClick={() => removeSession(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg">✕</button>
+                  <button onClick={() => removeSession(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg"></button>
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -131,14 +131,14 @@ const UserTesting = () => {
                 </div>
                 <div>
                   <div className="flex items-center relative">
-                    <label className="font-sketch text-xs block mb-1">📝 תצפיות</label>
+                    <label className="font-sketch text-xs block mb-1"> תצפיות</label>
                     <SectionHelper stepKey="user_testing" sectionKey="observations" currentData={getData()} previousData={previousData} />
                   </div>
                   <textarea className="sketch-input min-h-[60px] text-sm" placeholder="מה קרה?" value={session.observations} onChange={(e) => updateSession(i, "observations", e.target.value)} />
                 </div>
                 <div>
                   <div className="flex items-center relative">
-                    <label className="font-sketch text-xs block mb-1">💬 ציטוטים</label>
+                    <label className="font-sketch text-xs block mb-1"> ציטוטים</label>
                     <SectionHelper stepKey="user_testing" sectionKey="quotes" currentData={getData()} previousData={previousData} />
                   </div>
                   <textarea className="sketch-input min-h-[60px] text-sm" placeholder="דברים בולטים שאמרו" value={session.quotes} onChange={(e) => updateSession(i, "quotes", e.target.value)} />
@@ -167,7 +167,7 @@ const UserTesting = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <div className="flex items-center relative">
-                    <label className="font-sketch text-xs block mb-1">🔧 מה השתנה</label>
+                    <label className="font-sketch text-xs block mb-1"> מה השתנה</label>
                     <SectionHelper stepKey="user_testing" sectionKey="whatChanged" currentData={getData()} previousData={previousData} />
                   </div>
                   <textarea className="sketch-input min-h-[50px] text-sm" placeholder="מה שיניתם?" value={it.whatChanged} onChange={(e) => updateIteration(i, "whatChanged", e.target.value)} />
@@ -181,7 +181,7 @@ const UserTesting = () => {
                 </div>
                 <div>
                   <div className="flex items-center relative">
-                    <label className="font-sketch text-xs block mb-1">➡️ פעולה הבאה</label>
+                    <label className="font-sketch text-xs block mb-1">️ פעולה הבאה</label>
                     <SectionHelper stepKey="user_testing" sectionKey="nextAction" currentData={getData()} previousData={previousData} />
                   </div>
                   <textarea className="sketch-input min-h-[50px] text-sm" placeholder="מה תעשו הלאה?" value={it.nextAction} onChange={(e) => updateIteration(i, "nextAction", e.target.value)} />
@@ -196,7 +196,7 @@ const UserTesting = () => {
       {/* ממצאים מרכזיים */}
       <div className="sketch-card">
         <div className="flex items-center relative">
-          <h2 className="font-sketch text-lg mb-3">🔑 ממצאים מרכזיים</h2>
+          <h2 className="font-sketch text-lg mb-3"> ממצאים מרכזיים</h2>
           <SectionHelper stepKey="user_testing" sectionKey="keyFindings" currentData={getData()} previousData={previousData} />
         </div>
         <textarea className="sketch-input min-h-[80px]" placeholder="סכמו את התובנות החשובות ביותר..." value={keyFindings} onChange={(e) => setKeyFindings(e.target.value)} />

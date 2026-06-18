@@ -30,12 +30,12 @@ const ALL_ROUNDS: IdeationRound[] = [
   {
     id: "worst_idea",
     title: "הרעיונות הכי גרועים",
-    emoji: "🗑️",
+    emoji: "",
     description: "חשבו על הפתרונות הכי גרועים, מטופשים ובלתי אפשריים. ככל שיותר נורא — יותר טוב! בסוף נהפוך אותם לרעיונות מנצחים.",
     detailedInstructions: [
       "כתבו פתרונות שהם בכוונה נוראיים או מגוחכים",
       "אל תצנזרו את עצמכם — ככל שיותר מוגזם, יותר טוב",
-      "בסוף הסבב — סמנו  על אלה שאפשר להפוך לרעיון טוב",
+      "בסוף הסבב — סמנו את אלה שאפשר להפוך לרעיון טוב",
     ],
     example: "׳לגרום למשתמש לחכות שעתיים לכל פעולה׳ → ההיפך: ׳הכל מיידי בלחיצה אחת׳",
     placeholders: [
@@ -52,11 +52,10 @@ const ALL_ROUNDS: IdeationRound[] = [
     id: "rapid_fire",
     title: "ירי מהיר",
     emoji: "",
-    description: "כתבו כמה שיותר רעיונות במהירות. לא חושבים, לא שופטים — פשוט כותבים! בסוף סמנו  את הזוכים.",
+    description: "כתבו כמה שיותר רעיונות במהירות. לא חושבים, לא שופטים — פשוט כותבים!",
     detailedInstructions: [
       "הפעילו את הטיימר ותתחילו",
       "אסור למחוק! אסור לשפוט! כמות לפני איכות",
-      "בסוף — סמנו  על הרעיונות הכי טובים",
     ],
     example: "פשוט כתבו מילה, משפט, ציור — כל דבר שעולה בראש!",
     placeholders: [
@@ -78,7 +77,6 @@ const ALL_ROUNDS: IdeationRound[] = [
     detailedInstructions: [
       "חזרו לרעיונות הגרועים — מה ההיפך החכם שלהם?",
       "שלבו בין רעיונות מסבבים שונים",
-      "סמנו  את הרעיונות הסופיים שלכם",
     ],
     example: "רעיון גרוע ׳ממשק בסינית עתיקה׳ → הפוך: ׳ממשק כל כך פשוט שלא צריך שפה — רק אייקונים׳",
     placeholders: [
@@ -315,7 +313,7 @@ const Ideation = () => {
           <p className="text-lg text-muted-foreground mb-6 max-w-lg mx-auto">{currentRound.description}</p>
 
           <div className="sketch-border p-5 mb-6 bg-accent/10 text-right max-w-lg mx-auto">
-            <h3 className="font-bold mb-3 text-sm">📋 איך עושים את זה:</h3>
+            <h3 className="font-bold mb-3 text-sm"> איך עושים את זה:</h3>
             <ol className="space-y-2">
               {currentRound.detailedInstructions.map((inst, i) => (
                 <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
@@ -404,13 +402,38 @@ const Ideation = () => {
           <div className="space-y-3">
             {currentIdeas.map((idea, i) => (
               <div key={i} className="flex items-center gap-2 animate-fade-in w-full">
-                <button
-                  onClick={() => toggleStar(i)}
-                  title={idea.starred ? "בטל סימון" : "סמן רעיון מנצח"}
-                  className={`flex-shrink-0 p-2.5 rounded-md transition-colors ${idea.starred ? "bg-foreground text-background" : "border-2 border-foreground/30 hover:border-foreground hover:bg-accent/40"}`}
-                >
-                  <Star className={`h-4 w-4 ${idea.starred ? "fill-current" : ""}`} />
-                </button>
+                {aiEnabled ? (
+                  <button
+                    onClick={async () => {
+                      setAiLoading(true);
+                      try {
+                        const { data, error } = await supabase.functions.invoke("ai-assist", {
+                          body: {
+                            stepKey: "ideation",
+                            stepTitle: currentRound.title,
+                            mode: "section",
+                            sectionKey: "idea",
+                            sectionPrompt: `צור רעיון יצירתי לסבב '${currentRound.title}'. ${currentRound.description}`,
+                            currentData: { ideas: flatIdeas, currentRound: currentRound.id },
+                            previousData,
+                          },
+                        });
+                        if (error) throw error;
+                        const text = (data?.content || "").trim();
+                        if (text) updateIdea(i, text);
+                      } catch (e) {
+                        console.error("AI idea generation failed:", e);
+                      } finally {
+                        setAiLoading(false);
+                      }
+                    }}
+                    disabled={aiLoading}
+                    title="הצע רעיון עם AI"
+                    className="flex-shrink-0 p-2.5 rounded-md border-2 border-foreground/30 hover:border-foreground hover:bg-accent/40 transition-colors disabled:opacity-50"
+                  >
+                    {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                  </button>
+                ) : null}
                 <input
                   dir="rtl"
                   className="sketch-input flex-1 min-w-0 text-lg py-3"
@@ -431,66 +454,28 @@ const Ideation = () => {
             <button onClick={addIdea} className="sketch-btn-outline flex items-center gap-2 text-sm">
               <Plus className="h-4 w-4" /> הוסף רעיון
             </button>
-            {aiEnabled && (
-              <button
-                onClick={async () => {
-                  setAiLoading(true);
-                  try {
-                    const { data, error } = await supabase.functions.invoke("ai-assist", {
-                      body: {
-                        stepKey: "ideation",
-                        stepTitle: currentRound.title,
-                        mode: "section",
-                        sectionKey: "idea",
-                        sectionPrompt: `צור רעיון יצירתי לסבב '${currentRound.title}'. ${currentRound.description}`,
-                        currentData: { ideas: flatIdeas, currentRound: currentRound.id },
-                        previousData,
-                      },
-                    });
-                    if (error) throw error;
-                    const text = (data?.content || "").trim();
-                    if (text) {
-                      setAllIdeas((prev) => ({
-                        ...prev,
-                        [currentRound.id]: [...(prev[currentRound.id] || []), { text, starred: false, method: currentRound.id }],
-                      }));
-                    }
-                  } catch (e) {
-                    console.error("AI idea generation failed:", e);
-                  } finally {
-                    setAiLoading(false);
-                  }
-                }}
-                disabled={aiLoading}
-                className="sketch-btn flex items-center gap-2 text-sm"
-                title="קבלו רעיון מה-AI"
-              >
-                {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                הצע רעיון עם AI
-              </button>
-            )}
           </div>
 
-          {/* Navigation buttons */}
+          {/* Navigation buttons — RTL: prev on left, next on right */}
           <div className="flex items-center justify-between mt-8">
             <button
               onClick={goToPrevRound}
               disabled={currentRoundIndex === 0}
               className="sketch-btn-outline flex items-center gap-1 text-sm disabled:opacity-30"
             >
-              <ChevronRight className="h-4 w-4" /> סבב קודם
+              <ChevronLeft className="h-4 w-4" /> סבב קודם
             </button>
 
             {currentRoundIndex < ROUNDS.length - 1 ? (
               <button onClick={goToNextRound} className="sketch-btn flex items-center gap-2 text-sm">
-                לסבב הבא <ChevronLeft className="h-4 w-4" />
+                לסבב הבא <ChevronRight className="h-4 w-4" />
               </button>
             ) : !showBonus ? (
               <button
                 onClick={() => { setShowBonus(true); setCurrentRoundIndex(2); setRoundStarted(false); }}
                 className="sketch-btn-outline flex items-center gap-2 text-sm"
               >
-                 סבב בונוס: הפוך על הפוך
+                סבב בונוס: הפוך על הפוך
               </button>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -499,22 +484,6 @@ const Ideation = () => {
             )}
           </div>
         </>
-      )}
-
-      {/* All starred ideas summary */}
-      {allStarred.length > 0 && (
-        <div className="mt-8 sketch-border p-5 animate-fade-in">
-          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3"> רעיונות מסומנים מכל הסבבים</h3>
-          <ul className="space-y-2">
-            {allStarred.map((idea, idx) => (
-              <li key={idx} className="text-lg flex items-start gap-2">
-                <span>•</span>
-                <span>{idea.text}</span>
-                <span className="text-xs text-muted-foreground mt-1">({idea.roundTitle})</span>
-              </li>
-            ))}
-          </ul>
-        </div>
       )}
     </StepPage>
   );

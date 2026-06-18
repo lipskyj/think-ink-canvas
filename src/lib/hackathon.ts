@@ -35,7 +35,7 @@ export interface SprintBlock {
 export const SPRINT_BLOCKS: SprintBlock[] = [
   {
     key: "problem",
-    emoji: "🔍",
+    emoji: "",
     title: "הבעיה",
     tagline: "מי המשתמש, מה כואב, ולמה זה משנה",
     minutes: 60,

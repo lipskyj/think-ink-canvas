@@ -47,42 +47,42 @@ const UserPersona = () => {
 
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="text-base text-muted-foreground">
-          👤 צרו פרופיל בדיוני אך מציאותי של משתמש היעד שלכם בהתבסס על המחקר.
+           צרו פרופיל בדיוני אך מציאותי של משתמש היעד שלכם בהתבסס על המחקר.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="sketch-card">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">📛 שם</label>
+            <label className="font-semibold text-sm block mb-2"> שם</label>
             <SectionHelper stepKey="user_persona" sectionKey="name" currentData={persona} previousData={previousData} onApply={(v) => update("name", v)} />
           </div>
           <input className="sketch-input" placeholder="לדוגמה: שרה כהן" value={persona.name} onChange={(e) => update("name", e.target.value)} />
         </div>
         <div className="sketch-card">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">🎂 גיל</label>
+            <label className="font-semibold text-sm block mb-2"> גיל</label>
             <SectionHelper stepKey="user_persona" sectionKey="age" currentData={persona} previousData={previousData} onApply={(v) => update("age", v)} />
           </div>
           <input className="sketch-input" placeholder="לדוגמה: 28" value={persona.age} onChange={(e) => update("age", e.target.value)} />
         </div>
         <div className="sketch-card md:col-span-2">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">💼 תפקיד</label>
+            <label className="font-semibold text-sm block mb-2"> תפקיד</label>
             <SectionHelper stepKey="user_persona" sectionKey="occupation" currentData={persona} previousData={previousData} onApply={(v) => update("occupation", v)} />
           </div>
           <input className="sketch-input" placeholder="לדוגמה: מעצבת UX זוטרה בסטארטאפ" value={persona.occupation} onChange={(e) => update("occupation", e.target.value)} />
         </div>
         <div className="sketch-card md:col-span-2">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">💬 ציטוט</label>
+            <label className="font-semibold text-sm block mb-2"> ציטוט</label>
             <SectionHelper stepKey="user_persona" sectionKey="quote" currentData={persona} previousData={previousData} onApply={(v) => update("quote", v)} />
           </div>
           <input className="sketch-input italic" placeholder='"אני רק רוצה משהו שבאמת עובד..."' value={persona.quote} onChange={(e) => update("quote", e.target.value)} />
         </div>
         <div className="sketch-card md:col-span-2">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">📝 ביוגרפיה</label>
+            <label className="font-semibold text-sm block mb-2"> ביוגרפיה</label>
             <SectionHelper stepKey="user_persona" sectionKey="bio" currentData={persona} previousData={previousData} onApply={(v) => update("bio", v)} />
           </div>
           <textarea className="sketch-input min-h-[100px] resize-none notebook-lines" placeholder="סיפור קצר על מי האדם הזה..." value={persona.bio} onChange={(e) => update("bio", e.target.value)} />
@@ -96,14 +96,14 @@ const UserPersona = () => {
         </div>
         <div className="sketch-card">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">😤 תסכולים</label>
+            <label className="font-semibold text-sm block mb-2"> תסכולים</label>
             <SectionHelper stepKey="user_persona" sectionKey="frustrations" currentData={persona} previousData={previousData} onApply={(v) => update("frustrations", v)} />
           </div>
           <textarea className="sketch-input min-h-[100px] resize-none notebook-lines" placeholder="מה מעצבן או חוסם אותם?" value={persona.frustrations} onChange={(e) => update("frustrations", e.target.value)} />
         </div>
         <div className="sketch-card md:col-span-2">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">💪 מוטיבציות</label>
+            <label className="font-semibold text-sm block mb-2"> מוטיבציות</label>
             <SectionHelper stepKey="user_persona" sectionKey="motivations" currentData={persona} previousData={previousData} onApply={(v) => update("motivations", v)} />
           </div>
           <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="מה מניע אותם קדימה?" value={persona.motivations} onChange={(e) => update("motivations", e.target.value)} />

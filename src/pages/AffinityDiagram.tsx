@@ -71,7 +71,7 @@ const AffinityDiagram = () => {
     <StepPage stepKey="affinity_diagram" onSave={getData} canComplete={hasContent}>
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
-          📋 קבצו את תצפיות המחקר שלכם לנושאים. כל אשכול מייצג דפוס שזיהיתם.
+           קבצו את תצפיות המחקר שלכם לנושאים. כל אשכול מייצג דפוס שזיהיתם.
         </p>
       </div>
 

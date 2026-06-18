@@ -6,7 +6,7 @@ import { useHackathon } from "@/contexts/HackathonContext";
 import { STEPS } from "@/lib/steps";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Copy, Play, Pause, RotateCcw, Mic, Download, FileText, ArrowRight, Volume2 } from "lucide-react";
+import { Sparkles, Copy, Play, Pause, RotateCcw, Mic, Download, FileText, ArrowRight, Volume2, Image as ImageIcon, ExternalLink } from "lucide-react";
 import PitchStylePicker from "@/components/PitchStylePicker";
 import { getPitchStyle, PitchStyleKey } from "@/lib/pitchStyles";
 import { buildPitchDeck } from "@/lib/pitchDeck";
@@ -34,6 +34,8 @@ const Pitch = () => {
   const { toast } = useToast();
   const [styleKey, setStyleKey] = useState<PitchStyleKey | null>(null);
   const [pitch, setPitch] = useState<PitchData | null>(null);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [imgLoading, setImgLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [practice, setPractice] = useState(60);
   const [running, setRunning] = useState(false);
@@ -46,9 +48,11 @@ const Pitch = () => {
         const parsed = JSON.parse(raw);
         setPitch(parsed);
         if (parsed.styleKey) setStyleKey(parsed.styleKey);
+        if (parsed.coverImage) setCoverImage(parsed.coverImage);
       }
     } catch {}
   }, []);
+
 
   useEffect(() => {
     if (!running) return;
@@ -133,12 +137,61 @@ const Pitch = () => {
     if (!pitch) return;
     try {
       const style = getPitchStyle(styleKey);
-      await buildPitchDeck(pitch, hackState.teamName || "הצוות", `${style.emoji} ${style.title}`);
+      await buildPitchDeck(
+        pitch,
+        hackState.teamName || "הצוות",
+        `${style.emoji} ${style.title}`,
+        undefined,
+        coverImage || undefined,
+      );
       toast({ title: "המצגת ירדה! 📊" });
     } catch (e: any) {
       toast({ title: "שגיאה בייצור המצגת", description: e.message, variant: "destructive" });
     }
   };
+
+  const openInGoogleSlides = async () => {
+    if (!pitch) return;
+    await downloadPptx();
+    setTimeout(() => {
+      window.open("https://drive.google.com/drive/u/0/my-drive", "_blank");
+      toast({
+        title: "פתח ב-Google Slides 🎯",
+        description: "1. הקובץ ירד למחשב. 2. גררו אותו לחלון Drive שנפתח. 3. לחצו עליו → 'פתח באמצעות' → Google Slides.",
+        duration: 12000,
+      });
+    }, 800);
+  };
+
+  const generateCoverImage = async () => {
+    if (!pitch) return;
+    setImgLoading(true);
+    try {
+      const seed = pitch.slides[0]?.title || pitch.script.slice(0, 80);
+      const allData = collectAll();
+      const problem =
+        (allData["POV Statement"] as any)?.user ||
+        (allData["Empathy Map"] as any)?.user ||
+        seed;
+      const prompt = `Hand-drawn black ink sketch illustration representing: ${seed}. Context: ${typeof problem === "string" ? problem : seed}. Single bold conceptual image, no text.`;
+      const { data, error } = await supabase.functions.invoke("pitch-image", {
+        body: { prompt },
+      });
+      if (error) throw error;
+      const url = data?.imageUrl as string | undefined;
+      if (!url) throw new Error("No image returned");
+      setCoverImage(url);
+      const updated = { ...pitch, coverImage: url, styleKey };
+      localStorage.setItem(STORAGE, JSON.stringify(updated));
+      saveStepData("pitch", updated, true);
+      toast({ title: "תמונת שער מוכנה! 🖼️" });
+    } catch (e: any) {
+      toast({ title: "שגיאה בייצור תמונה", description: e.message, variant: "destructive" });
+    } finally {
+      setImgLoading(false);
+    }
+  };
+
 
   const speak = () => {
     if (!pitch) return;
@@ -199,15 +252,38 @@ const Pitch = () => {
             <div className="sketch-card p-4 flex items-center gap-2 flex-wrap bg-foreground text-background">
               <span className="font-sketch text-base ml-2">ייצוא:</span>
               <Button variant="secondary" size="sm" onClick={downloadPptx}>
-                <Download size={14} /> מצגת PowerPoint
+                <Download size={14} /> הורדה כ-PowerPoint
+              </Button>
+              <Button variant="secondary" size="sm" onClick={openInGoogleSlides}>
+                <ExternalLink size={14} /> פתח ב-Google Slides
               </Button>
               <Button variant="secondary" size="sm" onClick={copyAll}>
-                <FileText size={14} /> Markdown להעתקה
+                <FileText size={14} /> Markdown
               </Button>
               <Button variant="secondary" size="sm" onClick={speak}>
                 <Volume2 size={14} /> תקריא לי
               </Button>
             </div>
+
+            {/* Cover image */}
+            <div className="sketch-card p-4">
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <ImageIcon size={18} />
+                <h2 className="font-sketch text-lg">תמונת שער למצגת</h2>
+                <div className="flex-1" />
+                <Button size="sm" variant="outline" onClick={generateCoverImage} disabled={imgLoading}>
+                  <Sparkles size={14} /> {imgLoading ? "מייצר…" : coverImage ? "ייצור מחדש" : "ייצרו תמונה"}
+                </Button>
+              </div>
+              {coverImage ? (
+                <img src={coverImage} alt="תמונת שער" className="w-full max-h-72 object-contain bg-secondary/20 rounded" />
+              ) : (
+                <p className="font-hand text-sm text-muted-foreground">
+                  AI יצייר לכם איור בסגנון הזין של האפליקציה — ישובץ אוטומטית במצגת.
+                </p>
+              )}
+            </div>
+
 
             {/* Script + practice timer */}
             <div className="sketch-card p-5 border-2 border-foreground">

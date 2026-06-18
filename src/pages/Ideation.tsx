@@ -407,7 +407,7 @@ const Ideation = () => {
                   title={idea.starred ? "בטל סימון" : "סמן רעיון מנצח"}
                   className={`flex-shrink-0 p-2.5 rounded-md transition-colors ${idea.starred ? "bg-foreground text-background" : "border-2 border-foreground/30 hover:border-foreground hover:bg-accent/40"}`}
                 >
-                  <Sparkles className="h-4 w-4" />
+                  <Star className={`h-4 w-4 ${idea.starred ? "fill-current" : ""}`} />
                 </button>
                 <input
                   dir="rtl"

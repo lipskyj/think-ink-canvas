@@ -110,18 +110,22 @@ const Ideation = () => {
     const saved = getStepData("ideation");
     if (saved?.allIdeas) {
       setAllIdeas(saved.allIdeas);
+      // Auto-unlock bonus if it has saved ideas
+      const bonusHasIdeas = saved.allIdeas["reverse"]?.some((i: Idea) => i.text.trim());
+      if (bonusHasIdeas) setShowBonus(true);
+      const rounds = bonusHasIdeas ? ALL_ROUNDS : ALL_ROUNDS.slice(0, 2);
       // Find the furthest completed round
       let lastCompletedIdx = -1;
-      ROUNDS.forEach((r, idx) => {
+      rounds.forEach((r, idx) => {
         const ideas = saved.allIdeas[r.id];
         if (ideas && ideas.some((i: Idea) => i.text.trim())) {
           lastCompletedIdx = idx;
         }
       });
-      if (lastCompletedIdx >= 0 && lastCompletedIdx < ROUNDS.length - 1) {
+      if (lastCompletedIdx >= 0 && lastCompletedIdx < rounds.length - 1) {
         setCurrentRoundIndex(lastCompletedIdx + 1);
-      } else if (lastCompletedIdx === ROUNDS.length - 1) {
-        setCurrentRoundIndex(ROUNDS.length - 1);
+      } else if (lastCompletedIdx === rounds.length - 1) {
+        setCurrentRoundIndex(rounds.length - 1);
         setRoundStarted(true);
       }
     }
@@ -130,6 +134,7 @@ const Ideation = () => {
       setAllIdeas({ legacy: saved.ideas });
     }
   }, [getStepData]);
+
 
   // Timer
   useEffect(() => {

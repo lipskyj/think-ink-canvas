@@ -42,18 +42,6 @@ export const STEPS: StepConfig[] = [
     whyItMatters: "בלי אמפתיה, פתרונות נבנים על ניחושים. תרגיל זה מעגן את הצוות במציאות של המשתמש ומפחית את הסיכון לפתרון הבעיה הלא נכונה.",
   },
   {
-    key: "converge",
-    num: 2,
-    title: "התכנסות",
-    url: "/converge",
-    icon: Layers,
-    emoji: "🔗",
-    learnMoreUrl: "https://www.interaction-design.org/literature/article/affinity-diagrams",
-    phase: "problem",
-    description: "התכנסות פירושה ארגון ממצאי מחקר מפוזרים לאשכולות משמעותיים. באמצעות דיאגרמת זיקה, אתם מקבצים תצפיות כדי לחשוף דפוסים ונושאים שאולי פספסתם.",
-    whyItMatters: "נתונים גולמיים מציפים. שלב זה הופך כאוס לבהירות — ועוזר לכם לזהות נושאים מרכזיים שיעצבו את הגדרת הבעיה.",
-  },
-  {
     key: "user_persona",
     num: 2,
     title: "פרסונת משתמש",

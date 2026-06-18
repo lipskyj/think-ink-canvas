@@ -137,12 +137,61 @@ const Pitch = () => {
     if (!pitch) return;
     try {
       const style = getPitchStyle(styleKey);
-      await buildPitchDeck(pitch, hackState.teamName || "הצוות", `${style.emoji} ${style.title}`);
+      await buildPitchDeck(
+        pitch,
+        hackState.teamName || "הצוות",
+        `${style.emoji} ${style.title}`,
+        undefined,
+        coverImage || undefined,
+      );
       toast({ title: "המצגת ירדה! 📊" });
     } catch (e: any) {
       toast({ title: "שגיאה בייצור המצגת", description: e.message, variant: "destructive" });
     }
   };
+
+  const openInGoogleSlides = async () => {
+    if (!pitch) return;
+    await downloadPptx();
+    setTimeout(() => {
+      window.open("https://drive.google.com/drive/u/0/my-drive", "_blank");
+      toast({
+        title: "פתח ב-Google Slides 🎯",
+        description: "1. הקובץ ירד למחשב. 2. גררו אותו לחלון Drive שנפתח. 3. לחצו עליו → 'פתח באמצעות' → Google Slides.",
+        duration: 12000,
+      });
+    }, 800);
+  };
+
+  const generateCoverImage = async () => {
+    if (!pitch) return;
+    setImgLoading(true);
+    try {
+      const seed = pitch.slides[0]?.title || pitch.script.slice(0, 80);
+      const allData = collectAll();
+      const problem =
+        (allData["POV Statement"] as any)?.user ||
+        (allData["Empathy Map"] as any)?.user ||
+        seed;
+      const prompt = `Hand-drawn black ink sketch illustration representing: ${seed}. Context: ${typeof problem === "string" ? problem : seed}. Single bold conceptual image, no text.`;
+      const { data, error } = await supabase.functions.invoke("pitch-image", {
+        body: { prompt },
+      });
+      if (error) throw error;
+      const url = data?.imageUrl as string | undefined;
+      if (!url) throw new Error("No image returned");
+      setCoverImage(url);
+      const updated = { ...pitch, coverImage: url, styleKey };
+      localStorage.setItem(STORAGE, JSON.stringify(updated));
+      saveStepData("pitch", updated, true);
+      toast({ title: "תמונת שער מוכנה! 🖼️" });
+    } catch (e: any) {
+      toast({ title: "שגיאה בייצור תמונה", description: e.message, variant: "destructive" });
+    } finally {
+      setImgLoading(false);
+    }
+  };
+
 
   const speak = () => {
     if (!pitch) return;

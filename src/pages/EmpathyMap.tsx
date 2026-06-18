@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
-import LearnSeeDoPanel from "@/components/LearnSeeDoPanel";
 
 interface Quadrant {
   key: string;
@@ -40,7 +39,6 @@ const EmpathyMap = () => {
 
   return (
     <StepPage stepKey="empathy_map" onSave={getData} canComplete={hasContent}>
-      <LearnSeeDoPanel phase="problem" />
       <div className="sketch-border p-4 mb-6">
         <div className="flex items-center relative">
           <label className="font-sketch text-sm block mb-2">מיהו המשתמש שלך?</label>

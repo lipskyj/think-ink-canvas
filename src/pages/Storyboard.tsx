@@ -4,7 +4,6 @@ import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
 import CoherenceTracker from "@/components/CoherenceTracker";
-import LearnSeeDoPanel from "@/components/LearnSeeDoPanel";
 import { useAutoFill } from "@/hooks/useAutoFill";
 
 interface Frame {
@@ -91,7 +90,6 @@ const Storyboard = () => {
 
   return (
     <StepPage stepKey="storyboard" onSave={getData} canComplete={!!hasContent}>
-      <LearnSeeDoPanel phase="build" />
       <CoherenceTracker stepKey="storyboard" currentData={{ frames }} />
 
 

@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock } from "lucide-react";
+import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock, BookOpen } from "lucide-react";
 import Layout from "@/components/Layout";
 import { useProject } from "@/contexts/ProjectContext";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useClass } from "@/contexts/ClassContext";
 import { getStepByKey, getPreviousStep, getNextStep, TOTAL_STEPS } from "@/lib/steps";
 import AIAssistant from "@/components/AIAssistant";
+import StepIntroModal from "@/components/StepIntroModal";
 import { useState, useEffect, useRef } from "react";
 
 interface StepPageProps {
@@ -101,6 +102,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
 
   return (
     <Layout>
+      <StepIntroModal stepKey={stepKey} />
       <div className="max-w-4xl mx-auto">
         {/* באנר נעילה */}
         {locked && (
@@ -137,6 +139,13 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
+              className="sketch-btn-outline text-sm flex items-center gap-1"
+              title="הקדמה: Learn → See"
+            >
+              <BookOpen className="h-3 w-3" /> הקדמה
+            </button>
             {aiEnabled && (
               <button
                 onClick={() => setShowAI(!showAI)}

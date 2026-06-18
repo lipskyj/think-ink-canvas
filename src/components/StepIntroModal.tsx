@@ -235,14 +235,14 @@ export default function StepIntroModal({ stepKey }: Props) {
                 onClick={goBack}
                 className="sketch-btn-outline text-sm"
               >
-                חזרה ←
+                → חזרה
               </button>
             )}
             <button
               onClick={goNext}
               className="sketch-btn text-sm flex items-center gap-1"
             >
-              {stage === "learn" ? "המשך →" : "בוא נעבוד →"}
+              {stage === "learn" ? "המשך ←" : "בוא נעבוד ←"}
             </button>
           </div>
         </div>

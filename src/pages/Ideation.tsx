@@ -24,85 +24,39 @@ interface IdeationRound {
   timerDuration: number; // seconds
 }
 
-const ROUNDS: IdeationRound[] = [
+const ALL_ROUNDS: IdeationRound[] = [
   {
     id: "worst_idea",
     title: "הרעיונות הכי גרועים",
     emoji: "🗑️",
-    description: "חשבו על הפתרונות הכי גרועים, מטופשים ובלתי אפשריים לבעיה שלכם. ככל שהרעיון יותר נורא — יותר טוב!",
+    description: "חשבו על הפתרונות הכי גרועים, מטופשים ובלתי אפשריים. ככל שיותר נורא — יותר טוב! בסוף נהפוך אותם לרעיונות מנצחים.",
     detailedInstructions: [
-      "חשבו על הבעיה שזיהיתם בשלבים הקודמים",
-      "כתבו פתרונות שהם בכוונה נוראיים, מגוחכים או בלתי אפשריים",
+      "כתבו פתרונות שהם בכוונה נוראיים או מגוחכים",
       "אל תצנזרו את עצמכם — ככל שיותר מוגזם, יותר טוב",
-      "אחרי שסיימתם — נחשוב איך להפוך כל רעיון גרוע לכיוון חיובי",
+      "בסוף הסבב — סמנו ⭐ על אלה שאפשר להפוך לרעיון טוב",
     ],
-    example: "למשל: ׳לגרום למשתמש לחכות שעתיים לכל פעולה׳ → ההיפך: ׳לעשות הכל מיידי בלחיצה אחת׳",
+    example: "׳לגרום למשתמש לחכות שעתיים לכל פעולה׳ → ההיפך: ׳הכל מיידי בלחיצה אחת׳",
     placeholders: [
-      "רעיון גרוע #1 — מה הדבר הכי מטופש שאפשר לעשות?",
+      "רעיון גרוע #1 — מה הדבר הכי מטופש?",
       "רעיון גרוע #2 — איך לגרום למשתמש לברוח?",
       "רעיון גרוע #3 — מה יגרום לכולם לשנוא את המוצר?",
       "רעיון גרוע #4 — הפתרון הכי יקר ומסובך...",
       "רעיון גרוע #5 — משהו שאף אחד לא היה רוצה...",
     ],
     minIdeas: 5,
-    timerDuration: 120,
-  },
-  {
-    id: "no_budget",
-    title: "בלי הגבלת תקציב",
-    emoji: "💰",
-    description: "דמיינו שיש לכם תקציב בלתי מוגבל, כוח אדם בלתי מוגבל, וטכנולוגיה מהעתיד. מה הייתם בונים?",
-    detailedInstructions: [
-      "שכחו מהגבלות — אין מגבלת כסף, זמן, או טכנולוגיה",
-      "דמיינו שאתם יכולים לבנות כל דבר בעולם",
-      "חשבו בגדול: בינה מלאכותית? רובוטים? מציאות מדומה?",
-      "כתבו את חלום הפתרון המושלם שלכם",
-    ],
-    example: "למשל: ׳מערכת AI שקוראת מחשבות ויודעת בדיוק מה המשתמש צריך לפני שהוא מבקש׳",
-    placeholders: [
-      "אם היה לי מיליארד שקל, הייתי בונה...",
-      "עם טכנולוגיה מהעתיד, אפשר...",
-      "אם הייתי יכול לשנות חוקי פיזיקה...",
-      "הפתרון המושלם בעולם אידיאלי...",
-      "בלי שום מגבלה, הייתי...",
-    ],
-    minIdeas: 5,
-    timerDuration: 120,
-  },
-  {
-    id: "copy_improve",
-    title: "העתק ושפר",
-    emoji: "🔄",
-    description: "חשבו על מוצרים או שירותים קיימים שפותרים בעיה דומה, או מתחום אחר לגמרי. מה אפשר ללמוד מהם ולשפר?",
-    detailedInstructions: [
-      "חשבו על אפליקציות, מוצרים או שירותים שאתם אוהבים",
-      "מה הם עושים טוב? מה אפשר לקחת מהם?",
-      "חשבו גם על תחומים אחרים: טבע, ספורט, מוזיקה, רפואה",
-      "שלבו רעיונות מכמה מקורות למשהו חדש",
-    ],
-    example: "למשל: ׳כמו שנטפליקס ממליץ סרטים — ככה אפשר להמליץ על מסלולי לימוד׳",
-    placeholders: [
-      "כמו [מוצר/אפליקציה] — אבל ל[תחום שלנו]...",
-      "בטבע, [בעל חיים/תהליך] עושה את זה ככה...",
-      "אם נשלב את ___ עם ___ נקבל...",
-      "כמו שב[תחום אחר] עושים ___ — גם אנחנו יכולים...",
-      "שיפור של מוצר קיים: לקחת את ___ ולהוסיף...",
-    ],
-    minIdeas: 5,
-    timerDuration: 120,
+    timerDuration: 180,
   },
   {
     id: "rapid_fire",
     title: "ירי מהיר",
     emoji: "⚡",
-    description: "כתבו כמה שיותר רעיונות במהירות הכי גבוהה. לא חושבים, לא שופטים, פשוט כותבים! כל 15 שניות — רעיון חדש.",
+    description: "כתבו כמה שיותר רעיונות במהירות. לא חושבים, לא שופטים — פשוט כותבים! בסוף סמנו ⭐ את הזוכים.",
     detailedInstructions: [
-      "הפעילו את הטיימר ותתחילו לכתוב",
-      "כל 15 שניות עברו לשורה הבאה",
-      "אסור למחוק! אסור לשפוט! פשוט כתבו",
-      "כמות > איכות — נסננו אחר כך",
+      "הפעילו את הטיימר ותתחילו",
+      "אסור למחוק! אסור לשפוט! כמות לפני איכות",
+      "בסוף — סמנו ⭐ על הרעיונות הכי טובים",
     ],
-    example: "פשוט כתבו מילה, משפט, ציור — כל דבר שעולה לכם בראש!",
+    example: "פשוט כתבו מילה, משפט, ציור — כל דבר שעולה בראש!",
     placeholders: [
       "רעיון מהיר — לא חושבים, כותבים!",
       "עוד אחד — מהר מהר!",
@@ -110,35 +64,32 @@ const ROUNDS: IdeationRound[] = [
       "ממשיכים — הכל הולך!",
       "עוד רעיון — כמעט סיימתם!",
       "רעיון נוסף — אל תעצרו!",
-      "עוד אחד אחרון...",
-      "בונוס! עוד אחד!",
     ],
-    minIdeas: 8,
-    timerDuration: 120,
+    minIdeas: 6,
+    timerDuration: 180,
   },
   {
     id: "reverse",
-    title: "הפוך על הפוך",
+    title: "בונוס: הפוך על הפוך",
     emoji: "🔃",
-    description: "קחו את הרעיונות הגרועים מסבב 1 ואת הרעיונות ללא הגבלה מסבב 2 — והפכו אותם לפתרונות מעשיים וחכמים!",
+    description: "סבב אופציונלי. קחו את הרעיונות הגרועים והפכו אותם — או שלבו שני רעיונות מהסבבים הקודמים לרעיון אחד מנצח.",
     detailedInstructions: [
-      "חזרו לרעיונות הגרועים שכתבתם — מה ההיפך שלהם?",
-      "קחו את רעיונות חלום הבלתי מוגבל — מה הגרסה הריאלית?",
+      "חזרו לרעיונות הגרועים — מה ההיפך החכם שלהם?",
       "שלבו בין רעיונות מסבבים שונים",
-      "סמנו בכוכב ⭐ את הרעיונות הכי מבטיחים!",
+      "סמנו ⭐ את הרעיונות הסופיים שלכם",
     ],
-    example: "למשל: רעיון גרוע ׳ממשק בסינית עתיקה׳ → הפוך: ׳ממשק כל כך פשוט שלא צריך שפה בכלל — רק אייקונים׳",
+    example: "רעיון גרוע ׳ממשק בסינית עתיקה׳ → הפוך: ׳ממשק כל כך פשוט שלא צריך שפה — רק אייקונים׳",
     placeholders: [
-      "ההיפך של רעיון גרוע #1 = פתרון טוב...",
-      "הגרסה הריאלית של חלום הבלי הגבלה...",
-      "שילוב בין שני רעיונות מסבבים שונים...",
-      "רעיון חדש שנולד מהתהליך...",
-      "הרעיון הכי טוב שעלה עד עכשיו (שפרו אותו)...",
+      "ההיפך של רעיון גרוע = פתרון טוב...",
+      "שילוב בין שני רעיונות...",
+      "רעיון מנצח שנולד מהתהליך...",
+      "שיפור של רעיון קיים...",
     ],
-    minIdeas: 5,
-    timerDuration: 150,
+    minIdeas: 4,
+    timerDuration: 180,
   },
 ];
+
 
 const Ideation = () => {
   const { getStepData, getAllPreviousData } = useProject();
@@ -148,26 +99,33 @@ const Ideation = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
+  const [showBonus, setShowBonus] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const currentRound = ROUNDS[currentRoundIndex];
+  const ROUNDS = showBonus ? ALL_ROUNDS : ALL_ROUNDS.slice(0, 2);
+  const currentRound = ROUNDS[currentRoundIndex] || ROUNDS[0];
+
 
   useEffect(() => {
     const saved = getStepData("ideation");
     if (saved?.allIdeas) {
       setAllIdeas(saved.allIdeas);
+      // Auto-unlock bonus if it has saved ideas
+      const bonusHasIdeas = saved.allIdeas["reverse"]?.some((i: Idea) => i.text.trim());
+      if (bonusHasIdeas) setShowBonus(true);
+      const rounds = bonusHasIdeas ? ALL_ROUNDS : ALL_ROUNDS.slice(0, 2);
       // Find the furthest completed round
       let lastCompletedIdx = -1;
-      ROUNDS.forEach((r, idx) => {
+      rounds.forEach((r, idx) => {
         const ideas = saved.allIdeas[r.id];
         if (ideas && ideas.some((i: Idea) => i.text.trim())) {
           lastCompletedIdx = idx;
         }
       });
-      if (lastCompletedIdx >= 0 && lastCompletedIdx < ROUNDS.length - 1) {
+      if (lastCompletedIdx >= 0 && lastCompletedIdx < rounds.length - 1) {
         setCurrentRoundIndex(lastCompletedIdx + 1);
-      } else if (lastCompletedIdx === ROUNDS.length - 1) {
-        setCurrentRoundIndex(ROUNDS.length - 1);
+      } else if (lastCompletedIdx === rounds.length - 1) {
+        setCurrentRoundIndex(rounds.length - 1);
         setRoundStarted(true);
       }
     }
@@ -176,6 +134,7 @@ const Ideation = () => {
       setAllIdeas({ legacy: saved.ideas });
     }
   }, [getStepData]);
+
 
   // Timer
   useEffect(() => {
@@ -479,6 +438,13 @@ const Ideation = () => {
             {currentRoundIndex < ROUNDS.length - 1 ? (
               <button onClick={goToNextRound} className="sketch-btn flex items-center gap-2 text-sm">
                 לסבב הבא <ChevronLeft className="h-4 w-4" />
+              </button>
+            ) : !showBonus ? (
+              <button
+                onClick={() => { setShowBonus(true); setCurrentRoundIndex(2); setRoundStarted(false); }}
+                className="sketch-btn-outline flex items-center gap-2 text-sm"
+              >
+                ✨ סבב בונוס: הפוך על הפוך
               </button>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">

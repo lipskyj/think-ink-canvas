@@ -3,6 +3,7 @@ import { STEPS, getStepIndex } from "@/lib/steps";
 import { useToast } from "@/hooks/use-toast";
 import { useClass } from "@/contexts/ClassContext";
 import { supabase } from "@/integrations/supabase/client";
+import { DEMO_STUDENT_NAME, buildDemoStepEntries } from "@/lib/demoCase";
 
 const STORAGE_KEY = "dt-toolkit-data";
 const CLASS_COMPLETION_KEY_PREFIX = "dt-toolkit-class-completion";
@@ -24,6 +25,7 @@ interface ProjectContextType {
   getStepData: (stepKey: string) => any;
   getAllPreviousData: (stepKey: string) => Record<string, any>;
   getMissingPrerequisites: (stepKey: string) => string[];
+  loadDemoCase: () => Promise<void>;
 }
 
 const ProjectContext = createContext<ProjectContextType>({
@@ -37,6 +39,7 @@ const ProjectContext = createContext<ProjectContextType>({
   getStepData: () => null,
   getAllPreviousData: () => ({}),
   getMissingPrerequisites: () => [],
+  loadDemoCase: async () => {},
 });
 
 function loadFromStorage(): Record<string, StepDataEntry> {
@@ -333,6 +336,31 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     [stepData]
   );
 
+  const loadDemoCase = useCallback(async () => {
+    const demoEntries = buildDemoStepEntries(true);
+    setStepData(demoEntries);
+    if (isClassMode && session) {
+      setClassCompletion(Object.fromEntries(Object.keys(demoEntries).map((key) => [key, true])));
+      await Promise.all(
+        Object.entries(demoEntries).map(([stepKey, entry]) =>
+          supabase.from("class_step_data").upsert(
+            {
+              class_id: session.classId,
+              student_name: session.studentName || DEMO_STUDENT_NAME,
+              step_key: stepKey,
+              data: entry.data,
+              completed: true,
+            },
+            { onConflict: "class_id,student_name,step_key" },
+          ),
+        ),
+      );
+    } else {
+      saveToStorage(demoEntries);
+    }
+    toast({ title: "מקרה הבוחן נטען" });
+  }, [isClassMode, session, toast]);
+
   return (
     <ProjectContext.Provider
       value={{
@@ -346,6 +374,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         getStepData,
         getAllPreviousData,
         getMissingPrerequisites,
+        loadDemoCase,
       }}
     >
       {children}

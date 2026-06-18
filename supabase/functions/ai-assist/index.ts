@@ -195,7 +195,7 @@ RULES:
 - Be specific and actionable — this document will be pasted into an AI code generator.
 - Use concrete details from the user's research, not generic placeholders.
 - Write feature descriptions as if briefing a developer.
-- Output in English (the PRD should be usable in international text-to-code tools).
+- Output in HEBREW. All headings, descriptions, and body text must be in Hebrew. Keep technical terms (React, API, MVP, etc.) in English where natural.
 - Format as clean Markdown ready to copy-paste.
 - If data is sparse, still produce the best possible PRD from what's available, noting gaps.
 ${contextBlock}`;

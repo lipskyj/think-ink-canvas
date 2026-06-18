@@ -223,10 +223,8 @@ const EffortImpact = () => {
         <SimpleScoringMode ideas={ideas} setIdeas={setIdeas} />
       )}
 
-      {/* Unplaced ideas */}
-      {advancedMode && (<></>)}
+      {/* Unplaced ideas (advanced mode only) */}
       {advancedMode && unplaced.length > 0 && (
-      {unplaced.length > 0 && (
         <div className="sketch-border p-4 mb-4 bg-accent/10">
           <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-bold">
             ✋ רעיונות שעדיין לא מוקמו — גררו אותם לגרף

@@ -25,6 +25,12 @@ interface GroupRow {
   join_code: string | null;
   student_names: string[];
   team_avatar_url?: string | null;
+  event_date?: string | null;
+  event_time?: string | null;
+  event_location?: string | null;
+  event_topic?: string | null;
+  event_description?: string | null;
+  organizer_logo_url?: string | null;
 }
 
 const PHASE_BADGE: Record<string, string> = {
@@ -48,10 +54,25 @@ const Index = () => {
   useEffect(() => {
     supabase
       .from("classes")
-      .select("id, name, join_code, student_names, team_avatar_url")
+      .select("id, name, join_code, student_names, team_avatar_url, event_date, event_time, event_location, event_topic, event_description, organizer_logo_url")
       .order("created_at", { ascending: false })
       .then(({ data }) => setGroups((data || []) as GroupRow[]));
   }, []);
+
+  // Public event banner (shown to everyone, not only inside a class). Use the latest non-empty event fields across groups.
+  const publicEvent = (() => {
+    const src = groups.find((g) => g.event_topic || g.event_date || g.event_location || g.organizer_logo_url);
+    if (!src) return null;
+    return {
+      event_topic: src.event_topic,
+      event_date: src.event_date,
+      event_time: src.event_time,
+      event_location: src.event_location,
+      event_description: src.event_description,
+      organizer_logo_url: src.organizer_logo_url,
+    };
+  })();
+  const teamCount = groups.length;
 
   useEffect(() => {
     if (!isClassMode || !session) return;

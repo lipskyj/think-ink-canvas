@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { GripVertical, Plus, X, Star } from "lucide-react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { GripVertical, Plus, X, Star, Trophy, ChevronDown } from "lucide-react";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import LinkedDataBanner from "@/components/LinkedDataBanner";
@@ -11,6 +11,10 @@ interface MatrixIdea {
   x: number; // 0-100, effort (left=low, right=high)
   y: number; // 0-100, impact (bottom=low, top=high)
   placed: boolean;
+  // Simple mode answers (1=easy/low, 2=medium, 3=hard/high)
+  hours?: 1 | 3 | 6;
+  wow?: 1 | 2 | 3;
+  canBuild?: 1 | 2 | 3;
 }
 
 const QUADRANT_LABELS = [
@@ -27,6 +31,7 @@ const EffortImpact = () => {
   const { getStepData, getAllPreviousData } = useProject();
   const [ideas, setIdeas] = useState<MatrixIdea[]>([]);
   const [newIdeaText, setNewIdeaText] = useState("");
+  const [advancedMode, setAdvancedMode] = useState(false);
   const matrixRef = useRef<HTMLDivElement>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });

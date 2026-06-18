@@ -25,6 +25,7 @@ const Index = () => {
   const [showAll, setShowAll] = useState(false);
   const [duration, setDuration] = useState(state.durationMin);
   const [teamName, setTeamName] = useState(state.teamName);
+  const [theme, setTheme] = useState(state.theme);
   const [teamSize, setTeamSize] = useState(state.teamSize);
   const [role, setRole] = useState<TeamRole>(state.myRole ?? "builder");
 
@@ -188,6 +189,17 @@ const Index = () => {
             </Button>
           ) : (
             <div className="space-y-3 mt-3">
+              <div>
+                <Label className="font-hand">נושא ההאקתון (אופציונלי)</Label>
+                <Input
+                  value={theme}
+                  onChange={(e) => setTheme(e.target.value)}
+                  placeholder="לדוגמה: נוער ובריאות נפש / קיימות בבית הספר"
+                />
+                <p className="text-xs text-muted-foreground font-hand mt-1">
+                  ה-AI ישתמש בזה כדי לחבר דוגמאות לחיי הצוות. אפשר להשאיר ריק.
+                </p>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className="font-hand">שם הצוות</Label>
@@ -217,7 +229,7 @@ const Index = () => {
               <Button
                 size="lg"
                 onClick={() => {
-                  enableMode({ durationMin: duration, teamSize, myRole: role, teamName });
+                  enableMode({ durationMin: duration, teamSize, myRole: role, teamName, theme });
                 }}
               >
                 🚀 צא לדרך — התחל טיימר

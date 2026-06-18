@@ -74,6 +74,23 @@ const PrototypeBrief = () => {
     }
   }, [getStepData]);
 
+  // Keep textual must/should/could/wont in sync with the drag-and-drop board.
+  useEffect(() => {
+    if (suggestedFeatures.length === 0) return;
+    const lines = (b: Bucket) =>
+      suggestedFeatures
+        .filter((f) => f.bucket === b)
+        .map((f) => `• ${f.name}${f.description ? ` — ${f.description}` : ""}`)
+        .join("\n");
+    setBrief((prev) => ({
+      ...prev,
+      must: lines("must"),
+      should: lines("should"),
+      could: lines("could"),
+      wont: lines("wont"),
+    }));
+  }, [suggestedFeatures]);
+
   const update = (field: keyof BriefState, value: string) => {
     setBrief((prev) => ({ ...prev, [field]: value }));
   };

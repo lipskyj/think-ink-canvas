@@ -1,75 +1,49 @@
+## Goal
+Keep the **Learn / See / Do** terminology front-and-center (it's our pedagogical language), and replace the current "boring" intro modal with a Gen-Z, motion-rich experience.
 
-## מה בונים
+## Pedagogical language — keep it explicit
+Across `StepIntroModal.tsx` and any related copy, always use the words **Learn**, **See**, **Do** as labels (English, big, bold). The Hebrew sub-copy stays for the body, but the stage names themselves remain Learn / See / Do — no more "רגע למחשבה" / "ככה זה נראה בשטח" replacements. Header chip reads e.g. `📖 LEARN · שלב 4 · HMW`.
 
-פאנל **Learn → See → Do** אחד לכל פאזה (4 סה"כ), מוצג בראש העמוד של **השלב הראשון של כל פאזה**. התוכן נוצר דינמית על ידי AI בטון "מדריך" ישראלי, ומותאם לנושא של הצוות (כללי בהתחלה, מתחדד תוך כדי).
+## Visual direction — Gen-Z motion-first
+Reskin `StepIntroModal.tsx` only. No changes to logic, hooks, edge function, or step pages.
 
-ה-tips הקיימים (כפתור i) נשארים בלי שינוי — הם מקור להעמקה לשלב הספציפי. ה-LSD הוא הכניסה לפאזה.
+1. **Backdrop**
+   - Replace flat `bg-background/95` with an animated **mesh gradient**: 3–4 large blurred blobs (primary / accent / pink / lime) drifting in slow loops behind a translucent layer (`backdrop-blur-xl`).
+   - Subtle noise/grain overlay for texture.
 
-## איפה זה מופיע
+2. **Stage name treatment (LEARN / SEE / DO)**
+   - Huge display word (clamp ~64–120px), set in our `font-sketch`, with an **animated conic/linear gradient text fill** that slowly hue-rotates (CSS `@keyframes hue` on `background-position` + `filter: hue-rotate`).
+   - Active stage is solid-gradient; inactive stages render as **transparent outlined text** (`-webkit-text-stroke`) so they still read as Learn / See / Do but recede.
+   - Stage tracker becomes a big horizontal row at the top: `LEARN → SEE → DO` with the active word scaled up and color-shifting.
 
-4 שלבי-פתיחה של פאזות (לפי `src/lib/steps.ts` → `phase`):
-- **Empathize** → בראש Empathy Map (שלב ראשון ב-`problem`)
-- **Define** → בראש POV / Define
-- **Ideate** → בראש HMW / Ideation
-- **Prototype** → בראש Prototype Brief
+3. **Typewriter reveal**
+   - New tiny component `TypewriterText` (inside the modal file, no new file unless needed): reveals the `learn` paragraph / `see.execution` paragraph character-by-character (~18ms/char, configurable, respects `prefers-reduced-motion` → instant).
+   - Blinking caret `▍` at the cursor, in accent color.
+   - A "skip animation" tap anywhere on the text completes it instantly.
+   - Re-runs when the stage changes (learn → see).
 
-ברירת מחדל: פתוח. אחרי קריאה ראשונה, נסגר ונשאר לחצן "🚀 פתח שוב" קטן ליד כותרת השלב. (state נשמר ב-localStorage per-phase per-team.)
+4. **Card / container**
+   - Drop the `sketch-border` box for the body text. Use a translucent glass panel: `bg-foreground/[0.03] backdrop-blur-md border border-foreground/10`, large radius, soft inner glow.
+   - Body text larger, looser leading, more breathing room.
 
-## תוכן וטון
+5. **Controls**
+   - Bigger pill buttons. Primary CTA uses the same animated gradient as the title.
+   - "דלג והתחל לעבוד" stays top-left but smaller/ghost.
+   - On the final stage the CTA reads `🛠️ DO →` (keeping the term).
 
-הפאנל מציג שלוש כרטיסיות עם תגיות `[LEARN]` `[SEE]` `[DO]` בעברית:
-- **🚀 דקה של מיינדסט** — היפוך תפיסה קצר עם וו תרבותי (הפסקה, מזנון, בגרויות, ביט, בוטים בוואטסאפ).
-- **👀 דוגמה מהשטח** — סיפור קצר של תלמיד פיקטיבי שפותר בעיה בית-ספרית בעזרת הכלי של הפאזה.
-- **🛠️ התור שלכם בזירה** — מטרה במשפט, 2-3 הוראות, ונוסחה למילוי שמדברת בדיוק על השדות בעמוד הנוכחי.
+6. **Motion details**
+   - Stage transitions: outgoing word slides up + fades, incoming word scales in from 0.9 with a slight blur-out.
+   - Floating emoji/sparkle accents (✦, ✺) drifting in the corners.
+   - All animations CSS-only (keyframes already supported in `tailwind.config.ts`); add a couple of new keyframes (`gradient-pan`, `blob-drift`, `caret-blink`) either in `tailwind.config.ts` or as a local `<style>` block inside the modal to avoid touching global CSS.
 
-טון: מדריך נוער חד, אנרגטי, חברי. בלי "תלמידים יקרים", בלי וידאו, בלי תאוריה ב-DO.
+## Out of scope
+- No changes to `useStepLSD`, the edge function, fallback content, or any step page.
+- No new dependencies (no framer-motion) — pure Tailwind + CSS keyframes.
+- The non-modal app UI is untouched in this pass.
 
-## התאמה לנושא (Theme)
+## Files touched
+- `src/components/StepIntroModal.tsx` — rewrite presentation, add `TypewriterText` helper + local keyframes.
+- (optional) `tailwind.config.ts` — register `gradient-pan`, `blob-drift`, `caret-blink` keyframes if we want them reusable; otherwise inline.
 
-נושא מוזן בשני שלבים:
-1. **כללי** — מוזן בעמוד הבית / הצטרפות לכיתה ("נושא ההאקתון: למשל 'נוער ובריאות נפש'"). שדה אחד, חופשי, אופציונלי. נשמר ב-`team_session.theme`.
-2. **ספציפי לצוות** — מהשלב שבו יש POV או Empathy Insight, ה-AI מקבל גם snapshot של הנתונים הקיימים (user, need, insight, HMW) ומדייק את ה-SEE/DO סביבו.
-
-ב-`useLearnSeeDo(phase)` נחבר את שני המקורות לקריאה אחת.
-
-## ארכיטקטורה טכנית
-
-**Edge function חדש:** `supabase/functions/learn-see-do/index.ts`
-- Input: `{ phase: 'empathize'|'define'|'ideate'|'prototype', theme?: string, context?: { user?, need?, insight?, hmw? } }`
-- System prompt: גרסה מקוצרת בעברית של ה-spec של המשתמש + JSON output schema קשיח (`learn`, `see: {context, execution}`, `do: {objective, steps[], formula}`)
-- Model: `google/gemini-3-flash-preview` דרך Lovable AI Gateway
-- מחזיר JSON; ה-client מציג structured.
-
-**Cache:** תוצאה נשמרת ב-`team_session.lsd_cache[phase]` (כבר יש לנו team_session ב-Supabase). מתרענן אוטומטית אם ה-theme/context משתנה משמעותית, או ידנית בכפתור "🎲 ערבב מחדש".
-
-**רכיב חדש:** `src/components/LearnSeeDoPanel.tsx` — שלוש כרטיסיות בסגנון ה-zine הקיים (Arial, מסגרות מקווקוות, monochrome). כפתור skeleton בזמן טעינה.
-
-**Hook:** `src/hooks/useLearnSeeDo.ts` — מטפל ב-fetch, cache, ובכפיית exclusivity (סוגר פאנלים אחרים כשנפתח, לפי כלל ה-Single panel global).
-
-**אינטגרציה:** מוסיפים `<LearnSeeDoPanel phase="empathize" />` בראש 4 העמודים, מעל ה-StepOnboarding הקיים.
-
-## טקסטים והגנות
-- אם ה-AI נכשל (429/402/timeout) — נופלים ל-**fallback סטטי** שכתוב ידנית לכל פאזה (גם זה משאיר את ה-UX שלם). הטקסטים הסטטיים נשמרים ב-`src/content/lsd-fallback.ts`.
-- שגיאות מוצגות בעדינות + כפתור "נסה שוב".
-
-## פירוט קבצים
-
-```text
-חדש:
-  supabase/functions/learn-see-do/index.ts
-  src/components/LearnSeeDoPanel.tsx
-  src/hooks/useLearnSeeDo.ts
-  src/content/lsd-fallback.ts
-  src/lib/teamTheme.ts          (קריאה/שמירה של ה-theme)
-
-עריכה:
-  src/pages/EmpathyMap.tsx      (הוספת פאנל בראש)
-  src/pages/POV.tsx
-  src/pages/HowMightWe.tsx
-  src/pages/PrototypeBrief.tsx
-  src/pages/Home.tsx            (שדה theme בהצטרפות לכיתה)
-  src/lib/hackathon.ts          (טיפוס + persistence ל-theme + lsd_cache)
-```
-
-## הערכת היקף
-בינוני. ~2-3 שעות עבודה. הסיכון העיקרי: הטון של ה-AI — אצטרך לכייל system prompt בעברית עם 2-3 דוגמאות few-shot כדי שלא יצא תרגום מילולי מאנגלית. כל השאר ישר קדימה.
+## Open question
+Animated gradient palette: do you want **(a) brand-tonal** (primary → accent only, monochrome-ish, fits the current zine aesthetic) or **(b) full Gen-Z neon** (hot pink / electric lime / cyan / violet) breaking from the monochrome sketch look just for the intro modal?

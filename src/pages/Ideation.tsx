@@ -95,6 +95,7 @@ const ALL_ROUNDS: IdeationRound[] = [
 
 const Ideation = () => {
   const { getStepData, getAllPreviousData } = useProject();
+  const { aiEnabled } = useAdmin();
   const [allIdeas, setAllIdeas] = useState<Record<string, Idea[]>>({});
   const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
   const [roundStarted, setRoundStarted] = useState(false);
@@ -102,6 +103,7 @@ const Ideation = () => {
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
   const [showBonus, setShowBonus] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const ROUNDS = showBonus ? ALL_ROUNDS : ALL_ROUNDS.slice(0, 2);

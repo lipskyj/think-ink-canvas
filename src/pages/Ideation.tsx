@@ -456,26 +456,26 @@ const Ideation = () => {
             </button>
           </div>
 
-          {/* Navigation buttons */}
+          {/* Navigation buttons — RTL: prev on left, next on right */}
           <div className="flex items-center justify-between mt-8">
             <button
               onClick={goToPrevRound}
               disabled={currentRoundIndex === 0}
               className="sketch-btn-outline flex items-center gap-1 text-sm disabled:opacity-30"
             >
-              <ChevronRight className="h-4 w-4" /> סבב קודם
+              <ChevronLeft className="h-4 w-4" /> סבב קודם
             </button>
 
             {currentRoundIndex < ROUNDS.length - 1 ? (
               <button onClick={goToNextRound} className="sketch-btn flex items-center gap-2 text-sm">
-                לסבב הבא <ChevronLeft className="h-4 w-4" />
+                לסבב הבא <ChevronRight className="h-4 w-4" />
               </button>
             ) : !showBonus ? (
               <button
                 onClick={() => { setShowBonus(true); setCurrentRoundIndex(2); setRoundStarted(false); }}
                 className="sketch-btn-outline flex items-center gap-2 text-sm"
               >
-                 סבב בונוס: הפוך על הפוך
+                סבב בונוס: הפוך על הפוך
               </button>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -484,22 +484,6 @@ const Ideation = () => {
             )}
           </div>
         </>
-      )}
-
-      {/* All starred ideas summary */}
-      {allStarred.length > 0 && (
-        <div className="mt-8 sketch-border p-5 animate-fade-in">
-          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3"> רעיונות מסומנים מכל הסבבים</h3>
-          <ul className="space-y-2">
-            {allStarred.map((idea, idx) => (
-              <li key={idx} className="text-lg flex items-start gap-2">
-                <span>•</span>
-                <span>{idea.text}</span>
-                <span className="text-xs text-muted-foreground mt-1">({idea.roundTitle})</span>
-              </li>
-            ))}
-          </ul>
-        </div>
       )}
     </StepPage>
   );

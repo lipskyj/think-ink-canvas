@@ -94,9 +94,10 @@ const Storyboard = () => {
 
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
-          🎬 שרטטו כיצד המשתמש מתקשר עם הפתרון שלכם, פריים אחר פריים.
+          🎬 ספרו את הסיפור של המשתמש שלכם ב-<strong>4 פריימים</strong>: לפני → המפגש → הקסם → אחרי.
         </p>
       </div>
+
 
       <div className="sketch-card mb-4">
         <div className="flex items-center relative">

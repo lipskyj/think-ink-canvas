@@ -19,6 +19,14 @@ interface EventInfo {
   team_avatar_url?: string | null;
 }
 
+interface GroupRow {
+  id: string;
+  name: string;
+  join_code: string | null;
+  student_names: string[];
+  team_avatar_url?: string | null;
+}
+
 const PHASE_BADGE: Record<string, string> = {
   problem: "pill-chip-coral",
   solution: "pill-chip-sun",
@@ -27,14 +35,23 @@ const PHASE_BADGE: Record<string, string> = {
 };
 
 const Index = () => {
-  const { isStepCompleted, isLoading } = useProject();
+  const { isStepCompleted, isLoading, loadDemoCase } = useProject();
   const { session, isClassMode, isLeader } = useClass();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [event, setEvent] = useState<EventInfo | null>(null);
   const [members, setMembers] = useState<string[]>([]);
+  const [groups, setGroups] = useState<GroupRow[]>([]);
   const [codeInput, setCodeInput] = useState("");
   const [joining, setJoining] = useState(false);
+
+  useEffect(() => {
+    supabase
+      .from("classes")
+      .select("id, name, join_code, student_names, team_avatar_url")
+      .order("created_at", { ascending: false })
+      .then(({ data }) => setGroups((data || []) as GroupRow[]));
+  }, []);
 
   useEffect(() => {
     if (!isClassMode || !session) return;
@@ -256,6 +273,45 @@ const Index = () => {
 
         {/* 10 steps list removed — too much info on the landing page */}
 
+        {/* GROUPS */}
+        {groups.length > 0 && (
+          <section className="mb-12">
+            <div className="flex items-end justify-between mb-4 gap-4 flex-wrap">
+              <div>
+                <span className="pill-chip pill-chip-outline mb-3 inline-block">קבוצות</span>
+                <h2 className="display-huge">מי כבר בפנים.</h2>
+              </div>
+              <p className="font-hand text-base text-muted-foreground max-w-sm">
+                כל קבוצה נכנסת עם הקוד שלה, מעדכנת שם וחברים, ומגישה תוצרים בסוף.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {groups.map((group) => (
+                <div key={group.id} className="sketch-card flex items-center gap-3">
+                  {group.team_avatar_url ? (
+                    <img src={group.team_avatar_url} alt={group.name} className="w-14 h-14 object-cover rounded-md sketch-border-thin shrink-0" />
+                  ) : (
+                    <div className="w-14 h-14 sketch-border-thin rounded-md flex items-center justify-center shrink-0 bg-secondary/40">
+                      <Users className="h-6 w-6" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-sketch text-base truncate">{group.name}</h3>
+                    <p className="font-hand text-xs text-muted-foreground">
+                      {group.student_names?.length || 0} חברים
+                    </p>
+                  </div>
+                  {group.join_code && (
+                    <span className="sketch-border-thin bg-secondary/40 px-2 py-1 font-sketch tracking-widest text-sm" dir="ltr">
+                      {group.join_code}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
 
         {/* SUBMISSIONS LINK */}
         <section className="sketch-card mb-8 bg-secondary/20 flex items-center justify-between flex-wrap gap-3">
@@ -282,6 +338,15 @@ const Index = () => {
           <Link to={firstStep.url} className="sketch-btn inline-flex items-center gap-2 text-base">
             בואו נתחיל <ArrowLeft className="h-4 w-4" />
           </Link>
+          <button
+            onClick={async () => {
+              await loadDemoCase();
+              navigate("/effort-impact");
+            }}
+            className="sketch-btn-outline inline-flex items-center gap-2 text-base mt-3 mr-2"
+          >
+            טען מקרה בוחן מוכן
+          </button>
         </section>
       </div>
     </Layout>

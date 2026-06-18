@@ -3,6 +3,7 @@ import { STEPS, getStepIndex } from "@/lib/steps";
 import { useToast } from "@/hooks/use-toast";
 import { useClass } from "@/contexts/ClassContext";
 import { supabase } from "@/integrations/supabase/client";
+import { DEMO_STUDENT_NAME, buildDemoStepEntries } from "@/lib/demoCase";
 
 const STORAGE_KEY = "dt-toolkit-data";
 const CLASS_COMPLETION_KEY_PREFIX = "dt-toolkit-class-completion";
@@ -24,6 +25,7 @@ interface ProjectContextType {
   getStepData: (stepKey: string) => any;
   getAllPreviousData: (stepKey: string) => Record<string, any>;
   getMissingPrerequisites: (stepKey: string) => string[];
+  loadDemoCase: () => Promise<void>;
 }
 
 const ProjectContext = createContext<ProjectContextType>({
@@ -37,6 +39,7 @@ const ProjectContext = createContext<ProjectContextType>({
   getStepData: () => null,
   getAllPreviousData: () => ({}),
   getMissingPrerequisites: () => [],
+  loadDemoCase: async () => {},
 });
 
 function loadFromStorage(): Record<string, StepDataEntry> {
@@ -216,20 +219,21 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
   const saveStepData = useCallback(
     async (stepKey: string, data: any, silent?: boolean) => {
+      const wasCompleted = stepDataRef.current[stepKey]?.completed ?? false;
       setStepData((prev) => {
-        const existing = prev[stepKey];
-        return {
+        const next = {
           ...prev,
           [stepKey]: {
             step_key: stepKey,
             data,
-            completed: existing?.completed ?? false,
+            completed: prev[stepKey]?.completed ?? wasCompleted,
           },
         };
+        stepDataRef.current = next;
+        return next;
       });
       if (isClassMode) {
-        const existing = stepDataRef.current[stepKey];
-        await upsertToDb(stepKey, data, existing?.completed ?? false);
+        await upsertToDb(stepKey, data, wasCompleted);
       }
       if (!silent) {
         toast({ title: "נשמר ", description: "ההתקדמות שלך נשמרה." });
@@ -241,14 +245,18 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const completeStep = useCallback(
     async (stepKey: string) => {
       const latestData = stepDataRef.current[stepKey]?.data ?? {};
-      setStepData((prev) => ({
-        ...prev,
-        [stepKey]: {
-          step_key: stepKey,
-          data: latestData,
-          completed: true,
-        },
-      }));
+      setStepData((prev) => {
+        const next = {
+          ...prev,
+          [stepKey]: {
+            step_key: stepKey,
+            data: latestData,
+            completed: true,
+          },
+        };
+        stepDataRef.current = next;
+        return next;
+      });
       if (isClassMode) {
         setClassCompletion((prev) => ({ ...prev, [stepKey]: true }));
         await upsertToDb(stepKey, latestData, true);
@@ -264,7 +272,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       setStepData((prev) => {
         const existing = prev[stepKey];
         if (!existing) {
-          return {
+          const next = {
             ...prev,
             [stepKey]: {
               step_key: stepKey,
@@ -272,11 +280,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
               completed: false,
             },
           };
+          stepDataRef.current = next;
+          return next;
         }
-        return {
+        const next = {
           ...prev,
           [stepKey]: { ...existing, completed: false },
         };
+        stepDataRef.current = next;
+        return next;
       });
       if (isClassMode) {
         setClassCompletion((prev) => ({ ...prev, [stepKey]: false }));
@@ -333,6 +345,32 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     [stepData]
   );
 
+  const loadDemoCase = useCallback(async () => {
+    const demoEntries = buildDemoStepEntries(true);
+    stepDataRef.current = demoEntries;
+    setStepData(demoEntries);
+    if (isClassMode && session) {
+      setClassCompletion(Object.fromEntries(Object.keys(demoEntries).map((key) => [key, true])));
+      await Promise.all(
+        Object.entries(demoEntries).map(([stepKey, entry]) =>
+          supabase.from("class_step_data").upsert(
+            {
+              class_id: session.classId,
+              student_name: session.studentName || DEMO_STUDENT_NAME,
+              step_key: stepKey,
+              data: entry.data,
+              completed: true,
+            },
+            { onConflict: "class_id,student_name,step_key" },
+          ),
+        ),
+      );
+    } else {
+      saveToStorage(demoEntries);
+    }
+    toast({ title: "מקרה הבוחן נטען" });
+  }, [isClassMode, session, toast]);
+
   return (
     <ProjectContext.Provider
       value={{
@@ -346,6 +384,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         getStepData,
         getAllPreviousData,
         getMissingPrerequisites,
+        loadDemoCase,
       }}
     >
       {children}

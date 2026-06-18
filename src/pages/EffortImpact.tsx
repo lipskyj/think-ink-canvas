@@ -27,6 +27,26 @@ const QUADRANT_LABELS = [
 let idCounter = 0;
 const genId = () => `idea-${Date.now()}-${idCounter++}`;
 
+const extractIdeationIdeas = (ideationData: any) => {
+  const flat = Array.isArray(ideationData?.ideas) ? ideationData.ideas : [];
+  const fromRounds = ideationData?.allIdeas && typeof ideationData.allIdeas === "object"
+    ? Object.values(ideationData.allIdeas).flat()
+    : [];
+  const combined = [...flat, ...fromRounds]
+    .filter((i: any) => i?.text?.trim())
+    .filter((idea: any, index, arr) => arr.findIndex((i: any) => i.text.trim() === idea.text.trim()) === index);
+  const starred = combined.filter((i: any) => i.starred);
+  return starred.length > 0 ? starred : combined;
+};
+
+const toMatrixIdeas = (sourceIdeas: any[]): MatrixIdea[] => sourceIdeas.map((i: any) => ({
+  id: genId(),
+  text: i.text.trim(),
+  x: 50,
+  y: 50,
+  placed: false,
+}));
+
 const EffortImpact = () => {
   const { getStepData, getAllPreviousData } = useProject();
   const [ideas, setIdeas] = useState<MatrixIdea[]>([]);
@@ -39,35 +59,21 @@ const EffortImpact = () => {
   // Load saved data or import from ideation
   useEffect(() => {
     const saved = getStepData("effort_impact");
-    if (saved?.ideas) {
+    const savedIdeas = Array.isArray(saved?.ideas) ? saved.ideas.filter((i: any) => i?.text?.trim()) : [];
+    const ideationIdeas = extractIdeationIdeas(getStepData("ideation"));
+
+    if (savedIdeas.length > 0) {
+      const missingImported = ideationIdeas.filter(
+        (source: any) => !savedIdeas.some((savedIdea: any) => savedIdea.text?.trim() === source.text?.trim()),
+      );
       setIdeas(saved.ideas);
+      if (missingImported.length > 0) {
+        setIdeas((prev) => [...prev, ...toMatrixIdeas(missingImported)]);
+      }
       return;
     }
-    // Auto-import starred ideas from ideation
-    const ideationData = getStepData("ideation");
-    if (ideationData?.ideas) {
-      const starred = ideationData.ideas.filter((i: any) => i.starred && i.text?.trim());
-      if (starred.length > 0) {
-        setIdeas(starred.map((i: any) => ({
-          id: genId(),
-          text: i.text,
-          x: 50,
-          y: 50,
-          placed: false,
-        })));
-        return;
-      }
-      // If no starred, take all non-empty
-      const all = ideationData.ideas.filter((i: any) => i.text?.trim());
-      if (all.length > 0) {
-        setIdeas(all.map((i: any) => ({
-          id: genId(),
-          text: i.text,
-          x: 50,
-          y: 50,
-          placed: false,
-        })));
-      }
+    if (ideationIdeas.length > 0) {
+      setIdeas(toMatrixIdeas(ideationIdeas));
     }
   }, [getStepData]);
 

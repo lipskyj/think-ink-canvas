@@ -313,7 +313,7 @@ const Ideation = () => {
           <p className="text-lg text-muted-foreground mb-6 max-w-lg mx-auto">{currentRound.description}</p>
 
           <div className="sketch-border p-5 mb-6 bg-accent/10 text-right max-w-lg mx-auto">
-            <h3 className="font-bold mb-3 text-sm">📋 איך עושים את זה:</h3>
+            <h3 className="font-bold mb-3 text-sm"> איך עושים את זה:</h3>
             <ol className="space-y-2">
               {currentRound.detailedInstructions.map((inst, i) => (
                 <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">

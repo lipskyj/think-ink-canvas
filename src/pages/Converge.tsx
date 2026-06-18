@@ -16,19 +16,19 @@ interface InsightStatement {
 }
 
 const PROBLEM_TYPES = [
-  { key: "cognitive", label: "🧠 קוגניטיבי", desc: "אי-הבנה, עומס, בלבול" },
-  { key: "emotional", label: "❤️ רגשי", desc: "פחד, חרדה, אובדן שליטה" },
+  { key: "cognitive", label: " קוגניטיבי", desc: "אי-הבנה, עומס, בלבול" },
+  { key: "emotional", label: "️ רגשי", desc: "פחד, חרדה, אובדן שליטה" },
   { key: "behavioral", label: " התנהגותי", desc: "הרגלים, קיצורי דרך, הימנעות" },
-  { key: "structural", label: "🏗️ מבני", desc: "זמן, תמריצים, כוח, מדיניות" },
+  { key: "structural", label: "️ מבני", desc: "זמן, תמריצים, כוח, מדיניות" },
 ];
 
 const INTERVENTION_LEVELS = [
-  { key: "tool", label: "🔧 כלי", desc: "כלי או תכונה חדשים" },
-  { key: "process", label: "📋 תהליך", desc: "שינוי אופן הביצוע" },
-  { key: "language", label: "💬 שפה", desc: "שינוי אופן המסגור" },
-  { key: "social_norm", label: "👥 נורמה חברתית", desc: "שינוי ציפיות או תרבות" },
-  { key: "support", label: "🤝 מערכת תמיכה", desc: "תמיכת עמיתים, אימון, חניכה" },
-  { key: "incentives", label: "🎁 תמריצים", desc: "תגמולים, הכרה, מוטיבציה" },
+  { key: "tool", label: " כלי", desc: "כלי או תכונה חדשים" },
+  { key: "process", label: " תהליך", desc: "שינוי אופן הביצוע" },
+  { key: "language", label: " שפה", desc: "שינוי אופן המסגור" },
+  { key: "social_norm", label: " נורמה חברתית", desc: "שינוי ציפיות או תרבות" },
+  { key: "support", label: " מערכת תמיכה", desc: "תמיכת עמיתים, אימון, חניכה" },
+  { key: "incentives", label: " תמריצים", desc: "תגמולים, הכרה, מוטיבציה" },
 ];
 
 const Converge = () => {
@@ -121,19 +121,19 @@ const Converge = () => {
               <div className="flex items-center justify-between mb-3">
                 <span className="font-sketch text-sm">אשכול {i + 1}</span>
                 {clusters.length > 1 && (
-                  <button onClick={() => removeCluster(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg">✕</button>
+                  <button onClick={() => removeCluster(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg"></button>
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <div className="flex items-center relative">
-                    <label className="font-sketch text-xs block mb-1">🏷️ שם נושא</label>
+                    <label className="font-sketch text-xs block mb-1">️ שם נושא</label>
                     <SectionHelper stepKey="converge" sectionKey="themeName" currentData={allData} previousData={previousData} onApply={(v) => updateCluster(i, "theme", v)} />
                   </div>
                   <input className="sketch-input text-sm" placeholder='לדוגמה: "אימות מאחרים"' value={cluster.theme} onChange={(e) => updateCluster(i, "theme", e.target.value)} />
                 </div>
                 <div>
-                  <label className="font-sketch text-xs block mb-1">📌 רביע</label>
+                  <label className="font-sketch text-xs block mb-1"> רביע</label>
                   <select className="sketch-input text-sm" value={cluster.quadrant} onChange={(e) => updateCluster(i, "quadrant", e.target.value)}>
                     <option>אומר</option>
                     <option>חושב</option>
@@ -144,7 +144,7 @@ const Converge = () => {
                 </div>
                 <div>
                   <div className="flex items-center relative">
-                    <label className="font-sketch text-xs block mb-1">📝 הערות באשכול</label>
+                    <label className="font-sketch text-xs block mb-1"> הערות באשכול</label>
                     <SectionHelper stepKey="converge" sectionKey="clusterNotes" currentData={allData} previousData={previousData} onApply={(v) => updateCluster(i, "notes", v)} />
                   </div>
                   <textarea className="sketch-input min-h-[50px] text-sm" placeholder="רשמו את התצפיות המקובצות..." value={cluster.notes} onChange={(e) => updateCluster(i, "notes", e.target.value)} />
@@ -158,21 +158,21 @@ const Converge = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
           <div className="sketch-card">
             <div className="flex items-center relative">
-              <label className="font-sketch text-xs block mb-1">🔴 חריגים</label>
+              <label className="font-sketch text-xs block mb-1"> חריגים</label>
               <SectionHelper stepKey="converge" sectionKey="outliers" currentData={allData} previousData={previousData} onApply={(v) => setOutliers(v)} />
             </div>
             <textarea className="sketch-input min-h-[60px] text-sm" placeholder="נקודות מידע שלא התאימו לאף אשכול..." value={outliers} onChange={(e) => setOutliers(e.target.value)} />
           </div>
           <div className="sketch-card">
             <div className="flex items-center relative">
-              <label className="font-sketch text-xs block mb-1">🔁 נושאים חוזרים</label>
+              <label className="font-sketch text-xs block mb-1"> נושאים חוזרים</label>
               <SectionHelper stepKey="converge" sectionKey="repeatedThemes" currentData={allData} previousData={previousData} onApply={(v) => setRepeatedThemes(v)} />
             </div>
             <textarea className="sketch-input min-h-[60px] text-sm" placeholder="נושאים שהופיעו במספר רביעים..." value={repeatedThemes} onChange={(e) => setRepeatedThemes(e.target.value)} />
           </div>
           <div className="sketch-card">
             <div className="flex items-center relative">
-              <label className="font-sketch text-xs block mb-1">❓ פערים</label>
+              <label className="font-sketch text-xs block mb-1"> פערים</label>
               <SectionHelper stepKey="converge" sectionKey="gaps" currentData={allData} previousData={previousData} onApply={(v) => setGaps(v)} />
             </div>
             <textarea className="sketch-input min-h-[60px] text-sm" placeholder="מה חסר בהבנה שלנו?" value={gaps} onChange={(e) => setGaps(e.target.value)} />
@@ -201,7 +201,7 @@ const Converge = () => {
               <div className="flex items-center justify-between mb-3">
                 <span className="font-sketch text-sm">תובנה {i + 1}</span>
                 {insights.length > 1 && (
-                  <button onClick={() => removeInsight(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg">✕</button>
+                  <button onClick={() => removeInsight(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg"></button>
                 )}
               </div>
               <div className="space-y-2">
@@ -252,7 +252,7 @@ const Converge = () => {
         </div>
         <div className="mt-4">
           <div className="flex items-center relative">
-            <label className="font-sketch text-xs block mb-1">📝 למה סיווג זה?</label>
+            <label className="font-sketch text-xs block mb-1"> למה סיווג זה?</label>
             <SectionHelper stepKey="converge" sectionKey="problemNotes" currentData={allData} previousData={previousData} onApply={(v) => setProblemNotes(v)} />
           </div>
           <textarea className="sketch-input min-h-[60px] text-sm" placeholder="הסבירו למה סיווגתם את הבעיה כך..." value={problemNotes} onChange={(e) => setProblemNotes(e.target.value)} />
@@ -270,9 +270,9 @@ const Converge = () => {
         </p>
         <div className="sketch-border-thin p-3 mb-4 bg-secondary/30">
           <p className="font-hand text-base text-muted-foreground">
-            ✅ "איך נוכל להפחית את הסיכון הרגשי של לנסות משהו חדש מבלי להגדיל עומס עבודה?"
+             "איך נוכל להפחית את הסיכון הרגשי של לנסות משהו חדש מבלי להגדיל עומס עבודה?"
             <br />
-            ❌ "איך נוכל לבנות כלי טוב יותר?"
+             "איך נוכל לבנות כלי טוב יותר?"
           </p>
         </div>
         <div className="space-y-3">
@@ -281,7 +281,7 @@ const Converge = () => {
               <span className="font-sketch text-sm mt-2 shrink-0">אנ״ {i + 1}</span>
               <textarea className="sketch-input min-h-[40px] text-sm flex-1" placeholder="איך נוכל..." value={hmw} onChange={(e) => updateHmw(i, e.target.value)} />
               {hmws.length > 1 && (
-                <button onClick={() => removeHmw(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg mt-1">✕</button>
+                <button onClick={() => removeHmw(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg mt-1"></button>
               )}
             </div>
           ))}

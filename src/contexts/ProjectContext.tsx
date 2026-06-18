@@ -232,7 +232,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         await upsertToDb(stepKey, data, existing?.completed ?? false);
       }
       if (!silent) {
-        toast({ title: "נשמר ✓", description: "ההתקדמות שלך נשמרה." });
+        toast({ title: "נשמר ", description: "ההתקדמות שלך נשמרה." });
       }
     },
     [toast, isClassMode, upsertToDb]
@@ -253,7 +253,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         setClassCompletion((prev) => ({ ...prev, [stepKey]: true }));
         await upsertToDb(stepKey, latestData, true);
       }
-      toast({ title: "השלב הושלם! 🎉" });
+      toast({ title: "השלב הושלם! " });
     },
     [toast, isClassMode, upsertToDb]
   );

@@ -18,10 +18,10 @@ interface MatrixIdea {
 }
 
 const QUADRANT_LABELS = [
-  { label: "🏆 ניצחון מהיר", desc: "השפעה גבוהה, מאמץ נמוך", x: 15, y: 15 },
-  { label: "📈 פרויקט גדול", desc: "השפעה גבוהה, מאמץ גבוה", x: 85, y: 15 },
-  { label: "🤷 מילוי זמן", desc: "השפעה נמוכה, מאמץ נמוך", x: 15, y: 85 },
-  { label: "🚫 בזבוז", desc: "השפעה נמוכה, מאמץ גבוה", x: 85, y: 85 },
+  { label: " ניצחון מהיר", desc: "השפעה גבוהה, מאמץ נמוך", x: 15, y: 15 },
+  { label: " פרויקט גדול", desc: "השפעה גבוהה, מאמץ גבוה", x: 85, y: 15 },
+  { label: " מילוי זמן", desc: "השפעה נמוכה, מאמץ נמוך", x: 15, y: 85 },
+  { label: " בזבוז", desc: "השפעה נמוכה, מאמץ גבוה", x: 85, y: 85 },
 ];
 
 let idCounter = 0;
@@ -189,7 +189,7 @@ const EffortImpact = () => {
               <ol className="space-y-1 text-sm text-muted-foreground">
                 <li>1. גררו כל רעיון למקום על הגרף</li>
                 <li>2. ציר X = מאמץ (שמאל=קל) · ציר Y = השפעה (למעלה=מעט)</li>
-                <li>3. 🏆 ניצחונות מהירים = למעלה-שמאל — לבנות קודם!</li>
+                <li>3.  ניצחונות מהירים = למעלה-שמאל — לבנות קודם!</li>
               </ol>
             )}
           </div>
@@ -227,7 +227,7 @@ const EffortImpact = () => {
       {advancedMode && unplaced.length > 0 && (
         <div className="sketch-border p-4 mb-4 bg-accent/10">
           <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-bold">
-            ✋ רעיונות שעדיין לא מוקמו — גררו אותם לגרף
+             רעיונות שעדיין לא מוקמו — גררו אותם לגרף
           </p>
           <div className="flex flex-wrap gap-2">
             {unplaced.map((idea) => (
@@ -328,10 +328,10 @@ const EffortImpact = () => {
 
 
           {[
-            { title: "🏆 ניצחונות מהירים", items: quickWins, highlight: true },
-            { title: "📈 פרויקטים גדולים", items: bigProjects, highlight: false },
-            { title: "🤷 מילוי זמן", items: fillers, highlight: false },
-            { title: "🚫 לא שווה", items: wastes, highlight: false },
+            { title: " ניצחונות מהירים", items: quickWins, highlight: true },
+            { title: " פרויקטים גדולים", items: bigProjects, highlight: false },
+            { title: " מילוי זמן", items: fillers, highlight: false },
+            { title: " לא שווה", items: wastes, highlight: false },
           ].map((quad) =>
             quad.items.length > 0 ? (
               <div
@@ -403,7 +403,7 @@ const SimpleScoringMode = ({ ideas, setIdeas }: SimpleProps) => {
     return (
       <div className="sketch-border p-6 mb-4 bg-secondary/10 text-center">
         <p className="font-hand text-base text-muted-foreground">
-          אין רעיונות עדיין. חזרו לשלב <strong>סופת רעיונות</strong>, סמנו ❤️ על הרעיונות שאתם אוהבים, וחזרו לכאן.
+          אין רעיונות עדיין. חזרו לשלב <strong>סופת רעיונות</strong>, סמנו ️ על הרעיונות שאתם אוהבים, וחזרו לכאן.
         </p>
       </div>
     );
@@ -432,7 +432,7 @@ const SimpleScoringMode = ({ ideas, setIdeas }: SimpleProps) => {
               onChange={(v) => setField(idea.id, "hours", v)}
             />
             <ScoreRow
-              label="🤯 כמה זה ירגש?"
+              label=" כמה זה ירגש?"
               options={WOW_OPTS as any}
               value={idea.wow}
               onChange={(v) => setField(idea.id, "wow", v)}

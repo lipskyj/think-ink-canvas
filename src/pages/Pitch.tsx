@@ -130,7 +130,7 @@ const Pitch = () => {
       `\n\n# Judging Checklist\n\n` +
       pitch.judging.map((j) => `- **${j.criterion}**: ${j.question}`).join("\n");
     navigator.clipboard.writeText(md);
-    toast({ title: "הועתק! 📋" });
+    toast({ title: "הועתק! " });
   };
 
   const downloadPptx = async () => {
@@ -144,7 +144,7 @@ const Pitch = () => {
         undefined,
         coverImage || undefined,
       );
-      toast({ title: "המצגת ירדה! 📊" });
+      toast({ title: "המצגת ירדה! " });
     } catch (e: any) {
       toast({ title: "שגיאה בייצור המצגת", description: e.message, variant: "destructive" });
     }
@@ -184,7 +184,7 @@ const Pitch = () => {
       const updated = { ...pitch, coverImage: url, styleKey };
       localStorage.setItem(STORAGE, JSON.stringify(updated));
       saveStepData("pitch", updated, true);
-      toast({ title: "תמונת שער מוכנה! 🖼️" });
+      toast({ title: "תמונת שער מוכנה! ️" });
     } catch (e: any) {
       toast({ title: "שגיאה בייצור תמונה", description: e.message, variant: "destructive" });
     } finally {
@@ -315,7 +315,7 @@ const Pitch = () => {
             {/* Slides outline */}
             <div>
               <h2 className="font-sketch text-2xl mb-3">
-                📊 שלד מצגת — {pitch.slides.length} שקפים
+                 שלד מצגת — {pitch.slides.length} שקפים
               </h2>
               <div className="grid md:grid-cols-2 gap-3">
                 {pitch.slides.map((s, i) => (
@@ -332,12 +332,12 @@ const Pitch = () => {
                     </ul>
                     {s.visualHint && (
                       <p className="font-hand text-xs italic text-muted-foreground mt-2 pt-2 border-t border-dashed">
-                        🎨 {s.visualHint}
+                         {s.visualHint}
                       </p>
                     )}
                     {pitch.speakerNotes?.[i] && (
                       <p className="font-hand text-xs text-muted-foreground mt-2 pt-2 border-t border-dashed">
-                        🗣️ {pitch.speakerNotes[i]}
+                        ️ {pitch.speakerNotes[i]}
                       </p>
                     )}
                   </div>
@@ -347,7 +347,7 @@ const Pitch = () => {
 
             {/* Judging */}
             <div>
-              <h2 className="font-sketch text-2xl mb-3">⚖️ צ׳קליסט שיפוט</h2>
+              <h2 className="font-sketch text-2xl mb-3">️ צ׳קליסט שיפוט</h2>
               <div className="space-y-2">
                 {pitch.judging.map((j, i) => (
                   <div key={i} className="sketch-card p-3 flex gap-3">

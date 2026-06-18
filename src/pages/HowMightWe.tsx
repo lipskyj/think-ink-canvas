@@ -99,7 +99,7 @@ const HowMightWe = () => {
 
         <div className="space-y-3">
           <div>
-            <label className="font-semibold text-sm block mb-1">👤 משתמש</label>
+            <label className="font-semibold text-sm block mb-1"> משתמש</label>
             <input
               className="sketch-input"
               placeholder="מיהו המשתמש הספציפי?"
@@ -117,7 +117,7 @@ const HowMightWe = () => {
             />
           </div>
           <div>
-            <label className="font-semibold text-sm block mb-1">🔍 תובנה</label>
+            <label className="font-semibold text-sm block mb-1"> תובנה</label>
             <input
               className="sketch-input"
               placeholder="למה? איזו תובנה מפתיעה גיליתם?"

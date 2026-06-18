@@ -16,20 +16,20 @@ interface Frame {
 const FRAME_GUIDES = [
   {
     title: "1. לפני",
-    emoji: "😟",
-    sceneLabel: "🖼️ איפה הוא? מה הוא מרגיש?",
-    actionLabel: "🖐️ מה הוא עושה?",
-    emotionLabel: "💭 מה הוא חושב?",
+    emoji: "",
+    sceneLabel: "️ איפה הוא? מה הוא מרגיש?",
+    actionLabel: "️ מה הוא עושה?",
+    emotionLabel: " מה הוא חושב?",
     scenePh: "בחדר/בקפה/בדרך... עם המכשיר ביד",
     actionPh: "מנסה לעשות X אבל זה לא עובד",
     emotionPh: "'למה זה כל כך מסובך?'",
   },
   {
     title: "2. המפגש",
-    emoji: "👀",
-    sceneLabel: "🖼️ איפה הוא פוגש את המוצר שלנו?",
-    actionLabel: "🖐️ מה הוא לוחץ/אומר/עושה?",
-    emotionLabel: "💭 מה הוא חושב כשהוא רואה אותנו?",
+    emoji: "",
+    sceneLabel: "️ איפה הוא פוגש את המוצר שלנו?",
+    actionLabel: "️ מה הוא לוחץ/אומר/עושה?",
+    emotionLabel: " מה הוא חושב כשהוא רואה אותנו?",
     scenePh: "רואה פוסט, חבר שולח לינק, פותח את האפליקציה...",
     actionPh: "לוחץ על הכפתור הראשי...",
     emotionPh: "'נראה מעניין, ננסה'",
@@ -37,9 +37,9 @@ const FRAME_GUIDES = [
   {
     title: "3. הקסם",
     emoji: "",
-    sceneLabel: "🖼️ רגע ה-AHA — מה הוא רואה?",
-    actionLabel: "🖐️ מה המוצר עושה לו?",
-    emotionLabel: "💭 איך הוא מרגיש?",
+    sceneLabel: "️ רגע ה-AHA — מה הוא רואה?",
+    actionLabel: "️ מה המוצר עושה לו?",
+    emotionLabel: " איך הוא מרגיש?",
     scenePh: "המסך מציג את התוצאה, ההמלצה, הפתרון...",
     actionPh: "הצליח במשימה ב-3 לחיצות",
     emotionPh: "'וואו, זה באמת עבד!'",
@@ -47,9 +47,9 @@ const FRAME_GUIDES = [
   {
     title: "4. אחרי",
     emoji: "",
-    sceneLabel: "🖼️ איך החיים שלו השתנו?",
-    actionLabel: "🖐️ מה הוא עושה עכשיו?",
-    emotionLabel: "💭 מה הוא מספר לחברים?",
+    sceneLabel: "️ איך החיים שלו השתנו?",
+    actionLabel: "️ מה הוא עושה עכשיו?",
+    emotionLabel: " מה הוא מספר לחברים?",
     scenePh: "ביום שאחרי, בשבוע שאחרי...",
     actionPh: "ממליץ על המוצר, חוזר להשתמש...",
     emotionPh: "'אני לא מבין איך הסתדרתי בלי'",
@@ -95,14 +95,14 @@ const Storyboard = () => {
 
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
-          🎬 ספרו את הסיפור של המשתמש שלכם ב-<strong>4 פריימים</strong>: לפני → המפגש → הקסם → אחרי.
+           ספרו את הסיפור של המשתמש שלכם ב-<strong>4 פריימים</strong>: לפני → המפגש → הקסם → אחרי.
         </p>
       </div>
 
 
       <div className="sketch-card mb-4">
         <div className="flex items-center relative">
-          <label className="font-semibold text-sm block mb-2">👤 גיבור הסיפור</label>
+          <label className="font-semibold text-sm block mb-2"> גיבור הסיפור</label>
           <SectionHelper stepKey="storyboard" sectionKey="protagonist" currentData={{ protagonist, frames }} previousData={previousData} onApply={(v) => setProtagonist(v)} />
         </div>
         <input className="sketch-input" placeholder="שם הפרסונה שמככבת בסטוריבורד..." value={protagonist} onChange={(e) => setProtagonist(e.target.value)} />

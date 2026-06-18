@@ -18,7 +18,7 @@ interface Item {
 const ITEMS: Item[] = [
   {
     key: "problem",
-    title: "📝 הצהרת בעיה",
+    title: " הצהרת בעיה",
     description: "מי המשתמש, מה הצורך, מה התובנה",
     url: "/pov",
     sourceStep: "pov_statement",
@@ -54,7 +54,7 @@ const ITEMS: Item[] = [
   },
   {
     key: "deck",
-    title: "📊 שלד מצגת",
+    title: " שלד מצגת",
     description: "5 שקפים מוכנים להעתקה",
     url: "/pitch",
     sourceStep: "pitch",

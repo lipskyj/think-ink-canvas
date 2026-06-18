@@ -121,14 +121,14 @@ const JTBD = () => {
                     </div>
                     <div>
                       <div className="flex items-center relative">
-                        <label className="font-sketch text-xs text-muted-foreground block mb-1">💛 רגשי</label>
+                        <label className="font-sketch text-xs text-muted-foreground block mb-1"> רגשי</label>
                         <SectionHelper stepKey="jtbd" sectionKey="emotional" currentData={allData} previousData={previousData} onApply={(v) => updateJob(job.id, "emotional", v)} />
                       </div>
                       <textarea className="sketch-input w-full font-hand text-base min-h-[50px]" placeholder="איך הם רוצים להרגיש?" value={job.emotional} onChange={(e) => updateJob(job.id, "emotional", e.target.value)} />
                     </div>
                     <div>
                       <div className="flex items-center relative">
-                        <label className="font-sketch text-xs text-muted-foreground block mb-1">👥 חברתי</label>
+                        <label className="font-sketch text-xs text-muted-foreground block mb-1"> חברתי</label>
                         <SectionHelper stepKey="jtbd" sectionKey="social" currentData={allData} previousData={previousData} onApply={(v) => updateJob(job.id, "social", v)} />
                       </div>
                       <textarea className="sketch-input w-full font-hand text-base min-h-[50px]" placeholder="איך הם רוצים שייתפסו?" value={job.social} onChange={(e) => updateJob(job.id, "social", e.target.value)} />

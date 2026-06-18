@@ -87,7 +87,7 @@ const PrdGenerator = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(prdOutput);
     setCopied(true);
-    toast({ title: "הועתק ללוח! ✓" });
+    toast({ title: "הועתק ללוח! " });
     setTimeout(() => setCopied(false), 2000);
   };
 

@@ -115,27 +115,27 @@ const JourneyMap = () => {
                 <SectionHelper stepKey="journey_map" sectionKey="stage" currentData={{ scenario, stage }} previousData={previousData} onApply={(v) => updateStage(i, "action", v)} />
               </div>
               {stages.length > 2 && (
-                <button onClick={() => removeStage(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg">✕</button>
+                <button onClick={() => removeStage(i)} className="font-hand text-muted-foreground hover:text-foreground text-lg"></button>
               )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <div className="flex items-center relative">
-                  <label className="font-sketch text-xs block mb-1">🎬 פעולה</label>
+                  <label className="font-sketch text-xs block mb-1"> פעולה</label>
                   <SectionHelper stepKey="journey_map" sectionKey="action" currentData={{ scenario, stage }} previousData={previousData} onApply={(v) => updateStage(i, "action", v)} />
                 </div>
                 <textarea className="sketch-input min-h-[50px] text-sm" placeholder={ACTION_GHOSTS[i % ACTION_GHOSTS.length]} value={stage.action} onChange={(e) => updateStage(i, "action", e.target.value)} />
               </div>
               <div>
                 <div className="flex items-center relative">
-                  <label className="font-sketch text-xs block mb-1">💭 חשיבה</label>
+                  <label className="font-sketch text-xs block mb-1"> חשיבה</label>
                   <SectionHelper stepKey="journey_map" sectionKey="thinking" currentData={{ scenario, stage }} previousData={previousData} onApply={(v) => updateStage(i, "thinking", v)} />
                 </div>
                 <textarea className="sketch-input min-h-[50px] text-sm" placeholder={THINKING_GHOSTS[i % THINKING_GHOSTS.length]} value={stage.thinking} onChange={(e) => updateStage(i, "thinking", e.target.value)} />
               </div>
               <div>
                 <div className="flex items-center relative">
-                  <label className="font-sketch text-xs block mb-1">❤️ רגש</label>
+                  <label className="font-sketch text-xs block mb-1">️ רגש</label>
                   <SectionHelper stepKey="journey_map" sectionKey="feeling" currentData={{ scenario, stage }} previousData={previousData} />
                 </div>
                 <textarea className="sketch-input min-h-[50px] text-sm" placeholder={FEELING_GHOSTS[i % FEELING_GHOSTS.length]} value={stage.feeling} onChange={(e) => updateStage(i, "feeling", e.target.value)} />

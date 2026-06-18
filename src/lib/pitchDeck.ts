@@ -138,7 +138,7 @@ export async function buildPitchDeck(
 
     // Visual hint as footer note
     if (slide.visualHint) {
-      s.addText(`🎨 ${slide.visualHint}`, {
+      s.addText(` ${slide.visualHint}`, {
         x: 0.6,
         y: 6.7,
         w: 12.1,

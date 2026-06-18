@@ -55,7 +55,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "user_persona",
-    num: 3,
+    num: 2,
     title: "פרסונת משתמש",
     url: "/user-persona",
     icon: User,
@@ -67,7 +67,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "jtbd",
-    num: 4,
+    num: 3,
     title: "משימות לביצוע",
     url: "/jtbd",
     icon: Crosshair,
@@ -76,18 +76,6 @@ export const STEPS: StepConfig[] = [
     phase: "problem",
     description: "משימות לביצוע מעבירות את המיקוד ממה שהמוצר עושה למה שהמשתמש מנסה להשיג. אתם מגדירים את ה'משימות' הפונקציונליות, הרגשיות והחברתיות שהמשתמש 'שוכר' פתרון עבורן.",
     whyItMatters: "אנשים לא קונים מוצרים — הם שוכרים פתרונות. הבנת המשימה הבסיסית מונעת מכם לבנות תכונות שאף אחד לא צריך.",
-  },
-  {
-    key: "journey_map",
-    num: 5,
-    title: "מפת מסע",
-    url: "/journey-map",
-    icon: Map,
-    emoji: "🗺️",
-    learnMoreUrl: "https://www.nngroup.com/articles/customer-journey-mapping/",
-    phase: "problem",
-    description: "מפת מסע עוקבת אחר חוויית המשתמש צעד אחר צעד — מהמודעות הראשונה ועד להשגת המטרה. היא חושפת נקודות כאב, רגשות והזדמנויות בכל שלב.",
-    whyItMatters: "תצפיות מבודדות מפספסות את התמונה הגדולה. מיפוי המסע המלא חושף היכן המשתמשים מתקשים ביותר, ומראה בדיוק היכן להתערב.",
   },
   {
     key: "pov_statement",

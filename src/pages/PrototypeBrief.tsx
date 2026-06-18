@@ -53,14 +53,6 @@ const PrototypeBrief = () => {
           <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="לדוגמה: לוודא שמשתמשים יכולים להשלים את ה-onboarding תוך פחות מ-2 דקות..." value={brief.objective} onChange={(e) => update("objective", e.target.value)} />
         </div>
 
-        <div className="sketch-card">
-          <div className="flex items-center relative">
-            <label className="font-sketch text-lg block mb-2">📐 היקף</label>
-            <SectionHelper stepKey="prototype_brief" sectionKey="scope" currentData={brief} previousData={previousData} onApply={(v) => update("scope", v)} />
-          </div>
-          <p className="font-hand text-muted-foreground text-sm mb-2">מה בתוך ומחוץ להיקף?</p>
-          <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="בהיקף: תהליך הצטרפות, חיפוש. מחוץ להיקף: הגדרות, התראות..." value={brief.scope} onChange={(e) => update("scope", e.target.value)} />
-        </div>
 
         <div className="sketch-card">
           <div className="flex items-center relative">

@@ -43,7 +43,7 @@ export default function CoherenceTracker({ stepKey, currentData }: CoherenceTrac
     }
   };
 
-  const solutionSteps = ["ideation", "assumption_selection", "storyboard", "prototype_brief", "user_testing"];
+  const solutionSteps = ["ideation", "storyboard", "prototype_brief", "user_testing"];
   if (!solutionSteps.includes(stepKey)) return null;
 
   return (

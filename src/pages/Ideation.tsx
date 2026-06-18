@@ -427,9 +427,49 @@ const Ideation = () => {
             ))}
           </div>
 
-          <button onClick={addIdea} className="sketch-btn-outline mt-4 flex items-center gap-2 text-sm">
-            <Plus className="h-4 w-4" /> הוסף רעיון
-          </button>
+          <div className="flex items-center gap-2 mt-4 flex-wrap">
+            <button onClick={addIdea} className="sketch-btn-outline flex items-center gap-2 text-sm">
+              <Plus className="h-4 w-4" /> הוסף רעיון
+            </button>
+            {aiEnabled && (
+              <button
+                onClick={async () => {
+                  setAiLoading(true);
+                  try {
+                    const { data, error } = await supabase.functions.invoke("ai-assist", {
+                      body: {
+                        stepKey: "ideation",
+                        stepTitle: currentRound.title,
+                        mode: "section",
+                        sectionKey: "idea",
+                        sectionPrompt: `צור רעיון יצירתי לסבב '${currentRound.title}'. ${currentRound.description}`,
+                        currentData: { ideas: flatIdeas, currentRound: currentRound.id },
+                        previousData,
+                      },
+                    });
+                    if (error) throw error;
+                    const text = (data?.content || "").trim();
+                    if (text) {
+                      setAllIdeas((prev) => ({
+                        ...prev,
+                        [currentRound.id]: [...(prev[currentRound.id] || []), { text, starred: false, method: currentRound.id }],
+                      }));
+                    }
+                  } catch (e) {
+                    console.error("AI idea generation failed:", e);
+                  } finally {
+                    setAiLoading(false);
+                  }
+                }}
+                disabled={aiLoading}
+                className="sketch-btn flex items-center gap-2 text-sm"
+                title="קבלו רעיון מה-AI"
+              >
+                {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                הצע רעיון עם AI
+              </button>
+            )}
+          </div>
 
           {/* Navigation buttons */}
           <div className="flex items-center justify-between mt-8">

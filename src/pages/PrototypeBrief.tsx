@@ -8,8 +8,9 @@ import { useAutoFill } from "@/hooks/useAutoFill";
 const PrototypeBrief = () => {
   const { getStepData, getAllPreviousData } = useProject();
   const [brief, setBrief] = useState({
-    objective: "", scope: "", keyFeatures: "", assumptions: "", fidelity: "low", timeline: "", successCriteria: "",
+    objective: "", keyFeatures: "", assumptions: "", fidelity: "low", successCriteria: "",
   });
+
 
   useEffect(() => {
     const saved = getStepData("prototype_brief");

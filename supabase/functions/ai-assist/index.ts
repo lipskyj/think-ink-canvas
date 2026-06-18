@@ -202,6 +202,48 @@ ${contextBlock}`;
 
       userMessage = `Generate a comprehensive PRD from all my design thinking work.${currentBlock}`;
 
+    } else if (mode === "unstuck") {
+      systemPrompt = `אתה מנטור האקתון נמרץ. הצוות תקוע בשלב: ${stepDesc}.
+${contextBlock}${currentBlock}
+
+תן בדיוק שתי שורות בעברית:
+שורה 1: משפט קונקרטי אחד שהם יכולים לכתוב/לעשות בדקה הקרובה.
+שורה 2: שאלה פרובוקטיבית אחת שתשבור להם את הראש.
+בלי מבוא, בלי "הנה". יד על הכתף, קצר, אנרגטי, ב-yo voice של חבר.`;
+      userMessage = "אנחנו תקועים. תן לנו דחיפה.";
+
+    } else if (mode === "challenge") {
+      systemPrompt = `אתה מנטור האקתון שעובר בין השולחנות. הצוות עובד על: ${stepDesc}.
+${contextBlock}${currentBlock}
+
+נתח את העבודה הנוכחית שלהם וחזור בשתי שורות בעברית בלבד:
+שורה 1: הנקודה הכי חלשה בעבודה הנוכחית.
+שורה 2: שיפור קונקרטי שאפשר ליישם תוך 5 דקות.
+ישיר, לא מנומס מדי, בגובה העיניים. אסור להמציא דאטה שלא נמסר.`;
+      userMessage = "תקוף את העבודה הנוכחית שלנו.";
+
+    } else if (mode === "pitch_generate") {
+      systemPrompt = `You generate hackathon pitch artifacts in Hebrew.
+
+Using the team's design thinking data below, produce a JSON object with this exact shape (no markdown, no prose, just JSON):
+{
+  "script": "60-second pitch script in Hebrew, ~150 words, structure: hook → problem → who → insight → solution → demo line → ask. Plain text with line breaks.",
+  "slides": [
+    {"title":"השקף", "bullets":["...","...","..."]},
+    ... 5 slides total: Problem, User, Insight, Solution, Demo+Ask
+  ],
+  "judging": [
+    {"criterion":"בהירות הבעיה","question":"האם ברור מי המשתמש ומה כואב?"},
+    {"criterion":"תובנה","question":"יש כאן משהו לא טריוויאלי?"},
+    {"criterion":"התאמת פתרון","question":"הפתרון באמת עונה על הבעיה?"},
+    {"criterion":"דמו","question":"זה עובד? מרגיש אמיתי?"},
+    {"criterion":"אנרגיית הצוות","question":"הם מאמינים בזה?"}
+  ]
+}
+Hebrew throughout. Concrete, drawn from the team's actual data. No placeholder text. Return ONLY the JSON.
+${contextBlock}`;
+      userMessage = "Generate the pitch JSON for our team.";
+
     } else if (mode === "suggest") {
       systemPrompt = `You are a design thinking facilitator helping with: ${stepDesc}
       

@@ -224,7 +224,7 @@ export default function StepIntroModal({ stepKey }: Props) {
               onClick={goNext}
               className="sketch-btn text-sm flex items-center gap-1"
             >
-              {stage === "learn" ? "המשך →" : "🛠️ בוא נעבוד →"}
+              {stage === "learn" ? "המשך →" : "בוא נעבוד →"}
             </button>
           </div>
         </div>

@@ -136,59 +136,59 @@ You will receive data from up to 13 design thinking steps. Your job is to synthe
 
 The PRD should follow this structure:
 
-# Product Requirements Document (PRD)
+# מסמך דרישות מוצר (PRD)
 
-## 1. Product Overview
-Brief summary of what the product is and the problem it solves.
+## 1. סקירת המוצר
+תיאור קצר של המוצר והבעיה שהוא פותר.
 
-## 2. Target User
-Who is the primary user? (from Persona, Empathy Map)
-- Demographics, goals, frustrations, behaviors
-- Key quote that captures their mindset
+## 2. משתמש היעד
+מי המשתמש המרכזי? (מפרסונה, מפת אמפתיה)
+- דמוגרפיה, מטרות, תסכולים, התנהגויות
+- ציטוט מפתח שלוכד את הלך הרוח שלו
 
-## 3. Problem Statement
-The core problem being solved (from POV, Five Whys)
-- Root cause analysis
-- Why existing solutions fail
+## 3. הגדרת הבעיה
+הבעיה המרכזית שאנחנו פותרים (מ-POV, חמישה למה)
+- ניתוח סיבת השורש
+- למה פתרונות קיימים נכשלים
 
-## 4. User Jobs & Needs
-What the user is trying to accomplish (from JTBD)
-- Functional jobs
-- Emotional jobs
-- Social jobs
+## 4. משימות וצרכים של המשתמש
+מה המשתמש מנסה להשיג (מ-JTBD)
+- משימות פונקציונליות
+- משימות רגשיות
+- משימות חברתיות
 
-## 5. User Journey
-Key stages the user goes through (from Journey Map)
-- Pain points at each stage
-- Opportunities for improvement
+## 5. מסע המשתמש
+שלבי מפתח שהמשתמש עובר (ממפת המסע)
+- נקודות כאב בכל שלב
+- הזדמנויות לשיפור
 
-## 6. Solution Overview
-The chosen solution approach (from Ideation, HMW)
-- Core concept
-- How it addresses the root cause
+## 6. סקירת הפתרון
+גישת הפתרון שנבחרה (מאידאציה, HMW)
+- קונספט מרכזי
+- איך הוא מטפל בסיבת השורש
 
-## 7. Key Features
-Prioritized feature list (from Prototype Brief, Ideation)
-- Must-have features
-- Nice-to-have features
+## 7. תכונות מפתח
+רשימת תכונות מתועדפת (מבריף האב-טיפוס, אידאציה)
+- תכונות Must-have
+- תכונות Nice-to-have
 
-## 8. User Flow / Storyboard
-How the user interacts with the product (from Storyboard)
-- Step-by-step scenario
+## 8. תרחיש משתמש / סטוריבורד
+איך המשתמש מתקשר עם המוצר (מהסטוריבורד)
+- תרחיש שלב-אחר-שלב
 
-## 9. Assumptions & Risks
-Critical assumptions to validate (from Assumption Selection)
-- What must be true for success
+## 9. הנחות וסיכונים
+הנחות קריטיות לאימות (מבחירת הנחות)
+- מה חייב להיות נכון להצלחה
 
-## 10. Success Criteria
-How to measure if the product works (from User Testing, Prototype Brief)
-- Key metrics
-- Testing insights (if available)
+## 10. קריטריוני הצלחה
+איך נמדוד הצלחה (מבדיקות משתמשים, בריף)
+- מדדים מרכזיים
+- תובנות מבדיקות (אם זמינות)
 
-## 11. Technical Notes
-Any technical requirements or constraints mentioned.
+## 11. הערות טכניות
+כל דרישה או אילוץ טכני שצוין.
 
-${additionalNotes ? `\nAdditional notes from the user:\n${additionalNotes}` : ""}
+${additionalNotes ? `\nהערות נוספות מהמשתמש:\n${additionalNotes}` : ""}
 
 RULES:
 - Only include sections where you have actual data. Skip sections with no data.

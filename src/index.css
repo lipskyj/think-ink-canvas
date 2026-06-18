@@ -1,4 +1,4 @@
-/* Arial is a system font, no import needed */
+/* Archivo Black for display, Inter for body — loaded via @fontsource in main.tsx */
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 97%;
+    --background: 33 100% 96%;
     --foreground: 0 0% 8%;
 
     --card: 0 0% 100%;
@@ -15,76 +15,82 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 8%;
 
-    --primary: 0 0% 8%;
-    --primary-foreground: 0 0% 97%;
+    --primary: 6 100% 69%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 92%;
+    --secondary: 33 60% 92%;
     --secondary-foreground: 0 0% 8%;
 
-    --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 33 50% 90%;
+    --muted-foreground: 0 0% 38%;
 
-    --accent: 0 0% 88%;
+    --accent: 43 100% 70%;
     --accent-foreground: 0 0% 8%;
 
-    --destructive: 0 0% 30%;
-    --destructive-foreground: 0 0% 97%;
+    --highlight: 161 94% 43%;
+    --highlight-foreground: 0 0% 8%;
 
-    --border: 0 0% 75%;
-    --input: 0 0% 80%;
-    --ring: 0 0% 8%;
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --radius: 0.25rem;
+    --border: 0 0% 12%;
+    --input: 0 0% 14%;
+    --ring: 6 100% 69%;
 
-    --sidebar-background: 0 0% 100%;
+    --radius: 0.75rem;
+
+    --sidebar-background: 33 100% 98%;
     --sidebar-foreground: 0 0% 8%;
-    --sidebar-primary: 0 0% 8%;
-    --sidebar-primary-foreground: 0 0% 97%;
-    --sidebar-accent: 0 0% 94%;
+    --sidebar-primary: 6 100% 69%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 43 100% 88%;
     --sidebar-accent-foreground: 0 0% 8%;
     --sidebar-border: 0 0% 80%;
-    --sidebar-ring: 0 0% 8%;
+    --sidebar-ring: 6 100% 69%;
 
-    --font-sketch: 'Arial', 'Helvetica', sans-serif;
-    --font-hand: 'Arial', 'Helvetica', sans-serif;
-    --font-body: 'Arial', 'Helvetica', sans-serif;
+    --font-sketch: 'Archivo Black', 'Arial Black', sans-serif;
+    --font-hand: 'Inter', 'Arial', sans-serif;
+    --font-body: 'Inter', 'Arial', sans-serif;
+
+    --blob-1: 6 100% 69%;
+    --blob-2: 43 100% 70%;
+    --blob-3: 161 94% 43%;
+    --blob-4: 280 80% 70%;
   }
 
   .dark {
     --background: 0 0% 6%;
-    --foreground: 0 0% 94%;
+    --foreground: 33 100% 96%;
     --card: 0 0% 10%;
-    --card-foreground: 0 0% 94%;
+    --card-foreground: 33 100% 96%;
     --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 94%;
-    --primary: 0 0% 94%;
-    --primary-foreground: 0 0% 6%;
+    --popover-foreground: 33 100% 96%;
+    --primary: 6 100% 69%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 94%;
+    --secondary-foreground: 33 100% 96%;
     --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 0 0% 20%;
-    --accent-foreground: 0 0% 94%;
-    --destructive: 0 0% 70%;
-    --destructive-foreground: 0 0% 6%;
-    --border: 0 0% 25%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 43 100% 70%;
+    --accent-foreground: 0 0% 8%;
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
     --input: 0 0% 25%;
-    --ring: 0 0% 94%;
+    --ring: 6 100% 69%;
     --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 0 0% 94%;
-    --sidebar-primary: 0 0% 94%;
-    --sidebar-primary-foreground: 0 0% 8%;
+    --sidebar-foreground: 33 100% 96%;
+    --sidebar-primary: 6 100% 69%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 94%;
+    --sidebar-accent-foreground: 33 100% 96%;
     --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 0 0% 94%;
+    --sidebar-ring: 6 100% 69%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
 
   body {
     @apply bg-background text-foreground;
@@ -93,20 +99,105 @@
 
   h1, h2, h3 {
     font-family: var(--font-sketch);
+    letter-spacing: -0.02em;
   }
 }
 
 @layer components {
+  .vibe-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .vibe-backdrop::before,
+  .vibe-backdrop::after,
+  .vibe-backdrop > span {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.35;
+    will-change: transform;
+  }
+  .vibe-backdrop::before {
+    width: 42vmax; height: 42vmax;
+    background: radial-gradient(circle, hsl(var(--blob-1)) 0%, transparent 65%);
+    top: -10vmax; right: -8vmax;
+    animation: blobDriftA 22s ease-in-out infinite;
+  }
+  .vibe-backdrop::after {
+    width: 38vmax; height: 38vmax;
+    background: radial-gradient(circle, hsl(var(--blob-2)) 0%, transparent 65%);
+    bottom: -10vmax; left: -6vmax;
+    animation: blobDriftB 26s ease-in-out infinite;
+  }
+  .vibe-backdrop > span.vibe-blob-3 {
+    width: 32vmax; height: 32vmax;
+    background: radial-gradient(circle, hsl(var(--blob-3)) 0%, transparent 65%);
+    top: 40%; left: 45%;
+    opacity: 0.22;
+    animation: blobDriftC 30s ease-in-out infinite;
+  }
+  .vibe-backdrop > span.vibe-blob-4 {
+    width: 26vmax; height: 26vmax;
+    background: radial-gradient(circle, hsl(var(--blob-4)) 0%, transparent 65%);
+    top: 55%; right: 25%;
+    opacity: 0.18;
+    animation: blobDriftA 34s ease-in-out infinite reverse;
+  }
+  .vibe-backdrop-strong::before,
+  .vibe-backdrop-strong::after,
+  .vibe-backdrop-strong > span { opacity: 0.55; }
+
+  .display-huge {
+    font-family: var(--font-sketch);
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+  }
+  .display-mega {
+    font-family: var(--font-sketch);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.045em;
+    font-size: clamp(3rem, 11vw, 8rem);
+  }
+
+  .pill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-family: var(--font-sketch);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+  }
+  .pill-chip-outline {
+    background: transparent;
+    color: hsl(var(--foreground));
+    border: 1.5px solid hsl(var(--foreground));
+  }
+  .pill-chip-coral { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+  .pill-chip-sun   { background: hsl(var(--accent));  color: hsl(var(--accent-foreground)); }
+  .pill-chip-mint  { background: hsl(var(--highlight)); color: hsl(var(--highlight-foreground)); }
+
   .sketch-border {
     border: 2px solid hsl(var(--foreground));
-    border-radius: 2px;
-    box-shadow: 3px 3px 0px hsl(var(--foreground));
+    border-radius: var(--radius);
+    box-shadow: 4px 4px 0 hsl(var(--foreground));
   }
 
   .sketch-border-thin {
     border: 1.5px solid hsl(var(--foreground));
-    border-radius: 1px;
-    box-shadow: 2px 2px 0px hsl(var(--foreground) / 0.4);
+    border-radius: calc(var(--radius) - 0.25rem);
+    box-shadow: 2px 2px 0 hsl(var(--foreground) / 0.4);
   }
 
   .sketch-card {
@@ -116,17 +207,17 @@
 
   .sketch-card:hover {
     transform: translate(-1px, -1px);
-    box-shadow: 5px 5px 0px hsl(var(--foreground));
+    box-shadow: 6px 6px 0 hsl(var(--foreground));
   }
 
   .sketch-input {
     @apply sketch-border-thin bg-card px-3 py-2 w-full;
     font-family: var(--font-hand);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
 
   .sketch-input::placeholder {
-    color: hsl(var(--muted-foreground) / 0.45);
+    color: hsl(var(--muted-foreground) / 0.6);
     font-style: italic;
     font-family: var(--font-hand);
     letter-spacing: 0.02em;
@@ -134,54 +225,55 @@
 
   .sketch-input:focus {
     outline: none;
-    box-shadow: 3px 3px 0px hsl(var(--foreground));
+    box-shadow: 3px 3px 0 hsl(var(--primary));
+    border-color: hsl(var(--primary));
   }
 
   .sketch-btn {
-    @apply sketch-border bg-primary text-primary-foreground px-4 py-2 font-medium cursor-pointer;
+    @apply sketch-border px-4 py-2 font-bold cursor-pointer;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     font-family: var(--font-sketch);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
 
   .sketch-btn:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0px hsl(var(--foreground));
+    box-shadow: 6px 6px 0 hsl(var(--foreground));
   }
 
   .sketch-btn:active {
     transform: translate(1px, 1px);
-    box-shadow: 1px 1px 0px hsl(var(--foreground));
+    box-shadow: 1px 1px 0 hsl(var(--foreground));
   }
 
   .sketch-btn-outline {
-    @apply sketch-border bg-background text-foreground px-4 py-2 font-medium cursor-pointer;
+    @apply sketch-border bg-card text-foreground px-4 py-2 font-bold cursor-pointer;
     font-family: var(--font-sketch);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
 
   .sketch-btn-outline:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0px hsl(var(--foreground));
+    box-shadow: 6px 6px 0 hsl(var(--foreground));
+    background: hsl(var(--accent));
   }
 
-  .font-sketch {
-    font-family: var(--font-sketch);
-  }
-
-  .font-hand {
-    font-family: var(--font-hand);
-  }
+  .font-sketch { font-family: var(--font-sketch); }
+  .font-hand   { font-family: var(--font-hand); }
 
   .stage-number {
     @apply sketch-border inline-flex items-center justify-center w-10 h-10 text-lg font-bold;
     font-family: var(--font-sketch);
+    background: hsl(var(--accent));
   }
 
   .doodle-underline {
     text-decoration: underline;
     text-decoration-style: wavy;
-    text-underline-offset: 4px;
-    text-decoration-thickness: 1.5px;
+    text-decoration-color: hsl(var(--primary));
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
   }
 
   .notebook-lines {
@@ -191,8 +283,8 @@
     background-image: repeating-linear-gradient(
       transparent,
       transparent calc(var(--line-height) - 1px),
-      hsl(var(--border)) calc(var(--line-height) - 1px),
-      hsl(var(--border)) var(--line-height)
+      hsl(var(--border) / 0.25) calc(var(--line-height) - 1px),
+      hsl(var(--border) / 0.25) var(--line-height)
     );
     background-position: 0 0;
   }
@@ -204,19 +296,22 @@
   }
 }
 
-@keyframes draw-path {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
+@keyframes draw-path { to { stroke-dashoffset: 0; } }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes blobDriftA {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(6vw,-4vh) scale(1.12); }
+}
+@keyframes blobDriftB {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(-7vw,5vh) scale(1.18); }
+}
+@keyframes blobDriftC {
+  0%,100% { transform: translate(-50%,-50%) scale(1); }
+  50%     { transform: translate(-44%,-56%) scale(1.08); }
 }

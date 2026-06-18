@@ -1,0 +1,222 @@
+/* Arial is a system font, no import needed */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 97%;
+    --foreground: 0 0% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+
+    --primary: 0 0% 8%;
+    --primary-foreground: 0 0% 97%;
+
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 8%;
+
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 0 0% 88%;
+    --accent-foreground: 0 0% 8%;
+
+    --destructive: 0 0% 30%;
+    --destructive-foreground: 0 0% 97%;
+
+    --border: 0 0% 75%;
+    --input: 0 0% 80%;
+    --ring: 0 0% 8%;
+
+    --radius: 0.25rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 8%;
+    --sidebar-primary: 0 0% 8%;
+    --sidebar-primary-foreground: 0 0% 97%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 8%;
+    --sidebar-border: 0 0% 80%;
+    --sidebar-ring: 0 0% 8%;
+
+    --font-sketch: 'Arial', 'Helvetica', sans-serif;
+    --font-hand: 'Arial', 'Helvetica', sans-serif;
+    --font-body: 'Arial', 'Helvetica', sans-serif;
+  }
+
+  .dark {
+    --background: 0 0% 6%;
+    --foreground: 0 0% 94%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 94%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 94%;
+    --primary: 0 0% 94%;
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 94%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 94%;
+    --destructive: 0 0% 70%;
+    --destructive-foreground: 0 0% 6%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 0 0% 94%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 94%;
+    --sidebar-primary: 0 0% 94%;
+    --sidebar-primary-foreground: 0 0% 8%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 94%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 0 0% 94%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-sketch);
+  }
+}
+
+@layer components {
+  .sketch-border {
+    border: 2px solid hsl(var(--foreground));
+    border-radius: 2px;
+    box-shadow: 3px 3px 0px hsl(var(--foreground));
+  }
+
+  .sketch-border-thin {
+    border: 1.5px solid hsl(var(--foreground));
+    border-radius: 1px;
+    box-shadow: 2px 2px 0px hsl(var(--foreground) / 0.4);
+  }
+
+  .sketch-card {
+    @apply sketch-border bg-card p-5;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .sketch-card:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0px hsl(var(--foreground));
+  }
+
+  .sketch-input {
+    @apply sketch-border-thin bg-card px-3 py-2 w-full;
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+  }
+
+  .sketch-input::placeholder {
+    color: hsl(var(--muted-foreground) / 0.45);
+    font-style: italic;
+    font-family: var(--font-hand);
+    letter-spacing: 0.02em;
+  }
+
+  .sketch-input:focus {
+    outline: none;
+    box-shadow: 3px 3px 0px hsl(var(--foreground));
+  }
+
+  .sketch-btn {
+    @apply sketch-border bg-primary text-primary-foreground px-4 py-2 font-medium cursor-pointer;
+    font-family: var(--font-sketch);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .sketch-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px hsl(var(--foreground));
+  }
+
+  .sketch-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px hsl(var(--foreground));
+  }
+
+  .sketch-btn-outline {
+    @apply sketch-border bg-background text-foreground px-4 py-2 font-medium cursor-pointer;
+    font-family: var(--font-sketch);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .sketch-btn-outline:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px hsl(var(--foreground));
+  }
+
+  .font-sketch {
+    font-family: var(--font-sketch);
+  }
+
+  .font-hand {
+    font-family: var(--font-hand);
+  }
+
+  .stage-number {
+    @apply sketch-border inline-flex items-center justify-center w-10 h-10 text-lg font-bold;
+    font-family: var(--font-sketch);
+  }
+
+  .doodle-underline {
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1.5px;
+  }
+
+  .notebook-lines {
+    --line-height: 1.75rem;
+    line-height: var(--line-height);
+    padding-top: calc(var(--line-height) - 1px);
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent calc(var(--line-height) - 1px),
+      hsl(var(--border)) calc(var(--line-height) - 1px),
+      hsl(var(--border)) var(--line-height)
+    );
+    background-position: 0 0;
+  }
+
+  .animate-draw-path {
+    stroke-dasharray: 4000;
+    stroke-dashoffset: 4000;
+    animation: draw-path 2.5s ease forwards;
+  }
+}
+
+@keyframes draw-path {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

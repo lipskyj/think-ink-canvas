@@ -1,0 +1,328 @@
+import { useState, useEffect, useCallback, useRef } from "react";
+import { GripVertical, Plus, X, Star } from "lucide-react";
+import StepPage from "@/components/StepPage";
+import { useProject } from "@/contexts/ProjectContext";
+import LinkedDataBanner from "@/components/LinkedDataBanner";
+import CoherenceTracker from "@/components/CoherenceTracker";
+
+interface MatrixIdea {
+  id: string;
+  text: string;
+  x: number; // 0-100, effort (left=low, right=high)
+  y: number; // 0-100, impact (bottom=low, top=high)
+  placed: boolean;
+}
+
+const QUADRANT_LABELS = [
+  { label: "🏆 ניצחון מהיר", desc: "השפעה גבוהה, מאמץ נמוך", x: 15, y: 15 },
+  { label: "📈 פרויקט גדול", desc: "השפעה גבוהה, מאמץ גבוה", x: 85, y: 15 },
+  { label: "🤷 מילוי זמן", desc: "השפעה נמוכה, מאמץ נמוך", x: 15, y: 85 },
+  { label: "🚫 בזבוז", desc: "השפעה נמוכה, מאמץ גבוה", x: 85, y: 85 },
+];
+
+let idCounter = 0;
+const genId = () => `idea-${Date.now()}-${idCounter++}`;
+
+const EffortImpact = () => {
+  const { getStepData, getAllPreviousData } = useProject();
+  const [ideas, setIdeas] = useState<MatrixIdea[]>([]);
+  const [newIdeaText, setNewIdeaText] = useState("");
+  const matrixRef = useRef<HTMLDivElement>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const dragOffset = useRef({ x: 0, y: 0 });
+
+  // Load saved data or import from ideation
+  useEffect(() => {
+    const saved = getStepData("effort_impact");
+    if (saved?.ideas) {
+      setIdeas(saved.ideas);
+      return;
+    }
+    // Auto-import starred ideas from ideation
+    const ideationData = getStepData("ideation");
+    if (ideationData?.ideas) {
+      const starred = ideationData.ideas.filter((i: any) => i.starred && i.text?.trim());
+      if (starred.length > 0) {
+        setIdeas(starred.map((i: any) => ({
+          id: genId(),
+          text: i.text,
+          x: 50,
+          y: 50,
+          placed: false,
+        })));
+        return;
+      }
+      // If no starred, take all non-empty
+      const all = ideationData.ideas.filter((i: any) => i.text?.trim());
+      if (all.length > 0) {
+        setIdeas(all.map((i: any) => ({
+          id: genId(),
+          text: i.text,
+          x: 50,
+          y: 50,
+          placed: false,
+        })));
+      }
+    }
+  }, [getStepData]);
+
+  const addIdea = () => {
+    if (!newIdeaText.trim()) return;
+    setIdeas((prev) => [...prev, { id: genId(), text: newIdeaText.trim(), x: 50, y: 50, placed: false }]);
+    setNewIdeaText("");
+  };
+
+  const removeIdea = (id: string) => {
+    setIdeas((prev) => prev.filter((i) => i.id !== id));
+  };
+
+  // Drag handlers for mouse
+  const handleMouseDown = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const rect = matrixRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const idea = ideas.find((i) => i.id === id);
+    if (!idea) return;
+    const ideaPixelX = (idea.x / 100) * rect.width;
+    const ideaPixelY = (idea.y / 100) * rect.height;
+    dragOffset.current = {
+      x: e.clientX - rect.left - ideaPixelX,
+      y: e.clientY - rect.top - ideaPixelY,
+    };
+    setDraggingId(id);
+  };
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!draggingId || !matrixRef.current) return;
+      const rect = matrixRef.current.getBoundingClientRect();
+      const x = Math.max(0, Math.min(100, ((e.clientX - rect.left - dragOffset.current.x) / rect.width) * 100));
+      const y = Math.max(0, Math.min(100, ((e.clientY - rect.top - dragOffset.current.y) / rect.height) * 100));
+      setIdeas((prev) =>
+        prev.map((i) => (i.id === draggingId ? { ...i, x, y, placed: true } : i))
+      );
+    },
+    [draggingId]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setDraggingId(null);
+  }, []);
+
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent, id: string) => {
+    const touch = e.touches[0];
+    const rect = matrixRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const idea = ideas.find((i) => i.id === id);
+    if (!idea) return;
+    const ideaPixelX = (idea.x / 100) * rect.width;
+    const ideaPixelY = (idea.y / 100) * rect.height;
+    dragOffset.current = {
+      x: touch.clientX - rect.left - ideaPixelX,
+      y: touch.clientY - rect.top - ideaPixelY,
+    };
+    setDraggingId(id);
+  };
+
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!draggingId || !matrixRef.current) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = matrixRef.current.getBoundingClientRect();
+      const x = Math.max(0, Math.min(100, ((touch.clientX - rect.left - dragOffset.current.x) / rect.width) * 100));
+      const y = Math.max(0, Math.min(100, ((touch.clientY - rect.top - dragOffset.current.y) / rect.height) * 100));
+      setIdeas((prev) =>
+        prev.map((i) => (i.id === draggingId ? { ...i, x, y, placed: true } : i))
+      );
+    },
+    [draggingId]
+  );
+
+  useEffect(() => {
+    if (draggingId) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("touchmove", handleTouchMove, { passive: false });
+      window.addEventListener("touchend", handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleMouseUp);
+    };
+  }, [draggingId, handleMouseMove, handleMouseUp, handleTouchMove]);
+
+  const getData = useCallback(() => ({ ideas }), [ideas]);
+  const hasContent = ideas.some((i) => i.placed);
+  const previousData = getAllPreviousData("effort_impact");
+
+  // Categorize ideas into quadrants
+  const quickWins = ideas.filter((i) => i.placed && i.x < 50 && i.y < 50);
+  const bigProjects = ideas.filter((i) => i.placed && i.x >= 50 && i.y < 50);
+  const fillers = ideas.filter((i) => i.placed && i.x < 50 && i.y >= 50);
+  const wastes = ideas.filter((i) => i.placed && i.x >= 50 && i.y >= 50);
+  const unplaced = ideas.filter((i) => !i.placed);
+
+  return (
+    <StepPage stepKey="effort_impact" onSave={getData} canComplete={hasContent}>
+      <LinkedDataBanner stepKey="effort_impact" />
+      <CoherenceTracker stepKey="effort_impact" currentData={{ ideas }} />
+
+      {/* Instructions */}
+      <div className="sketch-border p-5 mb-6 bg-secondary/20">
+        <h3 className="font-bold mb-2">📊 איך עושים את זה?</h3>
+        <ol className="space-y-1 text-sm text-muted-foreground">
+          <li>1. הרעיונות שלכם מהשלב הקודם מופיעים למטה</li>
+          <li>2. <strong>גררו כל רעיון</strong> למקום המתאים על הגרף</li>
+          <li>3. ציר X = כמה מאמץ נדרש (שמאל=קל, ימין=קשה)</li>
+          <li>4. ציר Y = כמה השפעה יש לפתרון (למעלה=הרבה, למטה=מעט)</li>
+          <li>5. 🏆 <strong>ניצחונות מהירים</strong> = למעלה-שמאל — זה מה שכדאי לבנות קודם!</li>
+        </ol>
+      </div>
+
+      {/* Add new idea */}
+      <div className="flex items-center gap-2 mb-4">
+        <input
+          className="sketch-input flex-1"
+          placeholder="הוסיפו רעיון נוסף..."
+          value={newIdeaText}
+          onChange={(e) => setNewIdeaText(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addIdea()}
+        />
+        <button onClick={addIdea} className="sketch-btn-outline flex items-center gap-1 text-sm px-3 py-2">
+          <Plus className="h-4 w-4" /> הוסף
+        </button>
+      </div>
+
+      {/* Unplaced ideas */}
+      {unplaced.length > 0 && (
+        <div className="sketch-border p-4 mb-4 bg-accent/10">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-bold">
+            ✋ רעיונות שעדיין לא מוקמו — גררו אותם לגרף
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {unplaced.map((idea) => (
+              <div
+                key={idea.id}
+                className="sketch-border px-3 py-1.5 text-sm bg-background cursor-grab active:cursor-grabbing flex items-center gap-1.5 select-none"
+                onMouseDown={(e) => handleMouseDown(e, idea.id)}
+                onTouchStart={(e) => handleTouchStart(e, idea.id)}
+              >
+                <GripVertical className="h-3 w-3 text-muted-foreground" />
+                <span className="max-w-[200px] truncate">{idea.text}</span>
+                <button onClick={() => removeIdea(idea.id)} className="p-0.5 hover:bg-accent rounded-sm">
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Matrix */}
+      <div className="sketch-border p-2 mb-6">
+        {/* Y-axis label */}
+        <div className="flex items-stretch">
+          <div className="flex items-center justify-center w-8 shrink-0">
+            <span
+              className="text-xs font-bold text-muted-foreground"
+              style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+            >
+              השפעה ←
+            </span>
+          </div>
+
+          <div className="flex-1">
+            <div
+              ref={matrixRef}
+              className="relative w-full bg-secondary/30 border-2 border-foreground/20 select-none touch-none"
+              style={{ aspectRatio: "1 / 1", maxHeight: "500px" }}
+            >
+              {/* Quadrant lines */}
+              <div className="absolute left-1/2 top-0 bottom-0 border-r border-dashed border-foreground/20" />
+              <div className="absolute top-1/2 left-0 right-0 border-b border-dashed border-foreground/20" />
+
+              {/* Quadrant labels */}
+              {QUADRANT_LABELS.map((q, i) => (
+                <div
+                  key={i}
+                  className="absolute text-center pointer-events-none"
+                  style={{
+                    left: `${q.x}%`,
+                    top: `${q.y}%`,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <div className="text-lg">{q.label.split(" ")[0]}</div>
+                  <div className="text-xs font-bold text-muted-foreground">{q.label.split(" ").slice(1).join(" ")}</div>
+                  <div className="text-[10px] text-muted-foreground/60">{q.desc}</div>
+                </div>
+              ))}
+
+              {/* Placed ideas */}
+              {ideas
+                .filter((i) => i.placed)
+                .map((idea) => (
+                  <div
+                    key={idea.id}
+                    className={`absolute z-10 sketch-border px-2 py-1 text-xs bg-background shadow-md cursor-grab active:cursor-grabbing select-none flex items-center gap-1 ${
+                      draggingId === idea.id ? "ring-2 ring-foreground scale-105" : ""
+                    } ${idea.x < 50 && idea.y < 50 ? "border-foreground/60 font-bold" : ""}`}
+                    style={{
+                      left: `${idea.x}%`,
+                      top: `${idea.y}%`,
+                      transform: "translate(-50%, -50%)",
+                      maxWidth: "140px",
+                    }}
+                    onMouseDown={(e) => handleMouseDown(e, idea.id)}
+                    onTouchStart={(e) => handleTouchStart(e, idea.id)}
+                  >
+                    {idea.x < 50 && idea.y < 50 && <Star className="h-3 w-3 shrink-0" />}
+                    <span className="truncate">{idea.text}</span>
+                  </div>
+                ))}
+            </div>
+
+            {/* X-axis label */}
+            <div className="text-center mt-1">
+              <span className="text-xs font-bold text-muted-foreground">מאמץ →</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Summary by quadrant */}
+      {hasContent && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          {[
+            { title: "🏆 ניצחונות מהירים", items: quickWins, highlight: true },
+            { title: "📈 פרויקטים גדולים", items: bigProjects, highlight: false },
+            { title: "🤷 מילוי זמן", items: fillers, highlight: false },
+            { title: "🚫 לא שווה", items: wastes, highlight: false },
+          ].map((quad) =>
+            quad.items.length > 0 ? (
+              <div
+                key={quad.title}
+                className={`sketch-border p-4 ${quad.highlight ? "bg-accent/20 border-foreground/40" : "bg-secondary/10"}`}
+              >
+                <h4 className="font-bold text-sm mb-2">{quad.title}</h4>
+                <ul className="space-y-1">
+                  {quad.items.map((i) => (
+                    <li key={i.id} className="text-sm flex items-center gap-1">
+                      <span>•</span> {i.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null
+          )}
+        </div>
+      )}
+    </StepPage>
+  );
+};
+
+export default EffortImpact;

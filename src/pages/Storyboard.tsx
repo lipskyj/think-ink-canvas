@@ -12,35 +12,49 @@ interface Frame {
   emotion: string;
 }
 
-const SCENE_PLACEHOLDERS = [
-  "הבוקר, המשתמש מגלה את הבעיה לראשונה...",
-  "המשתמש מחפש פתרון ומנסה את המוצר שלנו...",
-  "המשתמש משלים את המשימה בהצלחה...",
-  "המשתמש משתף את החוויה עם אחרים...",
+// 4 guided frames — teen-friendly hackathon prompts
+const FRAME_GUIDES = [
+  {
+    title: "1. לפני",
+    emoji: "😟",
+    sceneLabel: "🖼️ איפה הוא? מה הוא מרגיש?",
+    actionLabel: "🖐️ מה הוא עושה?",
+    emotionLabel: "💭 מה הוא חושב?",
+    scenePh: "בחדר/בקפה/בדרך... עם המכשיר ביד",
+    actionPh: "מנסה לעשות X אבל זה לא עובד",
+    emotionPh: "'למה זה כל כך מסובך?'",
+  },
+  {
+    title: "2. המפגש",
+    emoji: "👀",
+    sceneLabel: "🖼️ איפה הוא פוגש את המוצר שלנו?",
+    actionLabel: "🖐️ מה הוא לוחץ/אומר/עושה?",
+    emotionLabel: "💭 מה הוא חושב כשהוא רואה אותנו?",
+    scenePh: "רואה פוסט, חבר שולח לינק, פותח את האפליקציה...",
+    actionPh: "לוחץ על הכפתור הראשי...",
+    emotionPh: "'נראה מעניין, ננסה'",
+  },
+  {
+    title: "3. הקסם",
+    emoji: "✨",
+    sceneLabel: "🖼️ רגע ה-AHA — מה הוא רואה?",
+    actionLabel: "🖐️ מה המוצר עושה לו?",
+    emotionLabel: "💭 איך הוא מרגיש?",
+    scenePh: "המסך מציג את התוצאה, ההמלצה, הפתרון...",
+    actionPh: "הצליח במשימה ב-3 לחיצות",
+    emotionPh: "'וואו, זה באמת עבד!'",
+  },
+  {
+    title: "4. אחרי",
+    emoji: "🚀",
+    sceneLabel: "🖼️ איך החיים שלו השתנו?",
+    actionLabel: "🖐️ מה הוא עושה עכשיו?",
+    emotionLabel: "💭 מה הוא מספר לחברים?",
+    scenePh: "ביום שאחרי, בשבוע שאחרי...",
+    actionPh: "ממליץ על המוצר, חוזר להשתמש...",
+    emotionPh: "'אני לא מבין איך הסתדרתי בלי'",
+  },
 ];
-
-const ACTION_PLACEHOLDERS = [
-  "פותח את האפליקציה ומחפש...",
-  "לוחץ על הכפתור הראשי ומגלה...",
-  "ממלא את הטופס ושולח...",
-  "חוזר להשתמש ביום למחרת...",
-];
-
-const EMOTION_PLACEHOLDERS = [
-  "מבולבל ולא בטוח מה לעשות...",
-  "מקווה שזה יעבוד, קצת סקפטי...",
-  "מופתע ומרוצה מהתוצאה...",
-  "בטוח ורוצה להמשיך...",
-];
-
-const Storyboard = () => {
-  const { getStepData, getAllPreviousData } = useProject();
-  const [protagonist, setProtagonist] = useState("");
-  const [frames, setFrames] = useState<Frame[]>([
-    { scene: "", action: "", emotion: "" },
-    { scene: "", action: "", emotion: "" },
-    { scene: "", action: "", emotion: "" },
-  ]);
 
   useEffect(() => {
     const saved = getStepData("storyboard");

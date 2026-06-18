@@ -90,7 +90,7 @@ const HowMightWe = () => {
 
       {/* POV Section */}
       <div className="sketch-border p-5 mb-6 bg-card">
-        <h3 className="font-sketch text-lg mb-3 flex items-center gap-2">🎯 הצהרת נקודת מבט (POV)</h3>
+        <h3 className="font-sketch text-lg mb-3 flex items-center gap-2"> הצהרת נקודת מבט (POV)</h3>
         <div className="sketch-border-thin p-4 mb-4 bg-secondary/20">
           <p className="text-base text-center text-muted-foreground">
             [משתמש] צריך [צורך] כי [תובנה]
@@ -108,7 +108,7 @@ const HowMightWe = () => {
             />
           </div>
           <div>
-            <label className="font-semibold text-sm block mb-1">💡 צורך</label>
+            <label className="font-semibold text-sm block mb-1"> צורך</label>
             <input
               className="sketch-input"
               placeholder="מה הצורך של המשתמש?"
@@ -141,7 +141,7 @@ const HowMightWe = () => {
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <div className="flex items-center gap-2 flex-wrap">
           <p className="text-base text-muted-foreground flex-1">
-            💡 <strong>מה אם...?</strong> נסחו עד 3 שאלות פתיחה לפתרון.<br />
+             <strong>מה אם...?</strong> נסחו עד 3 שאלות פתיחה לפתרון.<br />
             לא רחב מדי, לא צר מדי.
           </p>
           <button

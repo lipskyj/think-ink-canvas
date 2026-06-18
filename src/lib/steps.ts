@@ -1,17 +1,19 @@
 import { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, type LucideIcon } from "lucide-react";
 
-export type ProcessPhase = "problem" | "solution" | "development";
+export type ProcessPhase = "problem" | "solution" | "development" | "presentation";
 
 export interface PhaseConfig {
   key: ProcessPhase;
   title: string;
   emoji: string;
+  description: string;
 }
 
 export const PHASES: PhaseConfig[] = [
-  { key: "problem", title: "הגדרת הבעיה", emoji: "" },
-  { key: "solution", title: "גיבוש הפתרון", emoji: "" },
-  { key: "development", title: "פיתוח הפתרון", emoji: "" },
+  { key: "problem", title: "הגדרת הבעיה", emoji: "", description: "נכנסים לנעליים של המשתמש, מבינים מה באמת קורה, ומגדירים את הבעיה הנכונה." },
+  { key: "solution", title: "גיבוש הפתרון", emoji: "", description: "מייצרים הרבה רעיונות, מתעדפים, ובוחרים כיוון אחד שכדאי לבדוק." },
+  { key: "development", title: "פיתוח הפתרון", emoji: "", description: "כותבים בריף, מגדירים MVP, ומכינים פרומפט שיוצר את המוצר באמת." },
+  { key: "presentation", title: "הצגת הפתרון", emoji: "", description: "הופכים את העבודה לסיפור משכנע — סקריפט, שקפים, ויזואלים." },
 ];
 
 export interface StepConfig {
@@ -147,7 +149,7 @@ export const STEPS: StepConfig[] = [
     icon: Presentation,
     emoji: "",
     learnMoreUrl: "https://www.ycombinator.com/library/6h-how-to-pitch-your-startup",
-    phase: "development",
+    phase: "presentation",
     description: "שלב הפיצ' הופך את כל מה שעשיתם להצגה משכנעת — סקריפט, שקפים וויזואלים. אפשר להתחיל אותו במקביל לבנייה ולחדד אחרי שה-MVP מוכן.",
     whyItMatters: "פתרון מצוין שלא יודעים להציג נשכח. פיצ' חד הופך עבודת עומק להזדמנות אמיתית — אצל שופטים, מנטורים או משתמשים פוטנציאליים.",
   },

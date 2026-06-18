@@ -49,7 +49,7 @@ const LearnSeeDoPanel = ({ phase }: Props) => {
       {open && (
         <div className="mt-4 space-y-4">
           <section className="sketch-card">
-            <div className="font-sketch text-lg mb-2">🚀 LEARN — דקה של מיינדסט</div>
+            <div className="font-sketch text-lg mb-2"> LEARN — דקה של מיינדסט</div>
             <p className="font-hand text-base leading-relaxed whitespace-pre-line">
               {content.learn}
             </p>

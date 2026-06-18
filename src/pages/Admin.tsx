@@ -21,6 +21,11 @@ interface ClassRow {
   ai_enabled: boolean;
   locked_steps: Record<string, boolean>;
   created_at: string;
+  leader_name: string | null;
+  event_date: string | null;
+  event_time: string | null;
+  event_location: string | null;
+  event_topic: string | null;
 }
 
 interface StudentProgress {
@@ -91,18 +96,19 @@ export default function Admin() {
   };
 
   const updateClass = async (id: string, updates: Partial<ClassRow>) => {
-    console.log("updateClass called:", id, updates);
     const dbUpdates: any = {};
     if (updates.student_names !== undefined) dbUpdates.student_names = updates.student_names;
     if (updates.ai_enabled !== undefined) dbUpdates.ai_enabled = updates.ai_enabled;
     if (updates.locked_steps !== undefined) dbUpdates.locked_steps = updates.locked_steps;
-    console.log("Sending PATCH:", dbUpdates);
+    if (updates.name !== undefined) dbUpdates.name = updates.name;
+    if (updates.leader_name !== undefined) dbUpdates.leader_name = updates.leader_name;
+    if (updates.event_date !== undefined) dbUpdates.event_date = updates.event_date;
+    if (updates.event_time !== undefined) dbUpdates.event_time = updates.event_time;
+    if (updates.event_location !== undefined) dbUpdates.event_location = updates.event_location;
+    if (updates.event_topic !== undefined) dbUpdates.event_topic = updates.event_topic;
     const { error } = await supabase.from("classes").update(dbUpdates).eq("id", id);
     if (error) {
-      console.error("Update error:", error);
       toast({ title: "שגיאה בעדכון", description: error.message, variant: "destructive" });
-    } else {
-      console.log("Update successful");
     }
     await fetchClasses();
   };
@@ -110,32 +116,37 @@ export default function Admin() {
   return (
     <Layout>
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-sketch mb-1 flex items-center gap-2">
-          <Shield className="h-7 w-7" /> ניהול ⚙️
+        <h1 className="display-huge mb-2 flex items-center gap-3">
+          <Shield className="h-8 w-8" /> ניהול האירוע
         </h1>
-        <p className="font-hand text-lg text-muted-foreground mb-8">ניהול כיתות, הגדרות ומעקב התקדמות</p>
+        <p className="font-hand text-lg text-muted-foreground mb-8">
+          הגדירו את פרטי האירוע, צרו קבוצות, ושלחו לתלמידים קישור הצטרפות.
+        </p>
 
-        {/* Create new class */}
+        {/* Create new group */}
         <div className="sketch-card mb-6">
           <div className="flex items-center gap-3 mb-4">
             <Plus className="h-5 w-5" />
-            <h2 className="font-sketch text-lg">כיתה חדשה</h2>
+            <h2 className="font-sketch text-lg">קבוצה חדשה</h2>
           </div>
           <Input
-            placeholder="שם הכיתה"
+            placeholder="שם זמני (התלמידים יוכלו לשנות)"
             value={newClassName}
             onChange={(e) => setNewClassName(e.target.value)}
             className="mb-2"
           />
+          <p className="text-xs text-muted-foreground font-hand mb-2">
+            לא חייבים למלא שמות — התלמידים יזינו את שמם בעצמם דרך קישור ההצטרפות.
+          </p>
           <Textarea
-            placeholder={"הדביקו שמות סטודנטים — שם אחד בכל שורה\nלדוגמה:\nדנה כהן\nאבי לוי\nנועה ישראלי"}
+            placeholder={"שמות (אופציונלי) — שם אחד בכל שורה"}
             value={newStudentNames}
             onChange={(e) => setNewStudentNames(e.target.value)}
-            rows={4}
+            rows={3}
             className="mb-3 text-sm"
           />
           <button onClick={createClass} disabled={!newClassName.trim()} className="sketch-btn flex items-center gap-2 text-sm disabled:opacity-50">
-            <Plus className="h-4 w-4" /> צור כיתה
+            <Plus className="h-4 w-4" /> צור קבוצה
           </button>
         </div>
 
@@ -335,11 +346,11 @@ function ClassPanel({
   const getLabel = (key: string): string => fieldLabels[key] || key;
 
   const methodLabels: Record<string, string> = {
-    worst_ideas: "🤮 הרעיונות הכי גרועים",
-    no_budget: "💰 בלי הגבלת תקציב",
-    copy_improve: "🔄 העתק ושפר",
-    rapid_fire: "⚡ ירי מהיר",
-    reverse: "🔃 הפוך על הפוך",
+    worst_ideas: "הרעיונות הכי גרועים",
+    no_budget: "בלי הגבלת תקציב",
+    copy_improve: "העתק ושפר",
+    rapid_fire: "ירי מהיר",
+    reverse: "הפוך על הפוך",
   };
 
   const renderIdeaItem = (item: any, i: number): React.ReactNode => {
@@ -350,7 +361,7 @@ function ClassPanel({
     if (!text) return null;
     return (
       <div key={i} className={`sketch-border-thin p-2 rounded-sm mb-1 flex items-start gap-2 ${starred ? "bg-yellow-100/60 dark:bg-yellow-900/20 border-yellow-400/50" : "bg-secondary/10"}`}>
-        {starred && <span className="text-yellow-500 mt-0.5">⭐</span>}
+        {starred && <span className="text-yellow-500 mt-0.5"></span>}
         <div className="flex-1 min-w-0">
           <p className="font-hand text-sm whitespace-pre-wrap">{text}</p>
           {method && <span className="font-sketch text-xs text-muted-foreground">{method}</span>}
@@ -374,7 +385,7 @@ function ClassPanel({
           <div className="space-y-1">
             {starredIdeas.length > 0 && (
               <div className="mb-2">
-                <p className="font-sketch text-xs text-yellow-600 dark:text-yellow-400 mb-1">⭐ רעיונות מסומנים ({starredIdeas.length})</p>
+                <p className="font-sketch text-xs text-yellow-600 dark:text-yellow-400 mb-1"> רעיונות מסומנים ({starredIdeas.length})</p>
                 {starredIdeas.map((item, i) => renderIdeaItem(item, i))}
               </div>
             )}
@@ -496,6 +507,44 @@ function ClassPanel({
           {/* Settings tab */}
           {tab === "settings" && (
             <div className="space-y-4">
+              {/* Event details */}
+              <div className="sketch-border-thin p-3 space-y-2">
+                <p className="font-sketch text-xs uppercase tracking-wider text-muted-foreground">פרטי האירוע</p>
+                <Input
+                  placeholder="נושא / אתגר (למשל: בריאות נפש בנוער)"
+                  defaultValue={cls.event_topic || ""}
+                  onBlur={(e) => e.target.value !== (cls.event_topic || "") && onUpdate(cls.id, { event_topic: e.target.value })}
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    placeholder="תאריך"
+                    defaultValue={cls.event_date || ""}
+                    onBlur={(e) => e.target.value !== (cls.event_date || "") && onUpdate(cls.id, { event_date: e.target.value })}
+                  />
+                  <Input
+                    placeholder="שעה"
+                    defaultValue={cls.event_time || ""}
+                    onBlur={(e) => e.target.value !== (cls.event_time || "") && onUpdate(cls.id, { event_time: e.target.value })}
+                  />
+                </div>
+                <Input
+                  placeholder="בית ספר / עיר / מיקום"
+                  defaultValue={cls.event_location || ""}
+                  onBlur={(e) => e.target.value !== (cls.event_location || "") && onUpdate(cls.id, { event_location: e.target.value })}
+                />
+                {cls.leader_name && (
+                  <p className="text-xs font-hand text-muted-foreground pt-1">
+                    ראש קבוצה: <strong>{cls.leader_name}</strong>
+                    <button
+                      onClick={() => onUpdate(cls.id, { leader_name: null as any })}
+                      className="mr-2 text-destructive underline"
+                    >
+                      איפוס
+                    </button>
+                  </p>
+                )}
+              </div>
+
               {/* AI toggle */}
               <div className="flex items-center justify-between py-3 px-3 rounded-md bg-secondary/30">
                 <div className="flex items-center gap-2">

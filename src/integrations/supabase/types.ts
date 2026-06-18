@@ -59,7 +59,12 @@ export type Database = {
         Row: {
           ai_enabled: boolean
           created_at: string
+          event_date: string | null
+          event_location: string | null
+          event_time: string | null
+          event_topic: string | null
           id: string
+          leader_name: string | null
           locked_steps: Json
           name: string
           student_names: string[]
@@ -67,7 +72,12 @@ export type Database = {
         Insert: {
           ai_enabled?: boolean
           created_at?: string
+          event_date?: string | null
+          event_location?: string | null
+          event_time?: string | null
+          event_topic?: string | null
           id?: string
+          leader_name?: string | null
           locked_steps?: Json
           name: string
           student_names?: string[]
@@ -75,7 +85,12 @@ export type Database = {
         Update: {
           ai_enabled?: boolean
           created_at?: string
+          event_date?: string | null
+          event_location?: string | null
+          event_time?: string | null
+          event_topic?: string | null
           id?: string
+          leader_name?: string | null
           locked_steps?: Json
           name?: string
           student_names?: string[]

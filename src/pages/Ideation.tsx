@@ -33,7 +33,7 @@ const ALL_ROUNDS: IdeationRound[] = [
     detailedInstructions: [
       "כתבו פתרונות שהם בכוונה נוראיים או מגוחכים",
       "אל תצנזרו את עצמכם — ככל שיותר מוגזם, יותר טוב",
-      "בסוף הסבב — סמנו ⭐ על אלה שאפשר להפוך לרעיון טוב",
+      "בסוף הסבב — סמנו  על אלה שאפשר להפוך לרעיון טוב",
     ],
     example: "׳לגרום למשתמש לחכות שעתיים לכל פעולה׳ → ההיפך: ׳הכל מיידי בלחיצה אחת׳",
     placeholders: [
@@ -49,12 +49,12 @@ const ALL_ROUNDS: IdeationRound[] = [
   {
     id: "rapid_fire",
     title: "ירי מהיר",
-    emoji: "⚡",
-    description: "כתבו כמה שיותר רעיונות במהירות. לא חושבים, לא שופטים — פשוט כותבים! בסוף סמנו ⭐ את הזוכים.",
+    emoji: "",
+    description: "כתבו כמה שיותר רעיונות במהירות. לא חושבים, לא שופטים — פשוט כותבים! בסוף סמנו  את הזוכים.",
     detailedInstructions: [
       "הפעילו את הטיימר ותתחילו",
       "אסור למחוק! אסור לשפוט! כמות לפני איכות",
-      "בסוף — סמנו ⭐ על הרעיונות הכי טובים",
+      "בסוף — סמנו  על הרעיונות הכי טובים",
     ],
     example: "פשוט כתבו מילה, משפט, ציור — כל דבר שעולה בראש!",
     placeholders: [
@@ -71,12 +71,12 @@ const ALL_ROUNDS: IdeationRound[] = [
   {
     id: "reverse",
     title: "בונוס: הפוך על הפוך",
-    emoji: "🔃",
+    emoji: "",
     description: "סבב אופציונלי. קחו את הרעיונות הגרועים והפכו אותם — או שלבו שני רעיונות מהסבבים הקודמים לרעיון אחד מנצח.",
     detailedInstructions: [
       "חזרו לרעיונות הגרועים — מה ההיפך החכם שלהם?",
       "שלבו בין רעיונות מסבבים שונים",
-      "סמנו ⭐ את הרעיונות הסופיים שלכם",
+      "סמנו  את הרעיונות הסופיים שלכם",
     ],
     example: "רעיון גרוע ׳ממשק בסינית עתיקה׳ → הפוך: ׳ממשק כל כך פשוט שלא צריך שפה — רק אייקונים׳",
     placeholders: [
@@ -286,7 +286,7 @@ const Ideation = () => {
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <div className="flex items-center relative">
           <p className="text-base text-muted-foreground">
-            🎯 כללים: דחו שיפוט • הרבו בכמות • בנו על רעיונות של אחרים • היו ויזואליים
+             כללים: דחו שיפוט • הרבו בכמות • בנו על רעיונות של אחרים • היו ויזואליים
           </p>
           <SectionHelper
             stepKey="ideation"
@@ -324,7 +324,7 @@ const Ideation = () => {
 
           <div className="sketch-border p-4 mb-6 bg-secondary/30 max-w-lg mx-auto text-right">
             <p className="text-sm text-muted-foreground">
-              <span className="font-bold">💡 דוגמה: </span>
+              <span className="font-bold"> דוגמה: </span>
               {currentRound.example}
             </p>
           </div>
@@ -386,7 +386,7 @@ const Ideation = () => {
                 {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
               </div>
               {timerFinished && (
-                <p className="text-center text-destructive font-bold mt-1 animate-fade-in">⏰ הזמן נגמר! סמנו את הרעיונות הטובים ביותר ⭐</p>
+                <p className="text-center text-destructive font-bold mt-1 animate-fade-in"> הזמן נגמר! סמנו את הרעיונות הטובים ביותר </p>
               )}
             </div>
           </div>
@@ -446,7 +446,7 @@ const Ideation = () => {
                 onClick={() => { setShowBonus(true); setCurrentRoundIndex(2); setRoundStarted(false); }}
                 className="sketch-btn-outline flex items-center gap-2 text-sm"
               >
-                ✨ סבב בונוס: הפוך על הפוך
+                 סבב בונוס: הפוך על הפוך
               </button>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -460,7 +460,7 @@ const Ideation = () => {
       {/* All starred ideas summary */}
       {allStarred.length > 0 && (
         <div className="mt-8 sketch-border p-5 animate-fade-in">
-          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">⭐ רעיונות מסומנים מכל הסבבים</h3>
+          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3"> רעיונות מסומנים מכל הסבבים</h3>
           <ul className="space-y-2">
             {allStarred.map((idea, idx) => (
               <li key={idx} className="text-lg flex items-start gap-2">

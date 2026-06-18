@@ -27,7 +27,7 @@ const ITEMS: Item[] = [
   },
   {
     key: "idea",
-    title: "💡 הרעיון הנבחר",
+    title: " הרעיון הנבחר",
     description: "מה אתם בונים ולמה דווקא זה",
     url: "/effort-impact",
     sourceStep: "effort_impact",
@@ -45,7 +45,7 @@ const ITEMS: Item[] = [
   },
   {
     key: "pitch",
-    title: "🎤 סקריפט פיץ׳",
+    title: " סקריפט פיץ׳",
     description: "60 שניות שמוכרות",
     url: "/pitch",
     sourceStep: "pitch",
@@ -98,14 +98,14 @@ const Deliverables = () => {
     a.download = `hackathon-pack-${Date.now()}.md`;
     a.click();
     URL.revokeObjectURL(url);
-    toast({ title: "החבילה ירדה! 📦" });
+    toast({ title: "החבילה ירדה! " });
   };
 
   return (
     <Layout>
       <div className="max-w-3xl mx-auto space-y-6" dir="rtl">
         <div className="text-center">
-          <h1 className="font-sketch text-4xl mb-2">📦 מסירה</h1>
+          <h1 className="font-sketch text-4xl mb-2"> מסירה</h1>
           <p className="font-hand text-xl text-muted-foreground">
             חמישה תוצרים שצריכים לצאת מהיום הזה.
           </p>

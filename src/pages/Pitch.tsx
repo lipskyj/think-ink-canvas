@@ -113,7 +113,7 @@ const Pitch = () => {
         setPitch(withStyle);
         localStorage.setItem(STORAGE, JSON.stringify(withStyle));
         saveStepData("pitch", withStyle, true);
-        toast({ title: "הפיץ׳ מוכן! 🎤" });
+        toast({ title: "הפיץ׳ מוכן! " });
       }
     } catch (e: any) {
       toast({ title: "שגיאה", description: e.message, variant: "destructive" });
@@ -156,7 +156,7 @@ const Pitch = () => {
     setTimeout(() => {
       window.open("https://drive.google.com/drive/u/0/my-drive", "_blank");
       toast({
-        title: "פתח ב-Google Slides 🎯",
+        title: "פתח ב-Google Slides ",
         description: "1. הקובץ ירד למחשב. 2. גררו אותו לחלון Drive שנפתח. 3. לחצו עליו → 'פתח באמצעות' → Google Slides.",
         duration: 12000,
       });
@@ -212,7 +212,7 @@ const Pitch = () => {
     <Layout>
       <div className="max-w-3xl mx-auto space-y-6" dir="rtl">
         <div className="text-center">
-          <h1 className="font-sketch text-4xl mb-2">🎤 הפיץ׳</h1>
+          <h1 className="font-sketch text-4xl mb-2">הפיץ׳</h1>
           <p className="font-hand text-xl text-muted-foreground">
             60 שניות. מצגת אמיתית. שופטים מרוצים.
           </p>

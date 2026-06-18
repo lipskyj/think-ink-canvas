@@ -6,6 +6,7 @@ interface ClassSession {
   classId: string;
   className: string;
   studentName: string;
+  isLeader?: boolean;
 }
 
 interface ClassContextType {
@@ -13,6 +14,7 @@ interface ClassContextType {
   setSession: (session: ClassSession) => void;
   clearSession: () => void;
   isClassMode: boolean;
+  isLeader: boolean;
 }
 
 const ClassContext = createContext<ClassContextType>({
@@ -20,6 +22,7 @@ const ClassContext = createContext<ClassContextType>({
   setSession: () => {},
   clearSession: () => {},
   isClassMode: false,
+  isLeader: false,
 });
 
 function loadSession(): ClassSession | null {
@@ -45,7 +48,13 @@ export function ClassProvider({ children }: { children: ReactNode }) {
   const clearSession = useCallback(() => setSessionState(null), []);
 
   return (
-    <ClassContext.Provider value={{ session, setSession, clearSession, isClassMode: !!session }}>
+    <ClassContext.Provider value={{
+      session,
+      setSession,
+      clearSession,
+      isClassMode: !!session,
+      isLeader: !!session?.isLeader,
+    }}>
       {children}
     </ClassContext.Provider>
   );

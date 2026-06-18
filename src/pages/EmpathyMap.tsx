@@ -12,10 +12,10 @@ interface Quadrant {
 }
 
 const quadrants: Quadrant[] = [
-  { key: "says", label: "אומר", emoji: "💬", placeholder: "״אני תמיד מחפש דרך יותר קלה לעשות את זה...״", sectionKey: "says" },
-  { key: "thinks", label: "חושב", emoji: "🧠", placeholder: "״למה זה כל כך מסובך? בטח יש דרך טובה יותר...״", sectionKey: "thinks" },
-  { key: "does", label: "עושה", emoji: "🖐️", placeholder: "משווה בין אפשרויות, שואל חברים, מנסה ומוותר...", sectionKey: "does" },
-  { key: "feels", label: "מרגיש", emoji: "❤️", placeholder: "מתוסכל מהמורכבות, חושש לטעות, רוצה ביטחון...", sectionKey: "feels" },
+  { key: "says", label: "אומר", emoji: "", placeholder: "״אני תמיד מחפש דרך יותר קלה לעשות את זה...״", sectionKey: "says" },
+  { key: "thinks", label: "חושב", emoji: "", placeholder: "״למה זה כל כך מסובך? בטח יש דרך טובה יותר...״", sectionKey: "thinks" },
+  { key: "does", label: "עושה", emoji: "", placeholder: "משווה בין אפשרויות, שואל חברים, מנסה ומוותר...", sectionKey: "does" },
+  { key: "feels", label: "מרגיש", emoji: "", placeholder: "מתוסכל מהמורכבות, חושש לטעות, רוצה ביטחון...", sectionKey: "feels" },
 ];
 
 const EmpathyMap = () => {

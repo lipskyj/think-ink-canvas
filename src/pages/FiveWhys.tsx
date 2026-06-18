@@ -179,13 +179,13 @@ const FiveWhys = () => {
 
       {!problem.trim() && (
         <p className="text-sm text-muted-foreground text-center mt-6">
-          ✏️ הזינו את הבעיה כדי להתחיל את שרשרת ה"למה"
+           הזינו את הבעיה כדי להתחיל את שרשרת ה"למה"
         </p>
       )}
 
       {whys[4] && (
         <div className="mt-6 sketch-border p-5 bg-secondary/30 animate-fade-in">
-          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-2">🎯 שורש הבעיה</h3>
+          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-2"> שורש הבעיה</h3>
           <p className="text-xl">{whys[4]}</p>
         </div>
       )}

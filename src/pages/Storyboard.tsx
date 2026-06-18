@@ -56,6 +56,14 @@ const FRAME_GUIDES = [
   },
 ];
 
+const Storyboard = () => {
+  const { getStepData, getAllPreviousData } = useProject();
+  const [protagonist, setProtagonist] = useState("");
+  const [frames, setFrames] = useState<Frame[]>(
+    FRAME_GUIDES.map(() => ({ scene: "", action: "", emotion: "" }))
+  );
+
+
   useEffect(() => {
     const saved = getStepData("storyboard");
     if (saved?.frames) setFrames(saved.frames);

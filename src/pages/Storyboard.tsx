@@ -107,45 +107,50 @@ const Storyboard = () => {
       </div>
 
       <div className="space-y-4">
-        {frames.map((frame, i) => (
-          <div key={i} className="sketch-card">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center relative">
-                <h3 className="font-sketch text-lg">פריים {i + 1}</h3>
-                <SectionHelper stepKey="storyboard" sectionKey="frame" currentData={{ frames, currentFrame: i }} previousData={previousData} onApply={(v) => updateFrame(i, "scene", v)} />
+        {frames.map((frame, i) => {
+          const guide = FRAME_GUIDES[i] || FRAME_GUIDES[FRAME_GUIDES.length - 1];
+          return (
+            <div key={i} className="sketch-card">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 relative">
+                  <span className="text-2xl">{guide.emoji}</span>
+                  <h3 className="font-sketch text-lg">{guide.title}</h3>
+                  <SectionHelper stepKey="storyboard" sectionKey="frame" currentData={{ frames, currentFrame: i }} previousData={previousData} onApply={(v) => updateFrame(i, "scene", v)} />
+                </div>
+                {frames.length > 1 && (
+                  <button onClick={() => removeFrame(i)} className="p-1 hover:bg-accent rounded-sm">
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
-              {frames.length > 1 && (
-                <button onClick={() => removeFrame(i)} className="p-1 hover:bg-accent rounded-sm">
-                  <X className="h-4 w-4" />
-                </button>
-              )}
+              <div className="space-y-3">
+                <div>
+                  <div className="flex items-center relative">
+                    <label className="font-sketch text-xs text-muted-foreground block mb-1">{guide.sceneLabel}</label>
+                    <SectionHelper stepKey="storyboard" sectionKey="scene" currentData={{ frames, currentFrame: i }} previousData={previousData} onApply={(v) => updateFrame(i, "scene", v)} />
+                  </div>
+                  <input className="sketch-input" placeholder={guide.scenePh} value={frame.scene} onChange={(e) => updateFrame(i, "scene", e.target.value)} />
+                </div>
+                <div>
+                  <div className="flex items-center relative">
+                    <label className="font-sketch text-xs text-muted-foreground block mb-1">{guide.actionLabel}</label>
+                    <SectionHelper stepKey="storyboard" sectionKey="frameAction" currentData={{ frames, currentFrame: i }} previousData={previousData} onApply={(v) => updateFrame(i, "action", v)} />
+                  </div>
+                  <input className="sketch-input" placeholder={guide.actionPh} value={frame.action} onChange={(e) => updateFrame(i, "action", e.target.value)} />
+                </div>
+                <div>
+                  <div className="flex items-center relative">
+                    <label className="font-sketch text-xs text-muted-foreground block mb-1">{guide.emotionLabel}</label>
+                    <SectionHelper stepKey="storyboard" sectionKey="frameEmotion" currentData={{ frames, currentFrame: i }} previousData={previousData} />
+                  </div>
+                  <input className="sketch-input" placeholder={guide.emotionPh} value={frame.emotion} onChange={(e) => updateFrame(i, "emotion", e.target.value)} />
+                </div>
+              </div>
             </div>
-            <div className="space-y-3">
-              <div>
-                <div className="flex items-center relative">
-                  <label className="font-sketch text-xs text-muted-foreground block mb-1">🖼️ סצנה</label>
-                  <SectionHelper stepKey="storyboard" sectionKey="scene" currentData={{ frames, currentFrame: i }} previousData={previousData} onApply={(v) => updateFrame(i, "scene", v)} />
-                </div>
-                <input className="sketch-input" placeholder={SCENE_PLACEHOLDERS[i % SCENE_PLACEHOLDERS.length]} value={frame.scene} onChange={(e) => updateFrame(i, "scene", e.target.value)} />
-              </div>
-              <div>
-                <div className="flex items-center relative">
-                  <label className="font-sketch text-xs text-muted-foreground block mb-1">🖐️ פעולה</label>
-                  <SectionHelper stepKey="storyboard" sectionKey="frameAction" currentData={{ frames, currentFrame: i }} previousData={previousData} onApply={(v) => updateFrame(i, "action", v)} />
-                </div>
-                <input className="sketch-input" placeholder={ACTION_PLACEHOLDERS[i % ACTION_PLACEHOLDERS.length]} value={frame.action} onChange={(e) => updateFrame(i, "action", e.target.value)} />
-              </div>
-              <div>
-                <div className="flex items-center relative">
-                  <label className="font-sketch text-xs text-muted-foreground block mb-1">💭 רגש</label>
-                  <SectionHelper stepKey="storyboard" sectionKey="frameEmotion" currentData={{ frames, currentFrame: i }} previousData={previousData} />
-                </div>
-                <input className="sketch-input" placeholder={EMOTION_PLACEHOLDERS[i % EMOTION_PLACEHOLDERS.length]} value={frame.emotion} onChange={(e) => updateFrame(i, "emotion", e.target.value)} />
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
 
       <button onClick={addFrame} className="sketch-btn-outline mt-4 flex items-center gap-2 text-sm">
         <Plus className="h-4 w-4" /> הוסף פריים

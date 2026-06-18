@@ -66,7 +66,7 @@ const Index = () => {
         <section className="text-center pt-6 pb-12">
           <span className="pill-chip pill-chip-coral mb-6 inline-block">האקתון לחשיבה עיצובית</span>
           <h1 className="display-mega leading-[0.85] mb-4">
-            חשוב.<br/>צור.<br/>שבור.
+            חשוב.<br/>צור.<br/>הצג.
           </h1>
           <p className="font-hand text-2xl md:text-3xl max-w-2xl mx-auto leading-snug text-foreground/80">
             לוקחים בעיה אמיתית, חופרים בה לעומק, ובונים פתרון שאפשר להראות —

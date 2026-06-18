@@ -99,9 +99,12 @@ const Ideation = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
+  const [showBonus, setShowBonus] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const currentRound = ROUNDS[currentRoundIndex];
+  const ROUNDS = showBonus ? ALL_ROUNDS : ALL_ROUNDS.slice(0, 2);
+  const currentRound = ROUNDS[currentRoundIndex] || ROUNDS[0];
+
 
   useEffect(() => {
     const saved = getStepData("ideation");

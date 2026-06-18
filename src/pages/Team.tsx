@@ -47,7 +47,7 @@ export default function Team() {
           setMembers(
             names.length
               ? names.map((n) => ({ name: n, gender: "other" as Gender }))
-              : [{ name: session.studentName, gender: "other" }],
+              : [{ name: "", gender: "other" }],
           );
           setAvatarUrl(data.team_avatar_url || null);
         }

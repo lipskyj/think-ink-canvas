@@ -65,17 +65,24 @@ export default function Admin() {
   }
 
   const createClass = async () => {
-    if (!newClassName.trim()) return;
-    const names = newStudentNames.split("\n").map((n) => n.trim()).filter(Boolean);
-    const { error } = await supabase.from("classes").insert({ name: newClassName.trim(), student_names: names });
-    if (error) {
-      toast({ title: "שגיאה", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "הכיתה נוצרה " });
-      setNewClassName("");
-      setNewStudentNames("");
-      fetchClasses();
+    // Name is optional — team will rename themselves. Use a placeholder; we'll update it to the join code after insert.
+    const { data, error } = await supabase
+      .from("classes")
+      .insert({ name: newClassName.trim() || "קבוצה חדשה", student_names: [] })
+      .select("id, join_code")
+      .single();
+    if (error || !data) {
+      toast({ title: "שגיאה", description: error?.message || "", variant: "destructive" });
+      return;
     }
+    // If admin didn't provide a name, default to the join code so it's identifiable.
+    if (!newClassName.trim() && data.join_code) {
+      await supabase.from("classes").update({ name: `קבוצה ${data.join_code}` }).eq("id", data.id);
+    }
+    toast({ title: "הקבוצה נוצרה" });
+    setNewClassName("");
+    setNewStudentNames("");
+    fetchClasses();
   };
 
   const deleteClass = async (id: string) => {
@@ -127,27 +134,14 @@ export default function Admin() {
 
         {/* Create new group */}
         <div className="sketch-card mb-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-2">
             <Plus className="h-5 w-5" />
             <h2 className="font-sketch text-lg">קבוצה חדשה</h2>
           </div>
-          <Input
-            placeholder="שם זמני (התלמידים יוכלו לשנות)"
-            value={newClassName}
-            onChange={(e) => setNewClassName(e.target.value)}
-            className="mb-2"
-          />
-          <p className="text-xs text-muted-foreground font-hand mb-2">
-            לא חייבים למלא שמות — התלמידים יזינו את שמם בעצמם דרך קישור ההצטרפות.
+          <p className="text-xs text-muted-foreground font-hand mb-3">
+            לא צריך לתת שם — המערכת תיצור קוד הצטרפות (כמו A6) והקבוצה תבחר לעצמה שם בהמשך.
           </p>
-          <Textarea
-            placeholder={"שמות (אופציונלי) — שם אחד בכל שורה"}
-            value={newStudentNames}
-            onChange={(e) => setNewStudentNames(e.target.value)}
-            rows={3}
-            className="mb-3 text-sm"
-          />
-          <button onClick={createClass} disabled={!newClassName.trim()} className="sketch-btn flex items-center gap-2 text-sm disabled:opacity-50">
+          <button onClick={createClass} className="sketch-btn flex items-center gap-2 text-sm">
             <Plus className="h-4 w-4" /> צור קבוצה
           </button>
         </div>

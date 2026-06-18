@@ -11,10 +11,11 @@ interface Body {
 }
 
 const STYLE = [
-  "Hand-drawn monochrome ink illustration, sketchy notebook aesthetic,",
-  "black pen on cream paper, loose confident lines, slight cross-hatching,",
-  "zine / storytelling vibe, expressive characters, no color, no background frame,",
-  "centered composition on plain off-white paper, no text, no logos.",
+  "Flat-color cartoon illustration in the same style as a friendly animated character named Noam:",
+  "warm cream/off-white background, simple confident hand-drawn black outlines,",
+  "soft flat colors (mustard yellow, coral pink, mint green, warm browns),",
+  "expressive faces with simple eyes and eyebrows, slightly sketchy lines, modern storybook feel,",
+  "no gradients, no shading complexity, no photorealism, no text, no logos.",
 ].join(" ");
 
 Deno.serve(async (req) => {
@@ -28,18 +29,16 @@ Deno.serve(async (req) => {
 
   try {
     const body = (await req.json()) as Body;
-    const members = (body.members || []).filter((m) => m && (m.name || m.gender));
+    const members = (body.members || []).filter((m) => m && m.gender);
     const memberDesc = members.length
       ? members
-          .map((m, i) => {
-            const g =
-              m.gender === "male"
-                ? "young man"
-                : m.gender === "female"
-                ? "young woman"
-                : "young person";
-            return m.name ? `${g} (${m.name})` : g;
-          })
+          .map((m) =>
+            m.gender === "male"
+              ? "young man"
+              : m.gender === "female"
+              ? "young woman"
+              : "young person",
+          )
           .join(", ")
       : "a small group of young people";
 
@@ -47,7 +46,7 @@ Deno.serve(async (req) => {
 
     const prompt = `${STYLE} A team portrait of ${memberDesc}. Situation: ${situation}. Group of ${
       members.length || 3
-    } characters, full body, drawn in the same illustration style as a friendly storybook character.`;
+    } characters together, friendly cartoon style matching the Noam character reference.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
       method: "POST",

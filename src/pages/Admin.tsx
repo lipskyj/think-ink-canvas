@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Layout from "@/components/Layout";
 import { STEPS, PHASES, getStepByKey } from "@/lib/steps";
 import { Switch } from "@/components/ui/switch";
@@ -53,6 +53,7 @@ export default function Admin() {
     event_location: "",
     organizer_logo_url: "",
   });
+  const eventDraftHydrated = useRef(false);
 
   const fetchClasses = useCallback(async () => {
     const { data } = await supabase.from("classes").select("*").order("created_at", { ascending: false });
@@ -69,9 +70,9 @@ export default function Admin() {
 
   useEffect(() => {
     if (!classes.length) return;
-    const hasDraft = Object.values(eventDraft).some(Boolean);
-    if (hasDraft) return;
+    if (eventDraftHydrated.current) return;
     const source = classes.find((cls) => cls.event_topic || cls.event_description || cls.event_date || cls.event_time || cls.event_location || cls.organizer_logo_url) || classes[0];
+    eventDraftHydrated.current = true;
     setEventDraft({
       event_topic: source.event_topic || "",
       event_description: source.event_description || "",
@@ -80,7 +81,7 @@ export default function Admin() {
       event_location: source.event_location || "",
       organizer_logo_url: source.organizer_logo_url || "",
     });
-  }, [classes, eventDraft]);
+  }, [classes]);
 
   // Students in class mode cannot access admin
   if (isClassMode) {

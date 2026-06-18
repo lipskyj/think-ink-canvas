@@ -221,7 +221,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     async (stepKey: string, data: any, silent?: boolean) => {
       setStepData((prev) => {
         const existing = prev[stepKey];
-        return {
+        const next = {
           ...prev,
           [stepKey]: {
             step_key: stepKey,
@@ -229,6 +229,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             completed: existing?.completed ?? false,
           },
         };
+        stepDataRef.current = next;
+        return next;
       });
       if (isClassMode) {
         const existing = stepDataRef.current[stepKey];

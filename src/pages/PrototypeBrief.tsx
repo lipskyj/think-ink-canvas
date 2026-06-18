@@ -30,7 +30,7 @@ const PrototypeBrief = () => {
   useAutoFill("prototype_brief", autoFillFields);
 
   const getData = useCallback(() => brief, [brief]);
-  const hasContent = brief.objective.trim() || brief.scope.trim();
+  const hasContent = brief.objective.trim() || brief.keyFeatures.trim();
   const previousData = getAllPreviousData("prototype_brief");
 
   return (

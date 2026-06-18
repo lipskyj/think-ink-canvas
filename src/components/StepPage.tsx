@@ -232,7 +232,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
                 aria-label="השלב הקודם"
                 title="הקודם"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
               </button>
             )}
           </div>
@@ -270,7 +270,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
                 aria-label="השלב הבא"
                 title="הבא"
               >
-                <ArrowRight className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
               </button>
             )}
           </div>

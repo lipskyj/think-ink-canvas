@@ -356,4 +356,129 @@ const EffortImpact = () => {
   );
 };
 
+// ── Simple Mode: 3 quick questions per idea, auto-rank ───────────────
+const HOURS_OPTS = [
+  { v: 1, label: "1 שעה" },
+  { v: 3, label: "3 שעות" },
+  { v: 6, label: "6+ שעות" },
+] as const;
+const WOW_OPTS = [
+  { v: 1, label: "קצת" },
+  { v: 2, label: "הרבה" },
+  { v: 3, label: "וואו" },
+] as const;
+const CAN_OPTS = [
+  { v: 3, label: "כן" },
+  { v: 2, label: "חצי" },
+  { v: 1, label: "לא" },
+] as const;
+
+interface SimpleProps {
+  ideas: MatrixIdea[];
+  setIdeas: React.Dispatch<React.SetStateAction<MatrixIdea[]>>;
+}
+
+const SimpleScoringMode = ({ ideas, setIdeas }: SimpleProps) => {
+  const setField = (id: string, field: "hours" | "wow" | "canBuild", value: number) => {
+    setIdeas((prev) =>
+      prev.map((it) =>
+        it.id === id ? { ...it, [field]: value as any, placed: true, x: 100 - value * 30, y: 100 - value * 30 } : it,
+      ),
+    );
+  };
+
+  // Score: higher = better. wow + canBuild - hours/2. Only ideas with all 3 answered are scored.
+  const scored = ideas
+    .map((it) => {
+      const complete = it.hours != null && it.wow != null && it.canBuild != null;
+      const score = complete ? (it.wow! + it.canBuild!) * 2 - it.hours! : -Infinity;
+      return { ...it, _score: score, _complete: complete };
+    })
+    .sort((a, b) => b._score - a._score);
+
+  const winner = scored.find((s) => s._complete);
+  const rest = scored.filter((s) => s !== winner);
+
+  if (ideas.length === 0) {
+    return (
+      <div className="sketch-border p-6 mb-4 bg-secondary/10 text-center">
+        <p className="font-hand text-base text-muted-foreground">
+          אין רעיונות עדיין. חזרו לשלב <strong>סופת רעיונות</strong>, סמנו ❤️ על הרעיונות שאתם אוהבים, וחזרו לכאן.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3 mb-6">
+      {winner && winner._complete && (
+        <div className="sketch-border p-5 bg-foreground text-background animate-fade-in">
+          <div className="flex items-center gap-2 mb-1">
+            <Trophy size={20} />
+            <span className="font-sketch text-lg">המנצח — בנו את זה!</span>
+          </div>
+          <p className="font-hand text-2xl mt-1">{winner.text}</p>
+        </div>
+      )}
+
+      {rest.map((idea) => (
+        <div key={idea.id} className="sketch-card p-4">
+          <p className="font-sketch text-base mb-3">{idea.text}</p>
+          <div className="grid md:grid-cols-3 gap-3">
+            <ScoreRow
+              label="⏱️ כמה שעות לדמו?"
+              options={HOURS_OPTS as any}
+              value={idea.hours}
+              onChange={(v) => setField(idea.id, "hours", v)}
+            />
+            <ScoreRow
+              label="🤯 כמה זה ירגש?"
+              options={WOW_OPTS as any}
+              value={idea.wow}
+              onChange={(v) => setField(idea.id, "wow", v)}
+            />
+            <ScoreRow
+              label="🛠️ יודעים לבנות?"
+              options={CAN_OPTS as any}
+              value={idea.canBuild}
+              onChange={(v) => setField(idea.id, "canBuild", v)}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ScoreRow = ({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly { v: number; label: string }[];
+  value: number | undefined;
+  onChange: (v: number) => void;
+}) => (
+  <div>
+    <div className="font-hand text-xs text-muted-foreground mb-1">{label}</div>
+    <div className="flex gap-1">
+      {options.map((opt) => (
+        <button
+          key={opt.v}
+          onClick={() => onChange(opt.v)}
+          type="button"
+          className={`flex-1 sketch-border-thin py-1.5 text-xs font-hand ${
+            value === opt.v ? "bg-foreground text-background" : "bg-background hover:bg-secondary/40"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
 export default EffortImpact;
+

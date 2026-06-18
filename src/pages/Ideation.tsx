@@ -456,19 +456,19 @@ const Ideation = () => {
             </button>
           </div>
 
-          {/* Navigation buttons — RTL: prev on left, next on right */}
+          {/* Navigation buttons — RTL: previous points right, next points left */}
           <div className="flex items-center justify-between mt-8">
             <button
               onClick={goToPrevRound}
               disabled={currentRoundIndex === 0}
               className="sketch-btn-outline flex items-center gap-1 text-sm disabled:opacity-30"
             >
-              <ChevronLeft className="h-4 w-4" /> סבב קודם
+              <ChevronRight className="h-4 w-4" /> סבב קודם
             </button>
 
             {currentRoundIndex < ROUNDS.length - 1 ? (
               <button onClick={goToNextRound} className="sketch-btn flex items-center gap-2 text-sm">
-                לסבב הבא <ChevronRight className="h-4 w-4" />
+                לסבב הבא <ChevronLeft className="h-4 w-4" />
               </button>
             ) : !showBonus ? (
               <button

@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { useProject } from "@/contexts/ProjectContext";
 import { useClass } from "@/contexts/ClassContext";
 import { STEPS, PHASES } from "@/lib/steps";
-import { Calendar, MapPin, Lightbulb, ArrowLeft, Users, Crown, Loader2 } from "lucide-react";
+import { Calendar, MapPin, Lightbulb, ArrowLeft, Users, Crown, Loader2, LogIn, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 interface EventInfo {
   event_date?: string | null;
   event_time?: string | null;
   event_location?: string | null;
   event_topic?: string | null;
+  event_description?: string | null;
+  organizer_logo_url?: string | null;
+  team_avatar_url?: string | null;
 }
 
 const PHASE_BADGE: Record<string, string> = {
@@ -24,14 +29,18 @@ const PHASE_BADGE: Record<string, string> = {
 const Index = () => {
   const { isStepCompleted, isLoading } = useProject();
   const { session, isClassMode, isLeader } = useClass();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [event, setEvent] = useState<EventInfo | null>(null);
   const [members, setMembers] = useState<string[]>([]);
+  const [codeInput, setCodeInput] = useState("");
+  const [joining, setJoining] = useState(false);
 
   useEffect(() => {
     if (!isClassMode || !session) return;
     supabase
       .from("classes")
-      .select("event_date, event_time, event_location, event_topic, student_names")
+      .select("event_date, event_time, event_location, event_topic, event_description, organizer_logo_url, team_avatar_url, student_names")
       .eq("id", session.classId)
       .single()
       .then(({ data }) => {
@@ -41,10 +50,30 @@ const Index = () => {
           event_time: data.event_time,
           event_location: data.event_location,
           event_topic: data.event_topic,
+          event_description: (data as any).event_description,
+          organizer_logo_url: (data as any).organizer_logo_url,
+          team_avatar_url: (data as any).team_avatar_url,
         });
         setMembers(data.student_names || []);
       });
   }, [isClassMode, session]);
+
+  const joinByCode = async () => {
+    const code = codeInput.trim().toUpperCase();
+    if (!code) return;
+    setJoining(true);
+    const { data, error } = await supabase
+      .from("classes")
+      .select("id")
+      .eq("join_code", code)
+      .maybeSingle();
+    setJoining(false);
+    if (error || !data) {
+      toast({ title: "קוד לא נמצא", description: "בדקו את הקוד עם המארגן", variant: "destructive" });
+      return;
+    }
+    navigate(`/join/${data.id}`);
+  };
 
   if (isLoading) {
     return (
@@ -73,6 +102,39 @@ const Index = () => {
             תוך שימוש בכלי AI שעוזרים לכם לחשוב חד יותר.
           </p>
         </section>
+
+        {/* JOIN BY CODE — only when not yet in a group */}
+        {!isClassMode && (
+          <section className="sketch-card mb-12 max-w-md mx-auto">
+            <div className="flex items-center gap-2 mb-3">
+              <LogIn className="h-5 w-5" />
+              <h2 className="font-sketch text-lg">הצטרפו לקבוצה</h2>
+            </div>
+            <p className="font-hand text-sm text-muted-foreground mb-3">
+              הזינו את קוד הקבוצה שקיבלתם מהמארגן (למשל A6, Z2).
+            </p>
+            <div className="flex gap-2">
+              <Input
+                value={codeInput}
+                onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                placeholder="A6"
+                maxLength={4}
+                className="text-center font-sketch text-2xl tracking-widest uppercase"
+                dir="ltr"
+                onKeyDown={(e) => e.key === "Enter" && joinByCode()}
+              />
+              <button
+                onClick={joinByCode}
+                disabled={joining || !codeInput.trim()}
+                className="sketch-btn flex items-center gap-1 disabled:opacity-50"
+              >
+                {joining ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowLeft className="h-4 w-4" />}
+                המשך
+              </button>
+            </div>
+          </section>
+        )}
+
 
         {/* GROUP + EVENT CARD (only in class mode) */}
         {isClassMode && session && (

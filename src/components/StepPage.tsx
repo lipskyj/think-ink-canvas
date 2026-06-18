@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock, BookOpen } from "lucide-react";
+import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock, BookOpen, Home } from "lucide-react";
 import Layout from "@/components/Layout";
 import { useProject } from "@/contexts/ProjectContext";
 import { useAdmin } from "@/contexts/AdminContext";

@@ -156,7 +156,10 @@ export default function Admin() {
   };
 
   const updateEventForAllGroups = async (updates: Partial<ClassRow>) => {
-    setEventDraft((prev) => ({ ...prev, ...(updates as any) }));
+    const draftUpdates = Object.fromEntries(
+      Object.entries(updates).map(([key, value]) => [key, value ? String(value) : ""]),
+    );
+    setEventDraft((prev) => ({ ...prev, ...(draftUpdates as Partial<typeof prev>) }));
     if (classes.length === 0) return;
     const dbUpdates = Object.fromEntries(Object.entries(updates).map(([key, value]) => [key, value || null]));
     const { error } = await supabase.from("classes").update(dbUpdates).in("id", classes.map((cls) => cls.id));

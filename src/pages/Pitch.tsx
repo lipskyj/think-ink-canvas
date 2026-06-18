@@ -6,7 +6,7 @@ import { useHackathon } from "@/contexts/HackathonContext";
 import { STEPS } from "@/lib/steps";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Copy, Play, Pause, RotateCcw, Mic, Download, FileText, ArrowRight, Volume2 } from "lucide-react";
+import { Sparkles, Copy, Play, Pause, RotateCcw, Mic, Download, FileText, ArrowRight, Volume2, Image as ImageIcon, ExternalLink } from "lucide-react";
 import PitchStylePicker from "@/components/PitchStylePicker";
 import { getPitchStyle, PitchStyleKey } from "@/lib/pitchStyles";
 import { buildPitchDeck } from "@/lib/pitchDeck";
@@ -34,6 +34,8 @@ const Pitch = () => {
   const { toast } = useToast();
   const [styleKey, setStyleKey] = useState<PitchStyleKey | null>(null);
   const [pitch, setPitch] = useState<PitchData | null>(null);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [imgLoading, setImgLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [practice, setPractice] = useState(60);
   const [running, setRunning] = useState(false);

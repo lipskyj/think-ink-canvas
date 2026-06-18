@@ -76,24 +76,29 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   if (!step) return null;
 
 
-  const handleSave = async () => {
-    if (onSave) {
-      const data = onSave();
+  const persistCurrentStep = async (silent = false) => {
+    const saveFn = onSaveRef.current;
+    if (saveFn) {
+      const data = saveFn();
       if (data) {
-        await saveStepData(stepKey, data);
+        await saveStepData(stepKey, data, silent);
       }
     }
   };
 
+  const navigateWithSave = async (url: string) => {
+    await persistCurrentStep(true);
+    navigate(url);
+  };
+
+  const handleSave = async () => {
+    await persistCurrentStep(false);
+  };
+
   const handleComplete = async () => {
-    if (onSave) {
-      const data = onSave();
-      if (data) {
-        await saveStepData(stepKey, data);
-      }
-    }
+    await persistCurrentStep(true);
     await completeStep(stepKey);
-    navigate("/");
+    navigate(next?.url ?? "/");
   };
 
   const handleUncomplete = async () => {
@@ -227,7 +232,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
           <div className="flex items-center gap-2">
             {prev && (
               <button
-                onClick={() => navigate(prev.url)}
+                onClick={() => navigateWithSave(prev.url)}
                 className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
                 aria-label="השלב הקודם"
                 title="הקודם"
@@ -265,7 +270,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
 
             {next && (
               <button
-                onClick={() => navigate(next.url)}
+                onClick={() => navigateWithSave(next.url)}
                 className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
                 aria-label="השלב הבא"
                 title="הבא"

@@ -1,86 +1,104 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { Sparkles, Pencil } from "lucide-react";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
-import LinkedDataBanner from "@/components/LinkedDataBanner";
-import SectionHelper from "@/components/SectionHelper";
-import { useAutoFill } from "@/hooks/useAutoFill";
 
 const PointOfView = () => {
-  const { getStepData, getAllPreviousData } = useProject();
+  const { getStepData } = useProject();
   const [user, setUser] = useState("");
   const [need, setNeed] = useState("");
   const [insight, setInsight] = useState("");
+  const [editing, setEditing] = useState(false);
+
+  // Auto-derive POV from previous steps (persona + empathy + five whys)
+  const derived = useMemo(() => {
+    const persona = getStepData("user_persona") || {};
+    const empathy = getStepData("empathy_map") || {};
+    const fiveWhys = getStepData("five_whys") || {};
+
+    const u =
+      (persona.name ? `${persona.name}${persona.occupation ? `, ${persona.occupation}` : ""}` : "") ||
+      empathy.userDesc ||
+      "";
+    const n = persona.goals || empathy.quadrants?.does || "";
+    let root = "";
+    const whys = fiveWhys.whys || [];
+    for (let i = whys.length - 1; i >= 0; i--) {
+      if (whys[i]?.trim()) { root = whys[i]; break; }
+    }
+    const ins = root || persona.frustrations || empathy.quadrants?.feels || "";
+    return { user: u, need: n, insight: ins };
+  }, [getStepData]);
 
   useEffect(() => {
     const saved = getStepData("pov_statement");
-    if (saved) {
-      if (saved.user) setUser(saved.user);
-      if (saved.need) setNeed(saved.need);
-      if (saved.insight) setInsight(saved.insight);
+    if (saved?.user || saved?.need || saved?.insight) {
+      setUser(saved.user || "");
+      setNeed(saved.need || "");
+      setInsight(saved.insight || "");
+    } else {
+      setUser(derived.user);
+      setNeed(derived.need);
+      setInsight(derived.insight);
     }
-  }, [getStepData]);
+  }, [getStepData, derived]);
 
-  const autoFillFields = useMemo(() => ({
-    user: { value: user, set: setUser },
-    need: { value: need, set: setNeed },
-    insight: { value: insight, set: setInsight },
-  }), [user, need, insight]);
-  useAutoFill("pov_statement", autoFillFields);
-
-  const handleApplyLinked = (field: string, value: string) => {
-    if (field === "user" && !user.trim()) setUser(value);
-    if (field === "need" && !need.trim()) setNeed(value);
-    if (field === "insight" && !insight.trim()) setInsight(value);
+  const regenerate = () => {
+    setUser(derived.user);
+    setNeed(derived.need);
+    setInsight(derived.insight);
   };
 
   const getData = useCallback(() => ({ user, need, insight }), [user, need, insight]);
   const hasContent = !!(user.trim() || need.trim() || insight.trim());
-  const previousData = getAllPreviousData("pov_statement");
 
   return (
     <StepPage stepKey="pov_statement" onSave={getData} canComplete={hasContent}>
-      <LinkedDataBanner stepKey="pov_statement" onApplyField={handleApplyLinked} />
-
-      <div className="sketch-border p-6 mb-6 bg-secondary/20">
-        <p className="text-lg text-center text-muted-foreground mb-4">
-          [משתמש] צריך [צורך] כי [תובנה]
+      <div className="sketch-border p-5 mb-6 bg-secondary/20">
+        <p className="font-hand text-lg text-foreground/80">
+          ה-POV נוצר אוטומטית מהפרסונה, מפת האמפתיה וחמישה למה. אפשר לערוך אם רוצים.
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="sketch-card">
-          <div className="flex items-center relative">
-            <label className="font-semibold text-lg block mb-2"> משתמש</label>
-            <SectionHelper stepKey="pov_statement" sectionKey="user" currentData={{ user, need, insight }} previousData={previousData} onApply={(v) => setUser(v)} />
+      <div className="sketch-card mb-6">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <span className="pill-chip pill-chip-outline">הצהרת ה-POV שלכם</span>
+          <div className="flex gap-2">
+            <button onClick={regenerate} className="sketch-btn-outline text-sm flex items-center gap-1">
+              <Sparkles className="h-3 w-3" /> חולל מחדש מהנתונים
+            </button>
+            <button onClick={() => setEditing(!editing)} className="sketch-btn-outline text-sm flex items-center gap-1">
+              <Pencil className="h-3 w-3" /> {editing ? "סיים" : "ערוך"}
+            </button>
           </div>
-          <p className="text-muted-foreground text-sm mb-2">מיהו המשתמש הספציפי שאתם מעצבים עבורו?</p>
-          <input className="sketch-input" placeholder="סטודנט דור ראשון שמנסה..." value={user} onChange={(e) => setUser(e.target.value)} />
         </div>
-        <div className="sketch-card">
-          <div className="flex items-center relative">
-            <label className="font-semibold text-lg block mb-2"> צורך</label>
-            <SectionHelper stepKey="pov_statement" sectionKey="need" currentData={{ user, need, insight }} previousData={previousData} onApply={(v) => setNeed(v)} />
-          </div>
-          <p className="text-muted-foreground text-sm mb-2">מה הצורך של המשתמש? (השתמשו בפועל, לא בפתרון)</p>
-          <input className="sketch-input" placeholder="...צריך להרגיש בטוח כשהוא מנווט..." value={need} onChange={(e) => setNeed(e.target.value)} />
-        </div>
-        <div className="sketch-card">
-          <div className="flex items-center relative">
-            <label className="font-semibold text-lg block mb-2"> תובנה</label>
-            <SectionHelper stepKey="pov_statement" sectionKey="insight" currentData={{ user, need, insight }} previousData={previousData} onApply={(v) => setInsight(v)} />
-          </div>
-          <p className="text-muted-foreground text-sm mb-2">למה? איזו תובנה מפתיעה גיליתם?</p>
-          <input className="sketch-input" placeholder="...כי אין להם בני משפחה לשאול..." value={insight} onChange={(e) => setInsight(e.target.value)} />
-        </div>
-      </div>
 
-      {(user || need || insight) && (
-        <div className="mt-6 sketch-border p-5 bg-card animate-fade-in">
-          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-2">הצהרת ה-POV שלכם</h3>
-          <p className="text-xl leading-relaxed">
+        {!editing ? (
+          <p className="text-2xl leading-relaxed">
             <strong>{user || "___"}</strong> צריך <strong>{need || "___"}</strong> כי <strong>{insight || "___"}</strong>.
           </p>
-        </div>
+        ) : (
+          <div className="space-y-3 animate-fade-in">
+            <div>
+              <label className="text-sm text-muted-foreground block mb-1">משתמש</label>
+              <input className="sketch-input" value={user} onChange={(e) => setUser(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground block mb-1">צורך</label>
+              <input className="sketch-input" value={need} onChange={(e) => setNeed(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground block mb-1">תובנה</label>
+              <input className="sketch-input" value={insight} onChange={(e) => setInsight(e.target.value)} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {!hasContent && (
+        <p className="font-hand text-muted-foreground text-center">
+          השלימו קודם את פרסונת המשתמש, מפת האמפתיה וחמישה למה כדי שנוכל לחולל POV עבורכם.
+        </p>
       )}
     </StepPage>
   );

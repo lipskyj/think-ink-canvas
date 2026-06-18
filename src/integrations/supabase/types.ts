@@ -70,7 +70,11 @@ export type Database = {
           locked_steps: Json
           name: string
           organizer_logo_url: string | null
+          prototype_url: string | null
+          slides_url: string | null
           student_names: string[]
+          submission_notes: string | null
+          submitted_at: string | null
           team_avatar_prompt: string | null
           team_avatar_url: string | null
         }
@@ -88,7 +92,11 @@ export type Database = {
           locked_steps?: Json
           name: string
           organizer_logo_url?: string | null
+          prototype_url?: string | null
+          slides_url?: string | null
           student_names?: string[]
+          submission_notes?: string | null
+          submitted_at?: string | null
           team_avatar_prompt?: string | null
           team_avatar_url?: string | null
         }
@@ -106,7 +114,11 @@ export type Database = {
           locked_steps?: Json
           name?: string
           organizer_logo_url?: string | null
+          prototype_url?: string | null
+          slides_url?: string | null
           student_names?: string[]
+          submission_notes?: string | null
+          submitted_at?: string | null
           team_avatar_prompt?: string | null
           team_avatar_url?: string | null
         }

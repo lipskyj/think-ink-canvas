@@ -30,6 +30,8 @@ const PrdGenerator = () => {
   const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [autoTriggered, setAutoTriggered] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const saved = getStepData("prd_generator");
@@ -37,9 +39,9 @@ const PrdGenerator = () => {
       if (saved.prdOutput) setPrdOutput(saved.prdOutput);
       if (saved.additionalNotes) setAdditionalNotes(saved.additionalNotes);
     }
+    setHydrated(true);
   }, [getStepData]);
 
-  // Collect all previous step data
   const collectAllData = useCallback(() => {
     const allData: Record<string, any> = {};
     STEPS.forEach((step) => {
@@ -59,7 +61,7 @@ const PrdGenerator = () => {
     (s) => s.key !== "prd_generator" && (!stepData[s.key]?.data || Object.keys(stepData[s.key].data).length === 0)
   );
 
-  const generatePRD = async () => {
+  const generatePRD = useCallback(async () => {
     setGenerating(true);
     try {
       const allData = collectAllData();
@@ -75,19 +77,28 @@ const PrdGenerator = () => {
       if (error) throw error;
       if (data?.content) {
         setPrdOutput(data.content);
-        toast({ title: "PRD נוצר בהצלחה! " });
+        toast({ title: "PRD נוצר בהצלחה!" });
       }
     } catch (e: any) {
       toast({ title: "שגיאה ביצירת PRD", description: e.message, variant: "destructive" });
     } finally {
       setGenerating(false);
     }
-  };
+  }, [additionalNotes, collectAllData, toast]);
+
+  // Auto-generate on mount when there is enough data and no existing PRD
+  useEffect(() => {
+    if (!hydrated || autoTriggered || generating) return;
+    if (prdOutput && prdOutput.trim().length > 0) return;
+    if (filledSteps.length < 1) return;
+    setAutoTriggered(true);
+    generatePRD();
+  }, [hydrated, autoTriggered, generating, prdOutput, filledSteps.length, generatePRD]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(prdOutput);
     setCopied(true);
-    toast({ title: "הועתק ללוח! " });
+    toast({ title: "הועתק ללוח!" });
     setTimeout(() => setCopied(false), 2000);
   };
 

@@ -26,12 +26,15 @@ interface BriefState {
 type Bucket = "must" | "should" | "could" | "wont";
 
 const STYLE_VIBES = [
-  { key: "minimal", label: "מינימליסטי", swatch: ["#ffffff", "#111111", "#e5e5e5"], font: "'Heebo', sans-serif" },
-  { key: "playful", label: "שובב / חי", swatch: ["#ff6b6b", "#ffd166", "#06d6a0"], font: "'Heebo', sans-serif" },
-  { key: "editorial", label: "אדיטוריאל", swatch: ["#1a1a1a", "#f5f1e8", "#c9a87a"], font: "'Heebo', serif" },
-  { key: "tech", label: "טכנולוגי / נקי", swatch: ["#0a0e27", "#3b82f6", "#e2e8f0"], font: "'Heebo', sans-serif" },
-  { key: "brutalist", label: "ברוטליסטי", swatch: ["#000000", "#ffff00", "#ffffff"], font: "'Heebo', monospace" },
-  { key: "warm", label: "חם / אנושי", swatch: ["#fef3e8", "#ff8c42", "#5a3825"], font: "'Heebo', sans-serif" },
+  { key: "cyber", label: "סייבר / ניאון", swatch: ["#0a0a0a", "#00ff66", "#ff0055", "#7b81ff"], font: "'Heebo', sans-serif" },
+  { key: "light", label: "בהיר ורגוע", swatch: ["#f5f7fb", "#a0caff", "#bdd0fe", "#ffd0e8"], font: "'Heebo', sans-serif" },
+  { key: "futuristic", label: "פוטוריסטי", swatch: ["#0a0a14", "#6c5cff", "#00e5ff", "#ff4dd2"], font: "'Heebo', sans-serif" },
+  { key: "playful", label: "שובב / סטיקרים", swatch: ["#f7e8d0", "#ff6b6b", "#ffd166", "#06d6a0"], font: "'Heebo', sans-serif" },
+  { key: "editorial", label: "אדיטוריאל / בולד", swatch: ["#ffffff", "#111111", "#333333", "#f5f5f5"], font: "'Heebo', serif" },
+  { key: "soft_glass", label: "זכוכית רכה", swatch: ["#e9e6ff", "#c8c0ff", "#ffd0e8", "#a8c8ff"], font: "'Heebo', sans-serif" },
+  { key: "organic", label: "אורגני / טבע", swatch: ["#f0ebe0", "#7f8f56", "#c9a87a", "#3a4a2a"], font: "'Heebo', serif" },
+  { key: "fun_bright", label: "כיף ובהיר", swatch: ["#2e6cff", "#ffd400", "#ff5e8a", "#00c9b1"], font: "'Heebo', sans-serif" },
+  { key: "warm_elegant", label: "חם ואלגנטי", swatch: ["#f4ede2", "#caa478", "#8b6f47", "#3d2e1f"], font: "'Heebo', serif" },
 ];
 
 interface SuggestedFeature {

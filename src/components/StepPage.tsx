@@ -233,13 +233,13 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
 
           <div className="flex items-center gap-2">
             <button onClick={() => navigate("/")} className="sketch-btn-outline text-sm flex items-center gap-1">
-              🗺️ מפה
+              מפה
             </button>
 
             {!locked && (
               completed ? (
                 <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1">
-                  ↩️ פתח מחדש
+                  פתח מחדש
                 </button>
               ) : (
                 canComplete && (

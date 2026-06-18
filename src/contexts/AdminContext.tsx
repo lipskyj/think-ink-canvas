@@ -151,12 +151,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, [session]);
 
   const toggleAI = useCallback(() => {
+    // In class mode, only the group leader may toggle AI for the group
+    if (isClassMode && !isLeader) return;
     setSettings((s) => {
       const next = { ...s, aiEnabled: !s.aiEnabled };
       if (isClassMode) persistClassSettings(next);
       return next;
     });
-  }, [isClassMode, persistClassSettings, setSettings]);
+  }, [isClassMode, isLeader, persistClassSettings, setSettings]);
 
   const isStepLocked = useCallback((stepKey: string) => {
     return settings.lockedSteps[stepKey] === true;

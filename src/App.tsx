@@ -7,6 +7,7 @@ import { ProjectProvider } from "@/contexts/ProjectContext";
 import { AdminProvider } from "@/contexts/AdminContext";
 import { ClassProvider } from "@/contexts/ClassContext";
 import { SectionHelperProvider } from "@/contexts/SectionHelperContext";
+import { HackathonProvider } from "@/contexts/HackathonContext";
 import Index from "./pages/Index";
 import EmpathyMap from "./pages/EmpathyMap";
 import Converge from "./pages/Converge";
@@ -23,6 +24,8 @@ import Storyboard from "./pages/Storyboard";
 import PrototypeBrief from "./pages/PrototypeBrief";
 import UserTesting from "./pages/UserTesting";
 import PrdGenerator from "./pages/PrdGenerator";
+import Pitch from "./pages/Pitch";
+import Deliverables from "./pages/Deliverables";
 import Admin from "./pages/Admin";
 import JoinClass from "./pages/JoinClass";
 import NotFound from "./pages/NotFound";
@@ -38,6 +41,7 @@ const App = () => (
         <ClassProvider>
         <AdminProvider>
         <ProjectProvider>
+        <HackathonProvider>
         <SectionHelperProvider>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -56,11 +60,14 @@ const App = () => (
             <Route path="/prototype-brief" element={<PrototypeBrief />} />
             <Route path="/user-testing" element={<UserTesting />} />
             <Route path="/prd" element={<PrdGenerator />} />
+            <Route path="/pitch" element={<Pitch />} />
+            <Route path="/deliverables" element={<Deliverables />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/join/:classId" element={<JoinClass />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SectionHelperProvider>
+        </HackathonProvider>
         </ProjectProvider>
         </AdminProvider>
         </ClassProvider>

@@ -54,7 +54,7 @@ export const SPRINT_BLOCKS: SprintBlock[] = [
   },
   {
     key: "solution",
-    emoji: "💡",
+    emoji: "",
     title: "הפתרון",
     tagline: "הרבה רעיונות. אחד שווה לבנות.",
     minutes: 60,
@@ -92,7 +92,7 @@ export const SPRINT_BLOCKS: SprintBlock[] = [
   },
   {
     key: "pitch",
-    emoji: "🎤",
+    emoji: "",
     title: "הפיץ׳",
     tagline: "מצגת אמיתית. 6 סגנונות. 60 שניות שמוכרות.",
     minutes: 60,

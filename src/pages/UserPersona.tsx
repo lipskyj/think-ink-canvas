@@ -89,7 +89,7 @@ const UserPersona = () => {
         </div>
         <div className="sketch-card">
           <div className="flex items-center relative">
-            <label className="font-semibold text-sm block mb-2">🎯 מטרות</label>
+            <label className="font-semibold text-sm block mb-2"> מטרות</label>
             <SectionHelper stepKey="user_persona" sectionKey="goals" currentData={persona} previousData={previousData} onApply={(v) => update("goals", v)} />
           </div>
           <textarea className="sketch-input min-h-[100px] resize-none notebook-lines" placeholder="מה הם רוצים להשיג?" value={persona.goals} onChange={(e) => update("goals", e.target.value)} />

@@ -22,7 +22,7 @@ export interface PitchStyle {
 export const PITCH_STYLES: PitchStyle[] = [
   {
     key: "classic",
-    emoji: "🎯",
+    emoji: "",
     title: "קלאסי",
     subtitle: "בעיה → פתרון",
     whenToUse: "מתאים לרוב התחרויות. בטוח, מובן, אי אפשר לטעות.",
@@ -90,7 +90,7 @@ export const PITCH_STYLES: PitchStyle[] = [
   },
   {
     key: "vision",
-    emoji: "🚀",
+    emoji: "",
     title: "חזון נועז",
     subtitle: "תמונת עולם → הצעד הראשון",
     whenToUse: "כשהרעיון רחב, עתידי, או משנה תפיסה.",

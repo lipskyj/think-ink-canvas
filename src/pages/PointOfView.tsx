@@ -58,7 +58,7 @@ const PointOfView = () => {
         </div>
         <div className="sketch-card">
           <div className="flex items-center relative">
-            <label className="font-semibold text-lg block mb-2">💡 צורך</label>
+            <label className="font-semibold text-lg block mb-2"> צורך</label>
             <SectionHelper stepKey="pov_statement" sectionKey="need" currentData={{ user, need, insight }} previousData={previousData} onApply={(v) => setNeed(v)} />
           </div>
           <p className="text-muted-foreground text-sm mb-2">מה הצורך של המשתמש? (השתמשו בפועל, לא בפתרון)</p>

@@ -61,7 +61,7 @@ const JTBD = () => {
       <div className="space-y-8">
         <div className="sketch-border-thin p-4 bg-secondary/30">
           <p className="font-hand text-lg text-muted-foreground">
-            🎯 אנשים לא קונים מוצרים — הם שוכרים אותם כדי לבצע משימה. הגדירו את המשימות שהמשתמש מנסה
+             אנשים לא קונים מוצרים — הם שוכרים אותם כדי לבצע משימה. הגדירו את המשימות שהמשתמש מנסה
             להשיג לפי הנוסחה: <strong>כאשר [מצב], אני רוצה [מוטיבציה],
             כדי ש [תוצאה]</strong>.
           </p>
@@ -114,7 +114,7 @@ const JTBD = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
                       <div className="flex items-center relative">
-                        <label className="font-sketch text-xs text-muted-foreground block mb-1">⚙️ פונקציונלי</label>
+                        <label className="font-sketch text-xs text-muted-foreground block mb-1"> פונקציונלי</label>
                         <SectionHelper stepKey="jtbd" sectionKey="functional" currentData={allData} previousData={previousData} onApply={(v) => updateJob(job.id, "functional", v)} />
                       </div>
                       <textarea className="sketch-input w-full font-hand text-base min-h-[50px]" placeholder="איזו משימה הם משלימים?" value={job.functional} onChange={(e) => updateJob(job.id, "functional", e.target.value)} />

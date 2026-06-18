@@ -18,7 +18,7 @@ interface InsightStatement {
 const PROBLEM_TYPES = [
   { key: "cognitive", label: "🧠 קוגניטיבי", desc: "אי-הבנה, עומס, בלבול" },
   { key: "emotional", label: "❤️ רגשי", desc: "פחד, חרדה, אובדן שליטה" },
-  { key: "behavioral", label: "🔄 התנהגותי", desc: "הרגלים, קיצורי דרך, הימנעות" },
+  { key: "behavioral", label: " התנהגותי", desc: "הרגלים, קיצורי דרך, הימנעות" },
   { key: "structural", label: "🏗️ מבני", desc: "זמן, תמריצים, כוח, מדיניות" },
 ];
 
@@ -308,7 +308,7 @@ const Converge = () => {
         </div>
         <div className="mt-4">
           <div className="flex items-center relative">
-            <label className="font-sketch text-xs block mb-1">💡 נימוק</label>
+            <label className="font-sketch text-xs block mb-1"> נימוק</label>
             <SectionHelper stepKey="converge" sectionKey="interventionRationale" currentData={allData} previousData={previousData} onApply={(v) => setInterventionRationale(v)} />
           </div>
           <textarea className="sketch-input min-h-[60px] text-sm" placeholder="למה התערבות זו? לדוגמה: 'אם האמפתיה מראה פחד משיפוט, שיתוף עמיתים עדיף על תכונה חדשה.'" value={interventionRationale} onChange={(e) => setInterventionRationale(e.target.value)} />

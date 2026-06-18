@@ -105,7 +105,7 @@ export default function SectionHelper({ stepKey, sectionKey, currentData, previo
               <X className="h-3 w-3" />
             </button>
             <p className="text-foreground leading-relaxed pl-4">
-              💡 {guide.tip}
+               {guide.tip}
             </p>
           </div>
         </div>

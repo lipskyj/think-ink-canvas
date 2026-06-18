@@ -36,7 +36,7 @@ const FRAME_GUIDES = [
   },
   {
     title: "3. הקסם",
-    emoji: "✨",
+    emoji: "",
     sceneLabel: "🖼️ רגע ה-AHA — מה הוא רואה?",
     actionLabel: "🖐️ מה המוצר עושה לו?",
     emotionLabel: "💭 איך הוא מרגיש?",
@@ -46,7 +46,7 @@ const FRAME_GUIDES = [
   },
   {
     title: "4. אחרי",
-    emoji: "🚀",
+    emoji: "",
     sceneLabel: "🖼️ איך החיים שלו השתנו?",
     actionLabel: "🖐️ מה הוא עושה עכשיו?",
     emotionLabel: "💭 מה הוא מספר לחברים?",

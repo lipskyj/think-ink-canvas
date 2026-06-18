@@ -78,7 +78,7 @@ const UserTesting = () => {
       {/* הגדרת מבחן */}
       <div className="sketch-card mb-6">
         <div className="flex items-center relative">
-          <h2 className="font-sketch text-lg mb-3">🎯 הגדרת מבחן</h2>
+          <h2 className="font-sketch text-lg mb-3"> הגדרת מבחן</h2>
           <SectionHelper stepKey="user_testing" sectionKey="testSetup" currentData={getData()} previousData={previousData} onApply={(v) => setTestGoal(v)} />
         </div>
         <div className="space-y-3">
@@ -144,7 +144,7 @@ const UserTesting = () => {
                   <textarea className="sketch-input min-h-[60px] text-sm" placeholder="דברים בולטים שאמרו" value={session.quotes} onChange={(e) => updateSession(i, "quotes", e.target.value)} />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="font-sketch text-xs block mb-1">⭐ דירוג / תוצאה</label>
+                  <label className="font-sketch text-xs block mb-1"> דירוג / תוצאה</label>
                   <input className="sketch-input text-sm" placeholder="הצלחה / חלקית / נכשל" value={session.rating} onChange={(e) => updateSession(i, "rating", e.target.value)} />
                 </div>
               </div>
@@ -157,7 +157,7 @@ const UserTesting = () => {
       {/* סבבי איטרציה */}
       <div className="mb-6">
         <div className="flex items-center relative">
-          <h2 className="font-sketch text-lg mb-3">🔄 סבבי איטרציה</h2>
+          <h2 className="font-sketch text-lg mb-3"> סבבי איטרציה</h2>
           <SectionHelper stepKey="user_testing" sectionKey="iteration" currentData={getData()} previousData={previousData} />
         </div>
         <div className="space-y-4">

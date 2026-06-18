@@ -180,7 +180,7 @@ const EffortImpact = () => {
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
-            <h3 className="font-bold mb-2">🎯 מה לבנות עכשיו?</h3>
+            <h3 className="font-bold mb-2"> מה לבנות עכשיו?</h3>
             {!advancedMode ? (
               <p className="text-sm text-muted-foreground">
                 ענו על 3 שאלות מהירות לכל רעיון. הרעיון הכי "בנו את זה" יוקפץ למעלה.

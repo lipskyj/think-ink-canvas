@@ -75,7 +75,7 @@ const PrdGenerator = () => {
       if (error) throw error;
       if (data?.content) {
         setPrdOutput(data.content);
-        toast({ title: "PRD נוצר בהצלחה! 🚀" });
+        toast({ title: "PRD נוצר בהצלחה! " });
       }
     } catch (e: any) {
       toast({ title: "שגיאה ביצירת PRD", description: e.message, variant: "destructive" });
@@ -98,7 +98,7 @@ const PrdGenerator = () => {
     <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent}>
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
-          🚀 שלב זה אוסף את כל מה שעבדתם עליו ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.
+           שלב זה אוסף את כל מה שעבדתם עליו ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.
         </p>
       </div>
 
@@ -198,11 +198,11 @@ const PrdGenerator = () => {
                 onClick={() => {
                   navigator.clipboard.writeText(prdOutput);
                   window.open("https://lovable.dev/", "_blank");
-                  toast({ title: "הפרומפט הועתק — הדביקו ב-Lovable 🚀" });
+                  toast({ title: "הפרומפט הועתק — הדביקו ב-Lovable " });
                 }}
                 className="sketch-btn text-sm flex items-center gap-1.5 px-3 py-1.5"
               >
-                🚀 פתחו ב-Lovable
+                 פתחו ב-Lovable
               </button>
             </div>
           </div>

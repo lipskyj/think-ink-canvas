@@ -142,14 +142,14 @@ const JourneyMap = () => {
               </div>
               <div>
                 <div className="flex items-center relative">
-                  <label className="font-sketch text-xs block mb-1">⚡ נקודות כאב</label>
+                  <label className="font-sketch text-xs block mb-1"> נקודות כאב</label>
                   <SectionHelper stepKey="journey_map" sectionKey="painPoints" currentData={{ scenario, stage }} previousData={previousData} />
                 </div>
                 <textarea className="sketch-input min-h-[50px] text-sm" placeholder={PAIN_GHOSTS[i % PAIN_GHOSTS.length]} value={stage.painPoints} onChange={(e) => updateStage(i, "painPoints", e.target.value)} />
               </div>
               <div className="md:col-span-2">
                 <div className="flex items-center relative">
-                  <label className="font-sketch text-xs block mb-1">💡 הזדמנויות</label>
+                  <label className="font-sketch text-xs block mb-1"> הזדמנויות</label>
                   <SectionHelper stepKey="journey_map" sectionKey="opportunities" currentData={{ scenario, stage }} previousData={previousData} />
                 </div>
                 <textarea className="sketch-input min-h-[50px] text-sm" placeholder={OPP_GHOSTS[i % OPP_GHOSTS.length]} value={stage.opportunities} onChange={(e) => updateStage(i, "opportunities", e.target.value)} />

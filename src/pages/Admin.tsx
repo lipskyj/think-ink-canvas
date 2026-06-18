@@ -26,6 +26,9 @@ interface ClassRow {
   event_time: string | null;
   event_location: string | null;
   event_topic: string | null;
+  event_description: string | null;
+  organizer_logo_url: string | null;
+  join_code: string | null;
 }
 
 interface StudentProgress {
@@ -97,15 +100,14 @@ export default function Admin() {
 
   const updateClass = async (id: string, updates: Partial<ClassRow>) => {
     const dbUpdates: any = {};
-    if (updates.student_names !== undefined) dbUpdates.student_names = updates.student_names;
-    if (updates.ai_enabled !== undefined) dbUpdates.ai_enabled = updates.ai_enabled;
-    if (updates.locked_steps !== undefined) dbUpdates.locked_steps = updates.locked_steps;
-    if (updates.name !== undefined) dbUpdates.name = updates.name;
-    if (updates.leader_name !== undefined) dbUpdates.leader_name = updates.leader_name;
-    if (updates.event_date !== undefined) dbUpdates.event_date = updates.event_date;
-    if (updates.event_time !== undefined) dbUpdates.event_time = updates.event_time;
-    if (updates.event_location !== undefined) dbUpdates.event_location = updates.event_location;
-    if (updates.event_topic !== undefined) dbUpdates.event_topic = updates.event_topic;
+    const allowed: (keyof ClassRow)[] = [
+      "student_names","ai_enabled","locked_steps","name","leader_name",
+      "event_date","event_time","event_location","event_topic",
+      "event_description","organizer_logo_url",
+    ];
+    for (const k of allowed) {
+      if (updates[k] !== undefined) dbUpdates[k] = updates[k] as any;
+    }
     const { error } = await supabase.from("classes").update(dbUpdates).eq("id", id);
     if (error) {
       toast({ title: "שגיאה בעדכון", description: error.message, variant: "destructive" });

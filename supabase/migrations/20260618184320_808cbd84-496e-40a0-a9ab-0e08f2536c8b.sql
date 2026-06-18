@@ -1,0 +1,6 @@
+ALTER TABLE public.classes
+  ADD COLUMN IF NOT EXISTS event_date TEXT,
+  ADD COLUMN IF NOT EXISTS event_time TEXT,
+  ADD COLUMN IF NOT EXISTS event_location TEXT,
+  ADD COLUMN IF NOT EXISTS event_topic TEXT,
+  ADD COLUMN IF NOT EXISTS leader_name TEXT;

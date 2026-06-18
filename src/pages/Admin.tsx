@@ -45,6 +45,14 @@ export default function Admin() {
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedClass, setExpandedClass] = useState<string | null>(null);
+  const [eventDraft, setEventDraft] = useState({
+    event_topic: "",
+    event_description: "",
+    event_date: "",
+    event_time: "",
+    event_location: "",
+    organizer_logo_url: "",
+  });
 
   const fetchClasses = useCallback(async () => {
     const { data } = await supabase.from("classes").select("*").order("created_at", { ascending: false });
@@ -59,6 +67,21 @@ export default function Admin() {
 
   useEffect(() => { fetchClasses(); }, [fetchClasses]);
 
+  useEffect(() => {
+    if (!classes.length) return;
+    const hasDraft = Object.values(eventDraft).some(Boolean);
+    if (hasDraft) return;
+    const source = classes.find((cls) => cls.event_topic || cls.event_description || cls.event_date || cls.event_time || cls.event_location || cls.organizer_logo_url) || classes[0];
+    setEventDraft({
+      event_topic: source.event_topic || "",
+      event_description: source.event_description || "",
+      event_date: source.event_date || "",
+      event_time: source.event_time || "",
+      event_location: source.event_location || "",
+      organizer_logo_url: source.organizer_logo_url || "",
+    });
+  }, [classes, eventDraft]);
+
   // Students in class mode cannot access admin
   if (isClassMode) {
     return <Navigate to="/" replace />;
@@ -68,7 +91,16 @@ export default function Admin() {
     // Name is optional — team will rename themselves. Use a placeholder; we'll update it to the join code after insert.
     const { data, error } = await supabase
       .from("classes")
-      .insert({ name: newClassName.trim() || "קבוצה חדשה", student_names: [] })
+      .insert({
+        name: newClassName.trim() || "קבוצה חדשה",
+        student_names: [],
+        event_topic: eventDraft.event_topic || null,
+        event_description: eventDraft.event_description || null,
+        event_date: eventDraft.event_date || null,
+        event_time: eventDraft.event_time || null,
+        event_location: eventDraft.event_location || null,
+        organizer_logo_url: eventDraft.organizer_logo_url || null,
+      })
       .select("id, join_code")
       .single();
     if (error || !data) {
@@ -118,6 +150,18 @@ export default function Admin() {
     const { error } = await supabase.from("classes").update(dbUpdates).eq("id", id);
     if (error) {
       toast({ title: "שגיאה בעדכון", description: error.message, variant: "destructive" });
+    }
+    await fetchClasses();
+  };
+
+  const updateEventForAllGroups = async (updates: Partial<ClassRow>) => {
+    setEventDraft((prev) => ({ ...prev, ...(updates as any) }));
+    if (classes.length === 0) return;
+    const dbUpdates = Object.fromEntries(Object.entries(updates).map(([key, value]) => [key, value || null]));
+    const { error } = await supabase.from("classes").update(dbUpdates).in("id", classes.map((cls) => cls.id));
+    if (error) {
+      toast({ title: "שגיאה בעדכון פרטי האירוע", description: error.message, variant: "destructive" });
+      return;
     }
     await fetchClasses();
   };

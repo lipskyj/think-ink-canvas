@@ -1,61 +1,23 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Plus, X, Sparkles } from "lucide-react";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
-import LinkedDataBanner from "@/components/LinkedDataBanner";
 import SectionHelper from "@/components/SectionHelper";
-import { useAutoFill } from "@/hooks/useAutoFill";
-import { getLinkedData } from "@/lib/dataLinks";
 
 const HowMightWe = () => {
-  const { getStepData, getAllPreviousData, stepData } = useProject();
+  const { getStepData, getAllPreviousData } = useProject();
   const [questions, setQuestions] = useState<string[]>([""]);
-  const [didAutoFillList, setDidAutoFillList] = useState(false);
 
-  // POV fields
-  const [povUser, setPovUser] = useState("");
-  const [povNeed, setPovNeed] = useState("");
-  const [povInsight, setPovInsight] = useState("");
+  // POV is imported (read-only) from previous step
+  const pov = getStepData("pov_statement") || {};
+  const povUser = pov.user || "";
+  const povNeed = pov.need || "";
+  const povInsight = pov.insight || "";
 
   useEffect(() => {
     const saved = getStepData("how_might_we");
-    if (saved?.questions) setQuestions(saved.questions);
-    if (saved?.povUser) setPovUser(saved.povUser);
-    if (saved?.povNeed) setPovNeed(saved.povNeed);
-    if (saved?.povInsight) setPovInsight(saved.povInsight);
+    if (saved?.questions?.length) setQuestions(saved.questions);
   }, [getStepData]);
-
-  // Auto-fill POV from pov_statement step
-  useEffect(() => {
-    const saved = getStepData("how_might_we");
-    if (saved?.povUser || saved?.povNeed || saved?.povInsight) return;
-
-    const povData = getStepData("pov_statement");
-    if (povData) {
-      if (povData.user && !povUser) setPovUser(povData.user);
-      if (povData.need && !povNeed) setPovNeed(povData.need);
-      if (povData.insight && !povInsight) setPovInsight(povData.insight);
-    }
-  }, [stepData, getStepData]);
-
-  // Auto-fill questions list from Converge HMWs
-  useEffect(() => {
-    if (didAutoFillList) return;
-    const saved = getStepData("how_might_we");
-    if (saved?.questions?.some((q: string) => q.trim())) return;
-
-    const links = getLinkedData("how_might_we", stepData);
-    const questionsLink = links.find(l => l.field === "questions");
-    if (questionsLink) {
-      try {
-        const parsed = JSON.parse(questionsLink.value);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setQuestions(parsed);
-          setDidAutoFillList(true);
-        }
-      } catch { /* not JSON, ignore */ }
-    }
-  }, [stepData, didAutoFillList, getStepData]);
 
   const addQuestion = () => {
     if (questions.length >= 3) return;
@@ -72,76 +34,44 @@ const HowMightWe = () => {
     const u = povUser.trim() || "המשתמש";
     const n = povNeed.trim() || "להתמודד עם הקושי שלו";
     const i = povInsight.trim() || "התובנה שגילינו";
-    const starters = [
+    setQuestions([
       `איך נוכל לעזור ל${u} ${n}?`,
       `איך נוכל להפוך את "${i}" מבעיה ליתרון?`,
       `איך נוכל לחסוך ל${u} את הצורך ב${n}?`,
-    ];
-    setQuestions(starters);
+    ]);
   };
 
-  const getData = useCallback(() => ({ questions, povUser, povNeed, povInsight }), [questions, povUser, povNeed, povInsight]);
-  const hasContent = questions.some(q => q.trim()) || !!(povUser.trim() || povNeed.trim() || povInsight.trim());
+  const getData = useCallback(
+    () => ({ questions, povUser, povNeed, povInsight }),
+    [questions, povUser, povNeed, povInsight]
+  );
+  const hasContent = questions.some((q) => q.trim());
   const previousData = getAllPreviousData("how_might_we");
 
   return (
     <StepPage stepKey="how_might_we" onSave={getData} canComplete={hasContent}>
-      <LinkedDataBanner stepKey="how_might_we" />
-
-      {/* POV Section */}
+      {/* POV read-only from previous step */}
       <div className="sketch-border p-5 mb-6 bg-card">
-        <h3 className="font-sketch text-lg mb-3 flex items-center gap-2"> הצהרת נקודת מבט (POV)</h3>
-        <div className="sketch-border-thin p-4 mb-4 bg-secondary/20">
-          <p className="text-base text-center text-muted-foreground">
-            [משתמש] צריך [צורך] כי [תובנה]
+        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
+          <span className="pill-chip pill-chip-outline">ה-POV שלכם (משלב קודם)</span>
+        </div>
+        {povUser || povNeed || povInsight ? (
+          <p className="text-xl leading-relaxed">
+            <strong>{povUser || "___"}</strong> צריך <strong>{povNeed || "___"}</strong> כי{" "}
+            <strong>{povInsight || "___"}</strong>.
           </p>
-        </div>
-
-        <div className="space-y-3">
-          <div>
-            <label className="font-semibold text-sm block mb-1"> משתמש</label>
-            <input
-              className="sketch-input"
-              placeholder="מיהו המשתמש הספציפי?"
-              value={povUser}
-              onChange={(e) => setPovUser(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="font-semibold text-sm block mb-1"> צורך</label>
-            <input
-              className="sketch-input"
-              placeholder="מה הצורך של המשתמש?"
-              value={povNeed}
-              onChange={(e) => setPovNeed(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="font-semibold text-sm block mb-1"> תובנה</label>
-            <input
-              className="sketch-input"
-              placeholder="למה? איזו תובנה מפתיעה גיליתם?"
-              value={povInsight}
-              onChange={(e) => setPovInsight(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {(povUser || povNeed || povInsight) && (
-          <div className="mt-4 sketch-border-thin p-4 bg-secondary/30 animate-fade-in">
-            <p className="text-sm uppercase tracking-widest text-muted-foreground mb-1">ה-POV שלכם</p>
-            <p className="text-lg leading-relaxed">
-              <strong>{povUser || "___"}</strong> צריך <strong>{povNeed || "___"}</strong> כי <strong>{povInsight || "___"}</strong>.
-            </p>
-          </div>
+        ) : (
+          <p className="font-hand text-muted-foreground">
+            השלימו קודם את הצהרת ה-POV כדי שנציג אותה כאן.
+          </p>
         )}
       </div>
 
-      {/* HMW Section */}
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <div className="flex items-center gap-2 flex-wrap">
           <p className="text-base text-muted-foreground flex-1">
-             <strong>מה אם...?</strong> נסחו עד 3 שאלות פתיחה לפתרון.<br />
+            <strong>מה אם...?</strong> נסחו עד 3 שאלות פתיחה לפתרון.
+            <br />
             לא רחב מדי, לא צר מדי.
           </p>
           <button
@@ -151,7 +81,13 @@ const HowMightWe = () => {
           >
             <Sparkles className="h-4 w-4" /> השראה מה-POV
           </button>
-          <SectionHelper stepKey="how_might_we" sectionKey="question" currentData={{ questions }} previousData={previousData} onApply={(v) => updateQuestion(0, v)} />
+          <SectionHelper
+            stepKey="how_might_we"
+            sectionKey="question"
+            currentData={{ questions }}
+            previousData={previousData}
+            onApply={(v) => updateQuestion(0, v)}
+          />
         </div>
       </div>
 

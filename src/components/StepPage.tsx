@@ -136,7 +136,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
               {completed && <span className="pill-chip pill-chip-mint">✓ הושלם</span>}
             </div>
             <h1 className="display-huge mb-1">
-              {step.title} <span className="inline-block align-baseline">{step.emoji}</span>
+              {step.title}
             </h1>
           </div>
           <div className="flex items-center gap-2 flex-wrap">

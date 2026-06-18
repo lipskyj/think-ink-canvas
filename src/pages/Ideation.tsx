@@ -439,6 +439,13 @@ const Ideation = () => {
               <button onClick={goToNextRound} className="sketch-btn flex items-center gap-2 text-sm">
                 לסבב הבא <ChevronLeft className="h-4 w-4" />
               </button>
+            ) : !showBonus ? (
+              <button
+                onClick={() => { setShowBonus(true); setCurrentRoundIndex(2); setRoundStarted(false); }}
+                className="sketch-btn-outline flex items-center gap-2 text-sm"
+              >
+                ✨ סבב בונוס: הפוך על הפוך
+              </button>
             ) : (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CheckCircle2 className="h-4 w-4" /> סיימתם את כל הסבבים!

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Sparkles } from "lucide-react";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import LinkedDataBanner from "@/components/LinkedDataBanner";
@@ -57,12 +57,27 @@ const HowMightWe = () => {
     }
   }, [stepData, didAutoFillList, getStepData]);
 
-  const addQuestion = () => setQuestions([...questions, ""]);
+  const addQuestion = () => {
+    if (questions.length >= 3) return;
+    setQuestions([...questions, ""]);
+  };
   const removeQuestion = (i: number) => setQuestions(questions.filter((_, idx) => idx !== i));
   const updateQuestion = (i: number, val: string) => {
     const updated = [...questions];
     updated[i] = val;
     setQuestions(updated);
+  };
+
+  const inspireQuestions = () => {
+    const u = povUser.trim() || "המשתמש";
+    const n = povNeed.trim() || "להתמודד עם הקושי שלו";
+    const i = povInsight.trim() || "התובנה שגילינו";
+    const starters = [
+      `איך נוכל לעזור ל${u} ${n}?`,
+      `איך נוכל להפוך את "${i}" מבעיה ליתרון?`,
+      `איך נוכל לחסוך ל${u} את הצורך ב${n}?`,
+    ];
+    setQuestions(starters);
   };
 
   const getData = useCallback(() => ({ questions, povUser, povNeed, povInsight }), [questions, povUser, povNeed, povInsight]);
@@ -124,11 +139,18 @@ const HowMightWe = () => {
 
       {/* HMW Section */}
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
-        <div className="flex items-center relative">
-          <p className="text-base text-muted-foreground">
-            💡 התחילו כל שאלה עם <strong>"איך נוכל..."</strong><br />
-            לא רחב מדי, לא צר מדי. מצאו את הנקודה המתאימה.
+        <div className="flex items-center gap-2 flex-wrap">
+          <p className="text-base text-muted-foreground flex-1">
+            💡 <strong>מה אם...?</strong> נסחו עד 3 שאלות פתיחה לפתרון.<br />
+            לא רחב מדי, לא צר מדי.
           </p>
+          <button
+            onClick={inspireQuestions}
+            className="sketch-btn-outline flex items-center gap-1 text-sm px-3 py-1.5"
+            type="button"
+          >
+            <Sparkles className="h-4 w-4" /> השראה מה-POV
+          </button>
           <SectionHelper stepKey="how_might_we" sectionKey="question" currentData={{ questions }} previousData={previousData} onApply={(v) => updateQuestion(0, v)} />
         </div>
       </div>
@@ -139,7 +161,7 @@ const HowMightWe = () => {
             <span className="stage-number shrink-0 w-8 h-8 text-sm mt-1">{i + 1}</span>
             <input
               className="sketch-input flex-1"
-              placeholder="איך נוכל... להקל על משתמשים ל..."
+              placeholder='איך נוכל… לעזור ל… ב…?'
               value={q}
               onChange={(e) => updateQuestion(i, e.target.value)}
             />
@@ -152,9 +174,11 @@ const HowMightWe = () => {
         ))}
       </div>
 
-      <button onClick={addQuestion} className="sketch-btn-outline mt-4 flex items-center gap-2 text-sm">
-        <Plus className="h-4 w-4" /> הוסף עוד אנ״ע
-      </button>
+      {questions.length < 3 && (
+        <button onClick={addQuestion} className="sketch-btn-outline mt-4 flex items-center gap-2 text-sm">
+          <Plus className="h-4 w-4" /> הוסף שאלה (עד 3)
+        </button>
+      )}
     </StepPage>
   );
 };

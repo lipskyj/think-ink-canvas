@@ -1,85 +1,127 @@
+# שיפור שלבי "גיבוש הפתרון", "פיתוח הפתרון" והפיץ'
 
-# Hackathon Mode — 10 Major Changes
-
-Goal: take the current 15-step design-thinking kit (Hebrew, RTL, sketch UI) and reshape it so a team of young adults can move from problem → prototype → pitch in **6 hours**. Today the flow is too long, too academic, and stops at PRD — it doesn't help teams ship or pitch.
-
----
-
-## The 10 Changes
-
-### 1. Add a "Hackathon Mode" with a 6-hour visible timer
-A toggle on the home screen turns on Hackathon Mode. A persistent top bar shows the global countdown (default 6h, configurable) plus the current phase budget (e.g. "Problem 60m · Solution 60m · Build 3h · Pitch 60m"). Color shifts amber → red as time runs out. This single change reframes the whole tool from "course" to "sprint".
-
-### 2. Collapse 15 steps into 4 sprint blocks
-Re-group the existing pages into a forced linear track instead of 15 peer steps:
-```text
-PROBLEM (60m)  → Empathy Map + 5 Whys + POV (merged)
-SOLUTION (60m) → HMW + Ideation + Effort/Impact (merged)
-BUILD   (180m) → Prototype Brief + Storyboard → PRD/Lovable prompt
-PITCH   (60m)  → NEW pitch deck + demo script + judging checklist
-```
-Lesser-used steps (Converge, Persona, JTBD, Journey Map, Assumptions, User Testing) move to an optional "Deep Dive" drawer so they don't block momentum.
-
-### 3. Replace the open dashboard with a guided "Next Step" flow
-Today the home page is a 15-tile grid that invites browsing. Hackathon Mode replaces it with a single large "Continue →" card showing the current block, its time budget, and a 3-bullet "what to produce in this block". One decision at a time. Free navigation stays available behind a "Show all steps" link.
-
-### 4. Per-step micro-timers with "good enough" defaults
-Each merged block gets sub-timers (e.g. Empathy Map 15m, 5 Whys 10m, POV 10m). When a sub-timer ends, the UI nudges: "Lock it in and move on — you can refine in v2." Prevents the classic hackathon trap of perfecting the problem statement.
-
-### 5. Tone, language, and visuals tuned for young adults
-- Hebrew copy rewritten from academic ("הצהרת נקודת מבט", "מטריצת מאמץ-השפעה") to direct hackathon language ("נסחו את הבעיה ב-3 שורות", "מה שווה לבנות עכשיו?").
-- Swap the sketch/notebook aesthetic for a higher-energy look: bolder type, accent gradients, motion on state changes, emoji-forward step headers — still readable, not childish.
-- Add short example answers (placeholder text) drawn from realistic young-adult problem spaces (campus life, side hustles, social, mental health, climate, gaming) so teams aren't staring at blank fields.
-
-### 6. AI assistant retuned as a hackathon coach
-The existing `ai-assist` edge function stays, but the system prompts change:
-- Default voice: short, energetic, second-person Hebrew, action verbs.
-- New mode `unstuck`: a single button on every screen — "תקועים? קבלו דחיפה" — returns one concrete next sentence + one provocation.
-- New mode `challenge`: critiques the team's current answer in 2 lines, like a mentor walking by ("המשתמש שלכם רחב מדי — מי בדיוק?").
-- Coherence check (already exists) is auto-triggered when moving between blocks, not on-demand.
-
-### 7. New "Build" block: PRD → working prototype, not just a document
-Today the flow ends at `PrdGenerator`. For a hackathon it must end at a *thing you can demo*. Extend the Build block to:
-- Produce a Lovable-ready prompt (existing PRD generator, tightened).
-- One-click "Open in Lovable" — copies prompt + opens lovable.dev/new in a new tab.
-- Checklist of demo-day must-haves (working primary flow, fake data OK, mobile screenshot, 1 wow-moment) instead of a real user-testing protocol.
-
-### 8. New "Pitch" block (currently missing entirely)
-A first-class step at the end with three artifacts auto-drafted from prior answers via the AI:
-- **60-second pitch script** (Problem → Who → Insight → Solution → Demo → Ask).
-- **5-slide deck outline** (rendered on-screen, copyable to Slides/Canva).
-- **Judging checklist** (Problem clarity, Insight, Solution fit, Demo, Team energy) so teams self-score before going on stage.
-A "Practice timer" button starts a 60s countdown while the script is displayed teleprompter-style.
-
-### 9. Team mode + role assignment
-Most hackathon teams are 3–5 people. Add lightweight team support on top of the existing per-user project:
-- On project creation, ask team size and auto-suggest roles (Researcher, Designer, Builder, Pitcher).
-- Each block highlights which role owns it ("Builder leads · others support").
-- A shared join code (reuse the existing `JoinClass` infrastructure) so teammates land on the same project. Avoids real-time collab complexity but keeps everyone synced.
-
-### 10. Deliverables dashboard + one-click export
-Replace the "completion %" metaphor with a **Deliverables** view: a single page listing the 5 things the team must walk out with — problem statement, chosen idea, prototype link, pitch script, deck outline. Each row shows ✅ ready / ⏳ draft / ⛔ missing. One button: **"Export hackathon pack"** → a single PDF/Markdown bundle the team can submit to organizers. This is the artifact the whole 6 hours is optimized for.
+מטרה: להפוך את שלבי הפתרון והבנייה לפשוטים, ויזואליים ונגישים לבני נוער (בלי ז'רגון), ולהפוך את הפיץ' להפקה אמיתית — מצגת + בחירה מתוך 6 סגנונות פיץ'.
 
 ---
 
-## Technical Notes
+## 1. גיבוש הפתרון 💡 (HMW → Ideation → Effort/Impact)
 
-- New file: `src/lib/hackathonMode.ts` — phase budgets, timer state in `localStorage` + project row.
-- New context: `HackathonContext` wrapping `ProjectContext`, exposing `mode`, `phaseBudgets`, `timeRemaining`, `currentBlock`.
-- New page: `src/pages/Pitch.tsx`; new page `src/pages/Deliverables.tsx`; new component `HackathonTimerBar`.
-- Migration: add `hackathon_mode boolean`, `hackathon_started_at timestamptz`, `hackathon_duration_minutes int`, `team_size int`, `team_role text` to `projects`. Standard GRANTs + RLS via existing `is_project_owner`.
-- Extend `supabase/functions/ai-assist/index.ts` with two new modes: `unstuck`, `challenge`, plus a `pitch_generate` mode that takes all prior step data and returns `{ script, slides[], checklist[] }` as JSON.
-- Re-skin (not rewrite) `src/index.css` tokens for the higher-energy look; keep RTL + Hebrew throughout.
-- Keep all existing 15 step pages working — Hackathon Mode is an overlay/router, not a rewrite. Users can still use "Classic Mode" if a teacher wants the full course.
+### עקרונות עיצוב מחדש
+- שפה של בני נוער: "מה אם…" במקום "How Might We", "רעיון מטורף" במקום "ideation round", "מה משתלם" במקום "effort/impact matrix".
+- צ'יפים של דוגמאות (קמפוס, סייד-הסטל, גיימינג, בריאות נפשית, אקלים) — לחיצה ממלאת את השדה כהשראה.
+- כל מסך מתחיל בכרטיס "מה עושים פה ב-30 שניות" (וידאו/GIF סקיצה קצר).
+
+### HowMightWe (HMW)
+- כותרת חדשה: **"מה אם… ננסה לפתור את זה?"**
+- ממיר אוטומטית את POV שנשמר ל-3 הצעות התחלה ("מה אם נעזור ל…?", "מה אם נחסל את…?", "מה אם נהפוך את…ל…?") — כפתור "השראה" אחד.
+- הגבלה ל-3 שאלות מקסימום (במקום רשימה פתוחה) — פחות שיתוק.
+
+### Ideation
+- במקום 5 סבבים רצופים עם טיימרים — **2 סבבים בלבד כברירת מחדל** + סבב 3 אופציונלי ("רוצים עוד? לחצו פה"):
+  1. **סופה (3 דק')** — כמה שיותר רעיונות, בלי שיפוט.
+  2. **הפוך (3 דק')** — מה הרעיון הכי גרוע / משוגע? לרוב הוא מוביל לפתרון אמיתי.
+  3. (אופציונלי) **שילוב (3 דק')** — חבר 2 רעיונות מהסבבים הקודמים.
+- ביטול ה-"starred ideas" המורכב — כל רעיון הוא כרטיסיה שאפשר לסמן ❤️ או 🗑️ (בלי דירוג מספרי).
+- AI Coach קטן בצד: "תקועים? הנה 3 זוויות שלא חשבתם עליהן".
+
+### Effort/Impact → "מה לבנות עכשיו?"
+- מוחלף ב-**שאלון של 3 שאלות** לכל רעיון מסומן ❤️:
+  1. "כמה שעות זה ייקח לדמו?" (1/3/6+)
+  2. "כמה משתמשים זה ירגש?" (קצת/הרבה/וואו)
+  3. "אנחנו יודעים איך לבנות?" (כן/חצי/לא)
+- המסך מציג רק כרטיס אחד ירוק: **"בנו את זה"** (המנצח האוטומטי) + כרטיסים אפורים "לסבב הבא".
+- מטריצת 2D נשארת כ-"מצב מתקדם" מאחורי טוגל.
 
 ---
 
-## Out of Scope (intentionally)
+## 2. פיתוח הפתרון 🚀 (Storyboard → Prototype Brief → PRD)
 
-- Real-time multi-cursor collaboration (too much for the value).
-- Auth changes / new identity flows.
-- Replacing the sketch UI everywhere — only the home + new blocks get the new look in v1.
+### Storyboard
+- 4 פריימים בלבד (היום פתוח) עם prompts מודרכים מתחת לכל פריים:
+  1. "המשתמש לפני" — מה הוא מרגיש/עושה
+  2. "המפגש" — איך הוא פוגש את המוצר
+  3. "הקסם" — מה קורה ברגע ה-AHA
+  4. "אחרי" — איך החיים שלו השתנו
+- כל פריים: שדה טקסט קצר + (אופציונלי) AI שמייצר תמונת סקיצה לפריים.
+
+### Prototype Brief → "דף הזמנה לבנייה"
+- מצומצם ל-5 שדות עם דוגמאות לחיצות:
+  1. שם המוצר
+  2. מסך ראשי — מה רואים?
+  3. פעולה ראשית — מה הכפתור הכי חשוב עושה?
+  4. רגש — מה המשתמש צריך להרגיש?
+  5. סטייל — בחירה מ-6 צ'יפים (Bold/Playful/Minimal/Y2K/Brutalist/Soft)
+
+### PRD Generator
+- אותו פלט באנגלית (לא משנים), אבל המסך עצמו בעברית עם:
+  - תצוגת "preview" של הבריף בעברית לפני הייצוא
+  - כפתור ענק: **"בנה את זה ב-Lovable"** (כבר קיים)
+  - מתחתיו צ'קליסט פשוט: "יש לי לינק לדמו? יש לי סקרין שוט? יש לי משתמש שניסה?"
 
 ---
 
-Want me to build all 10, or pick a subset to ship first? If you want everything, I'd sequence it: **1 + 2 + 3 + 10** (the spine) → **8** (pitch) → **7** (Lovable handoff) → **5 + 6** (polish) → **4 + 9** (last).
+## 3. הפיץ' 🎤 — שדרוג מהותי
+
+### א. בחירת סוג פיץ' (חדש)
+מסך פתיחה חדש עם 6 כרטיסים — המשתמש בוחר אחד לפני שמייצרים תוכן:
+
+| # | סגנון | מתי מתאים | מבנה |
+|---|------|-----------|------|
+| 1 | **קלאסי (Problem→Solution)** | רוב התחרויות | בעיה / פתרון / דמו / שוק / קריאה לפעולה |
+| 2 | **סיפור אישי (Story-first)** | בעיה רגשית/חברתית | סיפור משתמש אמיתי → רגע השבר → הפתרון |
+| 3 | **דמו ראשון (Demo-first)** | כשהמוצר וואו ויזואלית | דמו 20ש' → ואז מסבירים מה ראינו |
+| 4 | **השוואתי (Before/After)** | שיפור של תהליך קיים | "ככה עושים היום" vs "ככה איתנו" |
+| 5 | **חזון נועז (Visionary)** | רעיון רחב/עתידי | תמונת עולם ב-2030 → הצעד הראשון שלנו |
+| 6 | **דאטה-פאנץ' (Data-punch)** | שוק גדול / מחקר חזק | סטטיסטיקה הלם → סיפור → פתרון |
+
+### ב. ייצור תוכן מותאם לסגנון
+- ה-edge function `ai-assist` מקבל `pitchStyle: "classic" | "story" | "demo" | "compare" | "vision" | "data"` ומחזיר JSON עם מבנה שונה לכל סגנון.
+- הפלט: `{ script, slides[], judging[], speakerNotes[] }` — slides מפורטים יותר (כותרת, כותרת-משנה, 2-3 בולטים, suggestion ל-visual).
+
+### ג. מצגת אמיתית (לא רק שלד)
+- שימוש ב-**pptxgenjs** (לקוח-צד, browserify-friendly) לייצור קובץ `.pptx` להורדה.
+- 5-7 שקפים, עיצוב מונוכרום סקיצה (תואם לזהות הפרויקט), פונט Arial, RTL נתמך.
+- שקף אחרון אוטומטי: "תודה + שם הצוות + קוד QR לדמו" (אם יש URL).
+- כפתור משני: **"הורד כ-Markdown"** (כמו שיש היום).
+- כפתור שלישי: **"פתח כ-Google Slides"** — מייצר HTML מובנה שניתן להעתיק.
+
+### ד. מצב "טלפרומפטר" + תרגול
+- נשאר הטיימר של 60 שניות, אבל נוסף **highlight חי** — כל 6 שניות מודגשת שורה אחרת מהסקריפט (כך המתאמן יודע איפה הוא צריך להיות).
+- הקראה קולית (Web Speech API) — כפתור "תקריא לי" כדי לשמוע איך זה נשמע.
+
+---
+
+## פירוט טכני
+
+### קבצים חדשים
+- `src/lib/pitchStyles.ts` — 6 הסגנונות + מטה-דאטה לכל אחד.
+- `src/lib/pitchDeck.ts` — בונה `.pptx` בעזרת pptxgenjs.
+- `src/components/PitchStylePicker.tsx` — מסך בחירת סגנון.
+- `src/components/TeleprompterScript.tsx` — סקריפט עם הדגשה חיה.
+
+### קבצים שמשתנים
+- `src/pages/Pitch.tsx` — flow חדש: picker → generate → deck/script/practice.
+- `src/pages/HowMightWe.tsx` — כפתור השראה, מקסימום 3 שאלות, צ'יפים.
+- `src/pages/Ideation.tsx` — 2 סבבים, סבב 3 אופציונלי, ❤️/🗑️ במקום dimensional rating.
+- `src/pages/EffortImpact.tsx` — מצב "פשוט" (3 שאלות לרעיון) ברירת מחדל; matrix מאחורי טוגל.
+- `src/pages/Storyboard.tsx` — 4 פריימים מודרכים עם prompts.
+- `src/pages/PrototypeBrief.tsx` — 5 שדות + צ'יפי סטייל.
+- `src/pages/PrdGenerator.tsx` — preview עברית + צ'קליסט מינימלי.
+- `supabase/functions/ai-assist/index.ts` — מקבל `pitchStyle`, מחזיר slides מפורטים יותר.
+- `src/lib/hackathon.ts` — עדכון tagline + minutes (HMW 5 דק', Ideation 20 דק', Effort 10 דק').
+
+### חבילות חדשות
+- `pptxgenjs` (~200KB, client-side, אין dep לשרת).
+
+### מה לא משתנה
+- 15 השלבים הקלאסיים נשארים זמינים ב-Classic Mode.
+- מבנה ה-Layout, ה-RTL, האסתטיקה, ההקשבה האוטומטית, ה-Realtime sync.
+- שלב ה-PRD מייצא עדיין באנגלית.
+
+### סדר מימוש מוצע
+1. סגנונות פיץ' + מצגת `.pptx` (הכי חשוב לפי המשתמש).
+2. פישוט Ideation + Effort/Impact (הכי הרבה חיכוך לבני נוער).
+3. HMW, Storyboard, PrototypeBrief (פוליש).
+4. עדכון tagline/דקות ב-`hackathon.ts`.
+
+האם לאשר את התוכנית או לצמצם/להוסיף משהו?

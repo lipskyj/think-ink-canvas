@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { GripVertical, Plus, X, Star } from "lucide-react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { GripVertical, Plus, X, Star, Trophy, ChevronDown } from "lucide-react";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import LinkedDataBanner from "@/components/LinkedDataBanner";
@@ -11,6 +11,10 @@ interface MatrixIdea {
   x: number; // 0-100, effort (left=low, right=high)
   y: number; // 0-100, impact (bottom=low, top=high)
   placed: boolean;
+  // Simple mode answers (1=easy/low, 2=medium, 3=hard/high)
+  hours?: 1 | 3 | 6;
+  wow?: 1 | 2 | 3;
+  canBuild?: 1 | 2 | 3;
 }
 
 const QUADRANT_LABELS = [
@@ -27,6 +31,7 @@ const EffortImpact = () => {
   const { getStepData, getAllPreviousData } = useProject();
   const [ideas, setIdeas] = useState<MatrixIdea[]>([]);
   const [newIdeaText, setNewIdeaText] = useState("");
+  const [advancedMode, setAdvancedMode] = useState(false);
   const matrixRef = useRef<HTMLDivElement>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
@@ -171,17 +176,33 @@ const EffortImpact = () => {
       <LinkedDataBanner stepKey="effort_impact" />
       <CoherenceTracker stepKey="effort_impact" currentData={{ ideas }} />
 
-      {/* Instructions */}
+      {/* Instructions + mode toggle */}
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
-        <h3 className="font-bold mb-2">📊 איך עושים את זה?</h3>
-        <ol className="space-y-1 text-sm text-muted-foreground">
-          <li>1. הרעיונות שלכם מהשלב הקודם מופיעים למטה</li>
-          <li>2. <strong>גררו כל רעיון</strong> למקום המתאים על הגרף</li>
-          <li>3. ציר X = כמה מאמץ נדרש (שמאל=קל, ימין=קשה)</li>
-          <li>4. ציר Y = כמה השפעה יש לפתרון (למעלה=הרבה, למטה=מעט)</li>
-          <li>5. 🏆 <strong>ניצחונות מהירים</strong> = למעלה-שמאל — זה מה שכדאי לבנות קודם!</li>
-        </ol>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <h3 className="font-bold mb-2">🎯 מה לבנות עכשיו?</h3>
+            {!advancedMode ? (
+              <p className="text-sm text-muted-foreground">
+                ענו על 3 שאלות מהירות לכל רעיון. הרעיון הכי "בנו את זה" יוקפץ למעלה.
+              </p>
+            ) : (
+              <ol className="space-y-1 text-sm text-muted-foreground">
+                <li>1. גררו כל רעיון למקום על הגרף</li>
+                <li>2. ציר X = מאמץ (שמאל=קל) · ציר Y = השפעה (למעלה=מעט)</li>
+                <li>3. 🏆 ניצחונות מהירים = למעלה-שמאל — לבנות קודם!</li>
+              </ol>
+            )}
+          </div>
+          <button
+            onClick={() => setAdvancedMode((v) => !v)}
+            className="text-xs text-muted-foreground hover:text-foreground sketch-border-thin px-2 py-1 whitespace-nowrap"
+            type="button"
+          >
+            {advancedMode ? "מצב פשוט" : "מצב מתקדם (מטריצה)"}
+          </button>
+        </div>
       </div>
+
 
       {/* Add new idea */}
       <div className="flex items-center gap-2 mb-4">
@@ -197,8 +218,13 @@ const EffortImpact = () => {
         </button>
       </div>
 
-      {/* Unplaced ideas */}
-      {unplaced.length > 0 && (
+      {/* Simple Mode — 3-question scoring */}
+      {!advancedMode && (
+        <SimpleScoringMode ideas={ideas} setIdeas={setIdeas} />
+      )}
+
+      {/* Unplaced ideas (advanced mode only) */}
+      {advancedMode && unplaced.length > 0 && (
         <div className="sketch-border p-4 mb-4 bg-accent/10">
           <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-bold">
             ✋ רעיונות שעדיין לא מוקמו — גררו אותם לגרף
@@ -222,6 +248,8 @@ const EffortImpact = () => {
         </div>
       )}
 
+      {/* Matrix (advanced mode) */}
+      {advancedMode && (<>
       {/* Matrix */}
       <div className="sketch-border p-2 mb-6">
         {/* Y-axis label */}
@@ -297,6 +325,8 @@ const EffortImpact = () => {
       {/* Summary by quadrant */}
       {hasContent && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+
+
           {[
             { title: "🏆 ניצחונות מהירים", items: quickWins, highlight: true },
             { title: "📈 פרויקטים גדולים", items: bigProjects, highlight: false },
@@ -321,8 +351,134 @@ const EffortImpact = () => {
           )}
         </div>
       )}
+      </>)}
     </StepPage>
   );
 };
 
+// ── Simple Mode: 3 quick questions per idea, auto-rank ───────────────
+const HOURS_OPTS = [
+  { v: 1, label: "1 שעה" },
+  { v: 3, label: "3 שעות" },
+  { v: 6, label: "6+ שעות" },
+] as const;
+const WOW_OPTS = [
+  { v: 1, label: "קצת" },
+  { v: 2, label: "הרבה" },
+  { v: 3, label: "וואו" },
+] as const;
+const CAN_OPTS = [
+  { v: 3, label: "כן" },
+  { v: 2, label: "חצי" },
+  { v: 1, label: "לא" },
+] as const;
+
+interface SimpleProps {
+  ideas: MatrixIdea[];
+  setIdeas: React.Dispatch<React.SetStateAction<MatrixIdea[]>>;
+}
+
+const SimpleScoringMode = ({ ideas, setIdeas }: SimpleProps) => {
+  const setField = (id: string, field: "hours" | "wow" | "canBuild", value: number) => {
+    setIdeas((prev) =>
+      prev.map((it) =>
+        it.id === id ? { ...it, [field]: value as any, placed: true, x: 100 - value * 30, y: 100 - value * 30 } : it,
+      ),
+    );
+  };
+
+  // Score: higher = better. wow + canBuild - hours/2. Only ideas with all 3 answered are scored.
+  const scored = ideas
+    .map((it) => {
+      const complete = it.hours != null && it.wow != null && it.canBuild != null;
+      const score = complete ? (it.wow! + it.canBuild!) * 2 - it.hours! : -Infinity;
+      return { ...it, _score: score, _complete: complete };
+    })
+    .sort((a, b) => b._score - a._score);
+
+  const winner = scored.find((s) => s._complete);
+  const rest = scored.filter((s) => s !== winner);
+
+  if (ideas.length === 0) {
+    return (
+      <div className="sketch-border p-6 mb-4 bg-secondary/10 text-center">
+        <p className="font-hand text-base text-muted-foreground">
+          אין רעיונות עדיין. חזרו לשלב <strong>סופת רעיונות</strong>, סמנו ❤️ על הרעיונות שאתם אוהבים, וחזרו לכאן.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3 mb-6">
+      {winner && winner._complete && (
+        <div className="sketch-border p-5 bg-foreground text-background animate-fade-in">
+          <div className="flex items-center gap-2 mb-1">
+            <Trophy size={20} />
+            <span className="font-sketch text-lg">המנצח — בנו את זה!</span>
+          </div>
+          <p className="font-hand text-2xl mt-1">{winner.text}</p>
+        </div>
+      )}
+
+      {rest.map((idea) => (
+        <div key={idea.id} className="sketch-card p-4">
+          <p className="font-sketch text-base mb-3">{idea.text}</p>
+          <div className="grid md:grid-cols-3 gap-3">
+            <ScoreRow
+              label="⏱️ כמה שעות לדמו?"
+              options={HOURS_OPTS as any}
+              value={idea.hours}
+              onChange={(v) => setField(idea.id, "hours", v)}
+            />
+            <ScoreRow
+              label="🤯 כמה זה ירגש?"
+              options={WOW_OPTS as any}
+              value={idea.wow}
+              onChange={(v) => setField(idea.id, "wow", v)}
+            />
+            <ScoreRow
+              label="🛠️ יודעים לבנות?"
+              options={CAN_OPTS as any}
+              value={idea.canBuild}
+              onChange={(v) => setField(idea.id, "canBuild", v)}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ScoreRow = ({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly { v: number; label: string }[];
+  value: number | undefined;
+  onChange: (v: number) => void;
+}) => (
+  <div>
+    <div className="font-hand text-xs text-muted-foreground mb-1">{label}</div>
+    <div className="flex gap-1">
+      {options.map((opt) => (
+        <button
+          key={opt.v}
+          onClick={() => onChange(opt.v)}
+          type="button"
+          className={`flex-1 sketch-border-thin py-1.5 text-xs font-hand ${
+            value === opt.v ? "bg-foreground text-background" : "bg-background hover:bg-secondary/40"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
 export default EffortImpact;
+

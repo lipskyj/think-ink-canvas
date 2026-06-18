@@ -162,101 +162,49 @@ const PrototypeBrief = () => {
           <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="לדוגמה: לוודא שמשתמשים מבינים את הצעת הערך תוך 10 שניות..." value={brief.objective} onChange={(e) => update("objective", e.target.value)} />
         </div>
 
-        {/* MoSCoW */}
+        {/* MoSCoW — drag-and-drop board with AI-suggested features */}
         <div className="sketch-card">
           <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
             <label className="font-sketch text-xl">MoSCoW — תיעדוף תכונות</label>
-            <span className="pill-chip pill-chip-outline text-[10px]">Must · Should · Could · Won't</span>
-          </div>
-          <p className="font-hand text-muted-foreground text-sm mb-4">
-            מיינו את התכונות לארבע קטגוריות. זה מה שמבדיל MVP ממוצר נפוח.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="sketch-border-thin p-3 bg-[hsl(var(--primary)/0.08)]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Must — חובה</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="must" currentData={brief} previousData={previousData} onApply={(v) => update("must", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">בלי זה אין מוצר. ליבת ה-MVP.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="התכונות הקריטיות..." value={brief.must} onChange={(e) => update("must", e.target.value)} />
-            </div>
-
-            <div className="sketch-border-thin p-3 bg-[hsl(var(--accent)/0.15)]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Should — חשוב</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="should" currentData={brief} previousData={previousData} onApply={(v) => update("should", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">חשוב מאוד, אך לא מעכב השקה.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="תכונות שתשתדלו להכניס..." value={brief.should} onChange={(e) => update("should", e.target.value)} />
-            </div>
-
-            <div className="sketch-border-thin p-3 bg-[hsl(var(--highlight)/0.12)]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Could — אם יש זמן</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="could" currentData={brief} previousData={previousData} onApply={(v) => update("could", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">Nice-to-have. רק אם נשאר זמן.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="תכונות בונוס..." value={brief.could} onChange={(e) => update("could", e.target.value)} />
-            </div>
-
-            <div className="sketch-border-thin p-3 bg-foreground/[0.04]">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-sketch text-base">Won't — לא הפעם</span>
-                <SectionHelper stepKey="prototype_brief" sectionKey="wont" currentData={brief} previousData={previousData} onApply={(v) => update("wont", v)} />
-              </div>
-              <p className="font-hand text-xs text-muted-foreground mb-2">מחוץ להיקף. שומרים לגרסה הבאה.</p>
-              <textarea className="sketch-input min-h-[100px] resize-none" placeholder="מה במפורש לא בונים עכשיו..." value={brief.wont} onChange={(e) => update("wont", e.target.value)} />
-            </div>
-          </div>
-        </div>
-
-        {/* AI feature suggestion → categorize */}
-        {aiEnabled && (
-          <div className="sketch-card">
-            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-              <label className="font-sketch text-xl">הצעות תכונות מה-AI</label>
+            {aiEnabled && (
               <button
                 onClick={generateAiFeatures}
                 disabled={aiFeaturesLoading}
                 className="sketch-btn flex items-center gap-2 text-sm"
               >
                 {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {suggestedFeatures.length ? "ייצר מחדש" : "הצע תכונות לפי כיוון הפתרון"}
+                {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
               </button>
-            </div>
-            <p className="font-hand text-muted-foreground text-sm mb-3">
-              ה-AI יציע תכונות אפשריות (leaderboard, צ׳אט קבוצתי, גלריה...). שייכו כל אחת ל-Must / Should / Could / Won't.
-            </p>
-            {suggestedFeatures.length > 0 && (
-              <div className="space-y-2">
-                {suggestedFeatures.map((f, i) => (
-                  <div key={i} className="sketch-border-thin p-3 flex items-start gap-3 flex-wrap">
-                    <div className="flex-1 min-w-[180px]">
-                      <div className="font-sketch text-base">{f.name}</div>
-                      {f.description && <div className="text-sm text-muted-foreground">{f.description}</div>}
-                    </div>
-                    <div className="flex gap-1 flex-wrap">
-                      {(["must", "should", "could", "wont"] as Bucket[]).map((b) => (
-                        <button
-                          key={b}
-                          onClick={() => assignFeature(i, b)}
-                          className={`px-2 py-1 text-xs rounded border-2 transition-all ${
-                            f.bucket === b
-                              ? "bg-foreground text-background border-foreground"
-                              : "border-foreground/30 hover:border-foreground"
-                          }`}
-                        >
-                          {b === "must" ? "Must" : b === "should" ? "Should" : b === "could" ? "Could" : "Won't"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
             )}
           </div>
-        )}
+          <p className="font-hand text-muted-foreground text-sm mb-2">
+            ה-AI מציע תכונות (leaderboard, צ׳אט, גלריה, התראות...). גררו כל תכונה ל-Must / Should / Could / Won't.
+          </p>
+
+          <AddFeatureRow
+            onAdd={(name) => setSuggestedFeatures((prev) => [...prev, { id: crypto.randomUUID(), name, description: "", bucket: "unassigned" }])}
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+            {BUCKETS.map((b) => (
+              <BucketLane
+                key={b.key}
+                config={b}
+                features={suggestedFeatures.filter((f) => f.bucket === b.key)}
+                onDrop={(id) => setSuggestedFeatures((prev) => prev.map((f) => (f.id === id ? { ...f, bucket: b.key } : f)))}
+                onRemove={(id) => setSuggestedFeatures((prev) => prev.filter((f) => f.id !== id))}
+              />
+            ))}
+          </div>
+
+          {suggestedFeatures.length === 0 && (
+            <p className="font-hand text-sm text-muted-foreground mt-3 text-center">
+              עדיין אין תכונות. לחצו על "הצע תכונות עם AI" או הוסיפו ידנית.
+            </p>
+          )}
+        </div>
+
+
 
         {/* Style / vibe with visual swatches */}
         <div className="sketch-card">

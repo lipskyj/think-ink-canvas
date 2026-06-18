@@ -2,152 +2,173 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useClass } from "@/contexts/ClassContext";
-import { Users, LogIn, UserPlus } from "lucide-react";
+import { Users, LogIn, Crown, Calendar, MapPin, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+
+interface ClassRow {
+  id: string;
+  name: string;
+  student_names: string[];
+  leader_name: string | null;
+  event_date: string | null;
+  event_time: string | null;
+  event_location: string | null;
+  event_topic: string | null;
+}
 
 export default function JoinClass() {
   const { classId } = useParams<{ classId: string }>();
   const navigate = useNavigate();
   const { setSession } = useClass();
   const { toast } = useToast();
-  const [className, setClassName] = useState("");
-  const [studentNames, setStudentNames] = useState<string[]>([]);
+  const [cls, setCls] = useState<ClassRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [customName, setCustomName] = useState("");
-  const [adding, setAdding] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [myName, setMyName] = useState("");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!classId) return;
-    // Fetch class info AND any student names that exist in step data but not in the class list
-    Promise.all([
-      supabase.from("classes").select("name, student_names").eq("id", classId).single(),
-      supabase.from("class_step_data").select("student_name").eq("class_id", classId),
-    ]).then(async ([classRes, stepRes]) => {
-      if (classRes.error || !classRes.data) {
-        setError("הכיתה לא נמצאה");
+    supabase
+      .from("classes")
+      .select("id, name, student_names, leader_name, event_date, event_time, event_location, event_topic")
+      .eq("id", classId)
+      .single()
+      .then(({ data, error: err }) => {
+        if (err || !data) {
+          setError("הקבוצה לא נמצאה");
+        } else {
+          setCls(data as ClassRow);
+          setGroupName(data.name || "");
+        }
         setLoading(false);
-        return;
-      }
-      const registeredNames: string[] = classRes.data.student_names || [];
-      const activeNames = new Set(
-        (stepRes.data || []).map((r) => r.student_name)
-      );
-      // Find names that have data but aren't in the registered list
-      const missingNames = [...activeNames].filter((n) => !registeredNames.includes(n));
-      if (missingNames.length > 0) {
-        const merged = [...registeredNames, ...missingNames];
-        // Auto-sync missing names back to the class record
-        await supabase.from("classes").update({ student_names: merged }).eq("id", classId);
-        setStudentNames(merged);
-      } else {
-        setStudentNames(registeredNames);
-      }
-      setClassName(classRes.data.name);
-      setLoading(false);
-    });
+      });
   }, [classId]);
 
-  const handleSelectStudent = (name: string) => {
-    if (!classId) return;
-    setSession({ classId, className, studentName: name });
+  const join = async () => {
+    if (!cls || !myName.trim()) return;
+    setBusy(true);
+    const trimmed = myName.trim();
+    const hasLeader = !!cls.leader_name;
+    const willBeLeader = !hasLeader;
+    const updates: any = {};
+    // Add my name to roster if missing
+    if (!cls.student_names.includes(trimmed)) {
+      updates.student_names = [...cls.student_names, trimmed];
+    }
+    // Set me as leader if no leader yet
+    if (willBeLeader) {
+      updates.leader_name = trimmed;
+      // Leader can edit group name on first join
+      if (groupName.trim() && groupName.trim() !== cls.name) {
+        updates.name = groupName.trim();
+      }
+    }
+    if (Object.keys(updates).length > 0) {
+      const { error: err } = await supabase.from("classes").update(updates).eq("id", cls.id);
+      if (err) {
+        toast({ title: "שגיאה", description: err.message, variant: "destructive" });
+        setBusy(false);
+        return;
+      }
+    }
+    setSession({
+      classId: cls.id,
+      className: updates.name || cls.name,
+      studentName: trimmed,
+      isLeader: willBeLeader || cls.leader_name === trimmed,
+    });
     navigate("/");
-  };
-
-  const handleAddCustomName = async () => {
-    const name = customName.trim();
-    if (!name || !classId) return;
-    if (studentNames.includes(name)) {
-      handleSelectStudent(name);
-      return;
-    }
-    setAdding(true);
-    const updatedNames = [...studentNames, name];
-    const { error: err } = await supabase
-      .from("classes")
-      .update({ student_names: updatedNames })
-      .eq("id", classId);
-    if (err) {
-      toast({ title: "שגיאה", description: err.message, variant: "destructive" });
-      setAdding(false);
-      return;
-    }
-    setStudentNames(updatedNames);
-    setAdding(false);
-    handleSelectStudent(name);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="font-hand text-lg text-muted-foreground">טוען...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin" />
       </div>
     );
   }
 
-  if (error) {
+  if (error || !cls) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="sketch-card text-center p-8">
-          <p className="font-sketch text-xl text-destructive">{error}</p>
-          <p className="font-hand text-muted-foreground mt-2">בדקו שהקישור תקין</p>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="sketch-card text-center p-8 max-w-sm">
+          <p className="font-sketch text-xl text-destructive mb-2">{error}</p>
+          <p className="font-hand text-muted-foreground">בדקו שהקישור תקין</p>
         </div>
       </div>
     );
   }
+
+  const hasLeader = !!cls.leader_name;
+  const eventLine = [cls.event_date, cls.event_time].filter(Boolean).join(" · ");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Users className="h-12 w-12 mx-auto mb-3 text-foreground" />
-          <h1 className="font-sketch text-3xl mb-1">{className}</h1>
-          <p className="font-hand text-lg text-muted-foreground">בחרו את השם שלכם כדי להתחיל</p>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="vibe-backdrop" aria-hidden><span className="vibe-blob-3" /><span className="vibe-blob-4" /></div>
+      <div className="relative w-full max-w-lg">
+        <div className="text-center mb-6">
+          <span className="pill-chip pill-chip-coral mb-3 inline-block">הצטרפות לקבוצה</span>
+          <h1 className="display-huge leading-tight">{hasLeader ? cls.name : "קבוצה חדשה"}</h1>
         </div>
 
-        <div className="space-y-2">
-          {studentNames.map((name) => (
-            <button
-              key={name}
-              onClick={() => handleSelectStudent(name)}
-              className="w-full sketch-card flex items-center justify-between py-4 px-5 hover:bg-secondary/50 transition-colors cursor-pointer group"
-            >
-              <span className="font-sketch text-lg">{name}</span>
-              <LogIn className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-            </button>
-          ))}
-        </div>
-
-        {/* Add custom name */}
-        <div className="mt-6 sketch-card p-4">
-          <p className="font-sketch text-sm mb-2 flex items-center gap-1.5">
-            <UserPlus className="h-4 w-4" /> לא מוצאים את השם שלכם?
-          </p>
-          <div className="flex gap-2">
-            <Input
-              placeholder="הקלידו את השם שלכם"
-              value={customName}
-              onChange={(e) => setCustomName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAddCustomName()}
-              className="flex-1"
-              dir="rtl"
-            />
-            <button
-              onClick={handleAddCustomName}
-              disabled={!customName.trim() || adding}
-              className="sketch-btn text-sm px-4 disabled:opacity-50 flex items-center gap-1.5"
-            >
-              <LogIn className="h-4 w-4" /> הצטרפו
-            </button>
-          </div>
-        </div>
-
-        {studentNames.length === 0 && (
-          <div className="sketch-card text-center p-6 mt-4">
-            <p className="font-hand text-muted-foreground">אין סטודנטים בכיתה זו עדיין — הוסיפו את שמכם למעלה</p>
+        {(eventLine || cls.event_location || cls.event_topic) && (
+          <div className="sketch-card mb-4 space-y-2 font-hand text-base">
+            {cls.event_topic && <p className="font-sketch text-lg">{cls.event_topic}</p>}
+            {eventLine && <div className="flex items-center gap-2"><Calendar className="h-4 w-4"/> {eventLine}</div>}
+            {cls.event_location && <div className="flex items-center gap-2"><MapPin className="h-4 w-4"/> {cls.event_location}</div>}
           </div>
         )}
+
+        <div className="sketch-card space-y-4">
+          {!hasLeader ? (
+            <>
+              <div className="pill-chip pill-chip-sun text-[10px] flex items-center gap-1 w-fit">
+                <Crown className="h-3 w-3" /> אתם הראשונים — תהיו ראש הקבוצה
+              </div>
+              <p className="font-hand text-sm text-muted-foreground">
+                ראש הקבוצה הוא היחיד שיכול לערוך את שם הקבוצה ולהפעיל/לכבות את ה-AI במהלך העבודה.
+              </p>
+              <div>
+                <label className="font-sketch text-xs uppercase tracking-wider block mb-1">שם הקבוצה</label>
+                <Input
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  placeholder="למשל: צוות סופרנובה"
+                  dir="rtl"
+                />
+              </div>
+            </>
+          ) : (
+            <div className="font-hand text-sm text-muted-foreground flex items-center gap-2">
+              <Users className="h-4 w-4" /> ראש הקבוצה: <strong>{cls.leader_name}</strong>
+              {cls.student_names.length > 0 && (
+                <span>· {cls.student_names.length} חברים</span>
+              )}
+            </div>
+          )}
+
+          <div>
+            <label className="font-sketch text-xs uppercase tracking-wider block mb-1">השם שלכם</label>
+            <Input
+              value={myName}
+              onChange={(e) => setMyName(e.target.value)}
+              placeholder="השם המלא שלכם"
+              dir="rtl"
+              onKeyDown={(e) => e.key === "Enter" && join()}
+            />
+          </div>
+
+          <button
+            onClick={join}
+            disabled={busy || !myName.trim() || (!hasLeader && !groupName.trim())}
+            className="sketch-btn w-full flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            <LogIn className="h-4 w-4" /> הצטרפו לקבוצה
+          </button>
+        </div>
       </div>
     </div>
   );

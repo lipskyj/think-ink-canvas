@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { X, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { useStepLSD } from "@/hooks/useStepLSD";
 import { getStepByKey } from "@/lib/steps";
+import noamCharacter from "@/assets/noam-character.jpg";
 
 const SEEN_PREFIX = "lsd-seen-v1:";
 const STAGES = ["learn", "see"] as const;
@@ -168,16 +169,36 @@ export default function StepIntroModal({ stepKey }: Props) {
                 className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
               />
             ) : (
-              <div className="space-y-5">
-                <div className="font-hand text-base text-muted-foreground">
-                  <span className="pill-chip pill-chip-sun mr-2 text-[10px]">סיטואציה</span>
-                  {content.see.context}
+              <div className="space-y-6">
+                {/* Storytelling situation — big card with character */}
+                <div className="rounded-2xl border-2 border-foreground bg-accent/30 p-5 sm:p-6 shadow-[4px_4px_0_hsl(var(--foreground))]">
+                  <div className="flex items-start gap-4">
+                    <img
+                      src={noamCharacter}
+                      alt="נועם, דמות הסטודנט"
+                      loading="lazy"
+                      width={1024}
+                      height={1024}
+                      className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl border-2 border-foreground object-cover shrink-0 shadow-[3px_3px_0_hsl(var(--foreground))]"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="pill-chip pill-chip-coral text-[10px] mb-2">הכירו את נועם</div>
+                      <p className="font-sketch text-xl sm:text-2xl leading-snug">
+                        {content.see.context}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <Typewriter
-                  key={"see-" + (content.see.execution?.length ?? 0)}
-                  text={content.see.execution}
-                  className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
-                />
+
+                {/* What the team actually did */}
+                <div>
+                  <div className="pill-chip pill-chip-outline text-[10px] mb-3">מה הצוות עשה</div>
+                  <Typewriter
+                    key={"see-" + (content.see.execution?.length ?? 0)}
+                    text={content.see.execution}
+                    className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
+                  />
+                </div>
               </div>
             )
           ) : null}

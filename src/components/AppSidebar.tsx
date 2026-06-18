@@ -1,4 +1,4 @@
-import { Check, Home, Lock, Settings, Users, LogOut } from "lucide-react";
+import { Check, Home, Lock, Settings, Users, LogOut, FlaskConical } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import { STEPS, PHASES } from "@/lib/steps";
@@ -15,7 +15,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { FlaskConical } from "lucide-react";
 
 export function AppSidebar() {
   const { isStepCompleted } = useProject();
@@ -26,36 +25,35 @@ export function AppSidebar() {
   const handleLogout = () => {
     const classId = session?.classId;
     clearSession();
-    if (classId) {
-      navigate(`/join/${classId}`);
-    } else {
-      navigate("/");
-    }
+    navigate(classId ? `/join/${classId}` : "/");
   };
 
   return (
-    <Sidebar className="border-l-2 border-foreground/20" side="right">
-      <SidebarContent className="pt-4">
-        <div className="px-4 pb-4 border-b-2 border-foreground/20">
-          <h1 className="font-sketch text-xl flex items-center gap-2">
-            <FlaskConical className="h-5 w-5" />
-            ערכת חש״ע
+    <Sidebar className="border-l-2 border-foreground" side="right">
+      <SidebarContent className="pt-5 bg-background/95 backdrop-blur-md">
+        {/* Brand */}
+        <div className="px-5 pb-5 border-b-2 border-foreground/15">
+          <div className="flex items-center gap-2 mb-2">
+            <FlaskConical className="h-5 w-5" strokeWidth={2.5} />
+            <span className="pill-chip pill-chip-coral text-[10px]">ערכת חש״ע</span>
+          </div>
+          <h1 className="display-huge leading-none" style={{ fontSize: "clamp(1.8rem,3vw,2.4rem)" }}>
+            חשוב.<br/>צור.<br/>שבור.
           </h1>
-          <p className="text-xs text-muted-foreground font-hand text-lg mt-1">חשוב → צור → שבור → חזור</p>
         </div>
 
         {isClassMode && session && (
-          <div className="mx-4 mt-3 p-3 border border-border rounded-sm bg-secondary/30">
+          <div className="mx-4 mt-4 p-3 sketch-border-thin bg-card">
             <div className="flex items-center gap-2 mb-1">
               <Users className="h-4 w-4" />
-              <span className="font-sketch text-sm">{session.className}</span>
+              <span className="font-sketch text-base">{session.className}</span>
             </div>
-            <p className="text-xs text-muted-foreground mb-2">👤 {session.studentName}</p>
+            <p className="text-sm text-muted-foreground mb-2 font-hand">{session.studentName}</p>
             <button
               onClick={handleLogout}
-              className="text-xs flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors font-sketch uppercase tracking-wider"
             >
-              <LogOut className="h-3 w-3" /> יציאה מהכיתה
+              <LogOut className="h-3 w-3" /> יציאה
             </button>
           </div>
         )}
@@ -68,11 +66,11 @@ export function AppSidebar() {
                   <NavLink
                     to="/"
                     end
-                    className="hover:bg-accent/50 rounded-sm px-3 py-2 flex items-center gap-2 text-sm"
-                    activeClassName="bg-foreground text-primary-foreground font-medium"
+                    className="rounded-md px-3 py-2.5 flex items-center gap-2.5 font-sketch text-base hover:bg-accent/40 transition-colors"
+                    activeClassName="bg-foreground text-background"
                   >
                     <Home className="h-4 w-4" />
-                    <span className="font-sketch">סקירה כללית</span>
+                    <span>סקירה כללית</span>
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -80,12 +78,15 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {PHASES.map((phase) => {
+        {PHASES.map((phase, phaseIdx) => {
           const phaseSteps = STEPS.filter((s) => s.phase === phase.key);
           return (
             <SidebarGroup key={phase.key}>
-              <SidebarGroupLabel className="font-sketch text-xs uppercase tracking-widest">
-                {phase.emoji} {phase.title}
+              <SidebarGroupLabel className="font-sketch text-[11px] uppercase tracking-[0.18em] text-foreground/60 px-5 mt-2">
+                <span className="inline-flex items-center gap-2">
+                  <span className="inline-block w-5 h-px bg-foreground/40" />
+                  {String(phaseIdx + 1).padStart(2, "0")} · {phase.title}
+                </span>
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
@@ -99,19 +100,20 @@ export function AppSidebar() {
                         <SidebarMenuButton asChild>
                           <NavLink
                             to={step.url}
-                            className="hover:bg-accent/50 rounded-sm px-3 py-2 flex items-center gap-2 text-sm"
-                            activeClassName="bg-foreground text-primary-foreground font-medium"
+                            className="rounded-md px-3 py-2 flex items-center gap-2.5 font-sketch text-[15px] hover:bg-accent/40 transition-colors"
+                            activeClassName="bg-foreground text-background shadow-[3px_3px_0_hsl(var(--primary))]"
                           >
                             {locked ? (
                               <Lock className="h-4 w-4 text-muted-foreground" />
                             ) : completed ? (
-                              <Check className="h-4 w-4" />
+                              <Check className="h-4 w-4 text-[hsl(var(--highlight))]" strokeWidth={3} />
                             ) : (
                               <Icon className="h-4 w-4" />
                             )}
-                            <span className="font-sketch">{step.num}. {step.title}</span>
-                            {locked && <span className="mr-auto text-xs">🔒</span>}
-                            {!locked && completed && <span className="mr-auto text-xs">✓</span>}
+                            <span className="tabular-nums text-foreground/50 text-xs mr-0.5">
+                              {String(step.num).padStart(2, "0")}
+                            </span>
+                            <span className="truncate">{step.title}</span>
                           </NavLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -131,11 +133,11 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink
                       to="/admin"
-                      className="hover:bg-accent/50 rounded-sm px-3 py-2 flex items-center gap-2 text-sm"
-                      activeClassName="bg-foreground text-primary-foreground font-medium"
+                      className="rounded-md px-3 py-2 flex items-center gap-2.5 font-sketch text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      activeClassName="bg-foreground text-background"
                     >
                       <Settings className="h-4 w-4" />
-                      <span className="font-sketch">ניהול</span>
+                      <span>ניהול</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

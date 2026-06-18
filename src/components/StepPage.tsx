@@ -133,10 +133,10 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             <div className="flex items-center gap-2 mb-3">
               <span className="pill-chip pill-chip-coral">שלב {String(step.num).padStart(2, "0")}</span>
               <span className="pill-chip pill-chip-outline">{step.num} / {TOTAL_STEPS}</span>
-              {completed && <span className="pill-chip pill-chip-mint">✓ הושלם</span>}
+              {completed && <span className="pill-chip pill-chip-mint">הושלם</span>}
             </div>
             <h1 className="display-huge mb-1">
-              {step.title} <span className="inline-block align-baseline">{step.emoji}</span>
+              {step.title}
             </h1>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
@@ -192,11 +192,11 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
                 <div className="flex items-start gap-3">
                   <Info className="h-5 w-5 mt-0.5 flex-shrink-0 text-muted-foreground" />
                   <div>
-                    <p className="text-sm leading-relaxed mb-2">
+                    <p className="text-base leading-relaxed mb-2">
                       {step.description}
                     </p>
                     <p className="text-sm font-semibold text-muted-foreground">
-                      💡 למה זה חשוב: <span className="font-normal">{step.whyItMatters}</span>
+                      למה זה חשוב: <span className="font-normal">{step.whyItMatters}</span>
                     </p>
                   </div>
                 </div>
@@ -233,13 +233,13 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
 
           <div className="flex items-center gap-2">
             <button onClick={() => navigate("/")} className="sketch-btn-outline text-sm flex items-center gap-1">
-              🗺️ מפה
+              מפה
             </button>
 
             {!locked && (
               completed ? (
                 <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1">
-                  ↩️ פתח מחדש
+                  פתח מחדש
                 </button>
               ) : (
                 canComplete && (

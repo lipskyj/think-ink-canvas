@@ -21,9 +21,9 @@ const Layout = ({ children }: LayoutProps) => {
         <AppSidebar />
         <main className="flex-1 flex flex-col">
           <HackathonTimerBar />
-          <header className="h-12 flex items-center border-b border-foreground/15 px-4 gap-2 backdrop-blur-sm bg-background/40">
+          <header className="h-14 flex items-center border-b-2 border-foreground/15 px-5 gap-3 backdrop-blur-sm bg-background/60">
             <SidebarTrigger title="מפת כל השלבים" />
-            <span className="font-sketch text-sm">מפת השלבים</span>
+            <span className="font-sketch text-base tracking-tight">מפת השלבים</span>
             <span className="mr-auto pill-chip pill-chip-outline">ערכת חשיבה עיצובית</span>
           </header>
           <div className="flex-1 p-6 md:p-8 overflow-auto">

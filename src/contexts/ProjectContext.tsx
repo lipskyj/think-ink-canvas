@@ -272,7 +272,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       setStepData((prev) => {
         const existing = prev[stepKey];
         if (!existing) {
-          return {
+          const next = {
             ...prev,
             [stepKey]: {
               step_key: stepKey,
@@ -280,11 +280,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
               completed: false,
             },
           };
+          stepDataRef.current = next;
+          return next;
         }
-        return {
+        const next = {
           ...prev,
           [stepKey]: { ...existing, completed: false },
         };
+        stepDataRef.current = next;
+        return next;
       });
       if (isClassMode) {
         setClassCompletion((prev) => ({ ...prev, [stepKey]: false }));
@@ -343,6 +347,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
   const loadDemoCase = useCallback(async () => {
     const demoEntries = buildDemoStepEntries(true);
+    stepDataRef.current = demoEntries;
     setStepData(demoEntries);
     if (isClassMode && session) {
       setClassCompletion(Object.fromEntries(Object.keys(demoEntries).map((key) => [key, true])));

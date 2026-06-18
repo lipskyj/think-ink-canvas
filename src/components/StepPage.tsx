@@ -245,7 +245,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
           {/* אמצע / שמאל: בית, השלמה והשלב הבא */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigateWithSave("/")}
               className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
               aria-label="חזרה למפת השלבים"
               title="מפה"

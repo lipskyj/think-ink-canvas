@@ -2,22 +2,37 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { useProject } from "@/contexts/ProjectContext";
+import { useHackathon } from "@/contexts/HackathonContext";
 import { STEPS } from "@/lib/steps";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Copy, Play, Pause, RotateCcw, Mic } from "lucide-react";
+import { Sparkles, Copy, Play, Pause, RotateCcw, Mic, Download, FileText, ArrowRight, Volume2 } from "lucide-react";
+import PitchStylePicker from "@/components/PitchStylePicker";
+import { getPitchStyle, PitchStyleKey } from "@/lib/pitchStyles";
+import { buildPitchDeck } from "@/lib/pitchDeck";
+
+interface Slide {
+  title: string;
+  subtitle?: string;
+  bullets: string[];
+  visualHint?: string;
+}
 
 interface PitchData {
   script: string;
-  slides: { title: string; bullets: string[] }[];
+  slides: Slide[];
   judging: { criterion: string; question: string }[];
+  speakerNotes?: string[];
+  styleKey?: PitchStyleKey;
 }
 
-const STORAGE = "hackathon-pitch-v1";
+const STORAGE = "hackathon-pitch-v2";
 
 const Pitch = () => {
   const { getStepData, saveStepData } = useProject();
+  const { state: hackState } = useHackathon();
   const { toast } = useToast();
+  const [styleKey, setStyleKey] = useState<PitchStyleKey | null>(null);
   const [pitch, setPitch] = useState<PitchData | null>(null);
   const [loading, setLoading] = useState(false);
   const [practice, setPractice] = useState(60);
@@ -27,7 +42,11 @@ const Pitch = () => {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE);
-      if (raw) setPitch(JSON.parse(raw));
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        setPitch(parsed);
+        if (parsed.styleKey) setStyleKey(parsed.styleKey);
+      }
     } catch {}
   }, []);
 
@@ -57,6 +76,11 @@ const Pitch = () => {
   }, [getStepData]);
 
   const generate = async () => {
+    if (!styleKey) {
+      toast({ title: "בחרו סגנון פיץ׳ קודם", variant: "destructive" });
+      return;
+    }
+    const style = getPitchStyle(styleKey);
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-assist", {
@@ -65,6 +89,10 @@ const Pitch = () => {
           stepKey: "pitch",
           stepTitle: "Pitch",
           previousData: collectAll(),
+          pitchStyle: style.key,
+          pitchStyleTitle: style.title,
+          pitchStyleHint: style.promptHint,
+          pitchSlideTitles: style.slideTitles,
         },
       });
       if (error) throw error;
@@ -77,9 +105,10 @@ const Pitch = () => {
         toast({ title: "תשובת AI לא תקינה — נסו שוב", variant: "destructive" });
       }
       if (parsed) {
-        setPitch(parsed);
-        localStorage.setItem(STORAGE, JSON.stringify(parsed));
-        saveStepData("pitch", parsed, true);
+        const withStyle = { ...parsed, styleKey };
+        setPitch(withStyle);
+        localStorage.setItem(STORAGE, JSON.stringify(withStyle));
+        saveStepData("pitch", withStyle, true);
         toast({ title: "הפיץ׳ מוכן! 🎤" });
       }
     } catch (e: any) {
@@ -100,35 +129,89 @@ const Pitch = () => {
     toast({ title: "הועתק! 📋" });
   };
 
+  const downloadPptx = async () => {
+    if (!pitch) return;
+    try {
+      const style = getPitchStyle(styleKey);
+      await buildPitchDeck(pitch, hackState.teamName || "הצוות", `${style.emoji} ${style.title}`);
+      toast({ title: "המצגת ירדה! 📊" });
+    } catch (e: any) {
+      toast({ title: "שגיאה בייצור המצגת", description: e.message, variant: "destructive" });
+    }
+  };
+
+  const speak = () => {
+    if (!pitch) return;
+    try {
+      const u = new SpeechSynthesisUtterance(pitch.script);
+      u.lang = "he-IL";
+      u.rate = 1.05;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } catch {
+      toast({ title: "הדפדפן לא תומך בהקראה", variant: "destructive" });
+    }
+  };
+
+  const style = getPitchStyle(styleKey);
+
   return (
     <Layout>
       <div className="max-w-3xl mx-auto space-y-6" dir="rtl">
         <div className="text-center">
           <h1 className="font-sketch text-4xl mb-2">🎤 הפיץ׳</h1>
-          <p className="font-hand text-xl text-muted-foreground">60 שניות, 5 שקפים, שופטים מרוצים.</p>
+          <p className="font-hand text-xl text-muted-foreground">
+            60 שניות. מצגת אמיתית. שופטים מרוצים.
+          </p>
         </div>
 
+        {/* Step 1: pick style */}
         <div className="sketch-card p-5">
+          <PitchStylePicker selected={styleKey} onSelect={setStyleKey} />
+        </div>
+
+        {/* Step 2: generate */}
+        <div className="sketch-card p-5 bg-secondary/20">
           <div className="flex items-center gap-2 flex-wrap">
-            <Button onClick={generate} disabled={loading} size="lg">
-              <Sparkles size={16} /> {loading ? "מייצר…" : pitch ? "ייצור מחדש" : "צרו פיץ׳ מהעבודה שלכם"}
+            <Button onClick={generate} disabled={loading || !styleKey} size="lg">
+              <Sparkles size={16} />{" "}
+              {loading
+                ? "מייצר…"
+                : pitch
+                ? `ייצור מחדש בסגנון ${style.title}`
+                : "צרו פיץ׳ מהעבודה שלכם"}
             </Button>
-            {pitch && (
-              <Button variant="outline" onClick={copyAll}>
-                <Copy size={14} /> העתק הכל
-              </Button>
+            {!styleKey && (
+              <span className="font-hand text-sm text-muted-foreground">
+                <ArrowRight size={14} className="inline rotate-180 ml-1" />
+                בחרו סגנון למעלה
+              </span>
             )}
           </div>
           <p className="font-hand text-sm text-muted-foreground mt-2">
-            ה-AI לוקח את הבעיה, הפתרון והתובנה שלכם ובונה סקריפט + שקפים + צ׳קליסט שיפוט.
+            ה-AI לוקח את כל מה שעשיתם — בעיה, פתרון, תובנה — ובונה לכם סקריפט, 5-7 שקפים, צ׳קליסט שיפוט והערות למרצה.
           </p>
         </div>
 
         {pitch && (
           <>
-            {/* Practice timer + script teleprompter */}
+            {/* Export bar */}
+            <div className="sketch-card p-4 flex items-center gap-2 flex-wrap bg-foreground text-background">
+              <span className="font-sketch text-base ml-2">ייצוא:</span>
+              <Button variant="secondary" size="sm" onClick={downloadPptx}>
+                <Download size={14} /> מצגת PowerPoint
+              </Button>
+              <Button variant="secondary" size="sm" onClick={copyAll}>
+                <FileText size={14} /> Markdown להעתקה
+              </Button>
+              <Button variant="secondary" size="sm" onClick={speak}>
+                <Volume2 size={14} /> תקריא לי
+              </Button>
+            </div>
+
+            {/* Script + practice timer */}
             <div className="sketch-card p-5 border-2 border-foreground">
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
                 <Mic size={18} />
                 <h2 className="font-sketch text-xl">סקריפט 60 שניות</h2>
                 <div className="flex-1" />
@@ -136,7 +219,14 @@ const Pitch = () => {
                 <Button size="sm" variant="outline" onClick={() => setRunning((r) => !r)}>
                   {running ? <Pause size={14} /> : <Play size={14} />}
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => { setRunning(false); setPractice(60); }}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setRunning(false);
+                    setPractice(60);
+                  }}
+                >
                   <RotateCcw size={14} />
                 </Button>
               </div>
@@ -145,17 +235,34 @@ const Pitch = () => {
               </div>
             </div>
 
-            {/* Slides */}
+            {/* Slides outline */}
             <div>
-              <h2 className="font-sketch text-2xl mb-3">📊 שלד מצגת — 5 שקפים</h2>
+              <h2 className="font-sketch text-2xl mb-3">
+                📊 שלד מצגת — {pitch.slides.length} שקפים
+              </h2>
               <div className="grid md:grid-cols-2 gap-3">
                 {pitch.slides.map((s, i) => (
                   <div key={i} className="sketch-card p-4">
                     <div className="text-xs text-muted-foreground font-hand mb-1">שקף {i + 1}</div>
-                    <h3 className="font-sketch text-lg mb-2">{s.title}</h3>
+                    <h3 className="font-sketch text-lg mb-1">{s.title}</h3>
+                    {s.subtitle && (
+                      <p className="font-hand text-sm text-muted-foreground mb-2">{s.subtitle}</p>
+                    )}
                     <ul className="font-hand text-base space-y-1">
-                      {s.bullets.map((b, j) => <li key={j}>• {b}</li>)}
+                      {s.bullets.map((b, j) => (
+                        <li key={j}>• {b}</li>
+                      ))}
                     </ul>
+                    {s.visualHint && (
+                      <p className="font-hand text-xs italic text-muted-foreground mt-2 pt-2 border-t border-dashed">
+                        🎨 {s.visualHint}
+                      </p>
+                    )}
+                    {pitch.speakerNotes?.[i] && (
+                      <p className="font-hand text-xs text-muted-foreground mt-2 pt-2 border-t border-dashed">
+                        🗣️ {pitch.speakerNotes[i]}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

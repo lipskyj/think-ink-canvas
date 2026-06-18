@@ -252,15 +252,38 @@ const Pitch = () => {
             <div className="sketch-card p-4 flex items-center gap-2 flex-wrap bg-foreground text-background">
               <span className="font-sketch text-base ml-2">ייצוא:</span>
               <Button variant="secondary" size="sm" onClick={downloadPptx}>
-                <Download size={14} /> מצגת PowerPoint
+                <Download size={14} /> הורדה כ-PowerPoint
+              </Button>
+              <Button variant="secondary" size="sm" onClick={openInGoogleSlides}>
+                <ExternalLink size={14} /> פתח ב-Google Slides
               </Button>
               <Button variant="secondary" size="sm" onClick={copyAll}>
-                <FileText size={14} /> Markdown להעתקה
+                <FileText size={14} /> Markdown
               </Button>
               <Button variant="secondary" size="sm" onClick={speak}>
                 <Volume2 size={14} /> תקריא לי
               </Button>
             </div>
+
+            {/* Cover image */}
+            <div className="sketch-card p-4">
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
+                <ImageIcon size={18} />
+                <h2 className="font-sketch text-lg">תמונת שער למצגת</h2>
+                <div className="flex-1" />
+                <Button size="sm" variant="outline" onClick={generateCoverImage} disabled={imgLoading}>
+                  <Sparkles size={14} /> {imgLoading ? "מייצר…" : coverImage ? "ייצור מחדש" : "ייצרו תמונה"}
+                </Button>
+              </div>
+              {coverImage ? (
+                <img src={coverImage} alt="תמונת שער" className="w-full max-h-72 object-contain bg-secondary/20 rounded" />
+              ) : (
+                <p className="font-hand text-sm text-muted-foreground">
+                  AI יצייר לכם איור בסגנון הזין של האפליקציה — ישובץ אוטומטית במצגת.
+                </p>
+              )}
+            </div>
+
 
             {/* Script + practice timer */}
             <div className="sketch-card p-5 border-2 border-foreground">

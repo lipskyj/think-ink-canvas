@@ -194,4 +194,106 @@ const Submissions = () => {
   );
 };
 
+function CodeSubmit({ rows, onSubmitted }: { rows: ClassRow[]; onSubmitted: () => void }) {
+  const { toast } = useToast();
+  const [code, setCode] = useState("");
+  const [target, setTarget] = useState<ClassRow | null>(null);
+  const [slides, setSlides] = useState("");
+  const [proto, setProto] = useState("");
+  const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const lookup = () => {
+    const c = code.trim().toUpperCase();
+    const found = rows.find((r) => (r.join_code || "").toUpperCase() === c);
+    if (!found) {
+      toast({ title: "קוד לא נמצא", variant: "destructive" });
+      return;
+    }
+    setTarget(found);
+    setSlides(found.slides_url || "");
+    setProto(found.prototype_url || "");
+    setNotes(found.submission_notes || "");
+  };
+
+  const submit = async () => {
+    if (!target) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("classes")
+      .update({
+        slides_url: slides.trim() || null,
+        prototype_url: proto.trim() || null,
+        submission_notes: notes.trim() || null,
+        submitted_at: new Date().toISOString(),
+      })
+      .eq("id", target.id);
+    setSaving(false);
+    if (error) {
+      toast({ title: "שגיאה", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "הוגש בהצלחה!" });
+    onSubmitted();
+  };
+
+  return (
+    <section className="sketch-card mb-10">
+      <div className="flex items-center gap-2 mb-3">
+        <Save className="h-5 w-5" />
+        <h2 className="font-sketch text-xl">הגשה עם קוד הקבוצה</h2>
+      </div>
+      <p className="font-hand text-sm text-muted-foreground mb-3">
+        הזינו את הקוד שקיבלתם מהמארגן (למשל A6) כדי להעלות את התוצרים שלכם.
+      </p>
+      {!target ? (
+        <div className="flex gap-2 max-w-sm">
+          <input
+            className="sketch-input text-center font-sketch text-2xl tracking-widest uppercase"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            placeholder="A6"
+            maxLength={4}
+            dir="ltr"
+            onKeyDown={(e) => e.key === "Enter" && lookup()}
+          />
+          <button onClick={lookup} disabled={!code.trim()} className="sketch-btn disabled:opacity-50">
+            המשך
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <div className="font-sketch text-lg flex items-center gap-2">
+            הקבוצה: {target.name}
+            <span className="pill-chip pill-chip-outline text-[10px]">{target.join_code}</span>
+            <button onClick={() => setTarget(null)} className="text-xs underline text-muted-foreground">החלף קוד</button>
+          </div>
+          <div>
+            <label className="font-sketch text-sm mb-1 flex items-center gap-1">
+              <Presentation className="h-4 w-4" /> קישור למצגת
+            </label>
+            <input className="sketch-input" value={slides} onChange={(e) => setSlides(e.target.value)} dir="ltr" placeholder="https://..." />
+          </div>
+          <div>
+            <label className="font-sketch text-sm mb-1 flex items-center gap-1">
+              <Code2 className="h-4 w-4" /> קישור לפיתוח / אב-טיפוס
+            </label>
+            <input className="sketch-input" value={proto} onChange={(e) => setProto(e.target.value)} dir="ltr" placeholder="https://..." />
+          </div>
+          <div>
+            <label className="font-sketch text-sm block mb-1">הערות (אופציונלי)</label>
+            <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          </div>
+          <div className="flex justify-end">
+            <button onClick={submit} disabled={saving || (!slides.trim() && !proto.trim())} className="sketch-btn flex items-center gap-2 disabled:opacity-50">
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              {saving ? "שומר..." : "הגש"}
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default Submissions;

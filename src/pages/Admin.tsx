@@ -458,18 +458,24 @@ function ClassPanel({
   return (
     <div className="sketch-card">
       {/* Header */}
-      <div className="flex items-center justify-between cursor-pointer" onClick={onToggleExpand}>
-        <div className="flex items-center gap-3">
-          <Users className="h-5 w-5" />
-          <div>
-            <h3 className="font-sketch text-lg">{cls.name}</h3>
+      <div className="flex items-center justify-between cursor-pointer gap-3" onClick={onToggleExpand}>
+        <div className="flex items-center gap-3 min-w-0">
+          {cls.join_code && (
+            <div className="sketch-border-thin bg-yellow-100/60 dark:bg-yellow-900/30 px-3 py-2 rounded-md shrink-0">
+              <div className="text-[9px] uppercase tracking-wider text-muted-foreground font-sketch">קוד</div>
+              <div className="font-sketch text-2xl tracking-widest leading-none">{cls.join_code}</div>
+            </div>
+          )}
+          <div className="min-w-0">
+            <h3 className="font-sketch text-lg truncate">{cls.name}</h3>
             <p className="text-xs text-muted-foreground">{cls.student_names.length} סטודנטים</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={(e) => { e.stopPropagation(); onCopyLink(cls.id); }}
             className="sketch-btn-outline text-xs flex items-center gap-1 px-2 py-1"
+            title="העתק קישור הצטרפות ישיר"
           >
             {copiedId === cls.id ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
             {copiedId === cls.id ? "הועתק!" : "קישור"}
@@ -517,6 +523,13 @@ function ClassPanel({
                   defaultValue={cls.event_topic || ""}
                   onBlur={(e) => e.target.value !== (cls.event_topic || "") && onUpdate(cls.id, { event_topic: e.target.value })}
                 />
+                <Textarea
+                  placeholder="תיאור / רקע על האירוע (יוצג בדף הבית של המשתתפים)"
+                  defaultValue={cls.event_description || ""}
+                  rows={3}
+                  className="text-sm"
+                  onBlur={(e) => e.target.value !== (cls.event_description || "") && onUpdate(cls.id, { event_description: e.target.value })}
+                />
                 <div className="grid grid-cols-2 gap-2">
                   <Input
                     placeholder="תאריך"
@@ -534,6 +547,48 @@ function ClassPanel({
                   defaultValue={cls.event_location || ""}
                   onBlur={(e) => e.target.value !== (cls.event_location || "") && onUpdate(cls.id, { event_location: e.target.value })}
                 />
+
+                {/* Organizer logo upload */}
+                <div className="pt-2">
+                  <p className="text-xs font-sketch uppercase tracking-wider text-muted-foreground mb-1">לוגו המארגן</p>
+                  <div className="flex items-center gap-3">
+                    {cls.organizer_logo_url ? (
+                      <img src={cls.organizer_logo_url} alt="לוגו" className="h-12 max-w-[100px] object-contain sketch-border-thin bg-background p-1 rounded" />
+                    ) : (
+                      <div className="h-12 w-12 sketch-border-thin rounded flex items-center justify-center text-muted-foreground text-[10px] font-hand">ללא</div>
+                    )}
+                    <label className="sketch-btn-outline text-xs cursor-pointer px-2 py-1">
+                      העלה תמונה
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          if (file.size > 1024 * 1024) {
+                            alert("גודל מקסימלי: 1MB");
+                            return;
+                          }
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            onUpdate(cls.id, { organizer_logo_url: String(reader.result) });
+                          };
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                    </label>
+                    {cls.organizer_logo_url && (
+                      <button
+                        onClick={() => onUpdate(cls.id, { organizer_logo_url: null as any })}
+                        className="text-xs text-destructive underline"
+                      >
+                        הסר
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 {cls.leader_name && (
                   <p className="text-xs font-hand text-muted-foreground pt-1">
                     ראש קבוצה: <strong>{cls.leader_name}</strong>

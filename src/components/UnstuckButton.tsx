@@ -60,7 +60,7 @@ const UnstuckButton = () => {
           <Zap size={14} /> תקועים?
         </Button>
         <Button size="sm" variant="outline" onClick={() => run("challenge")} disabled={loading} className="shadow-lg bg-background">
-          🥊 ערערו עליי
+          ערערו עליי
         </Button>
       </div>
     </div>

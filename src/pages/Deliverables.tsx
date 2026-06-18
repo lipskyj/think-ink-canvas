@@ -36,7 +36,7 @@ const ITEMS: Item[] = [
   },
   {
     key: "prototype",
-    title: "🛠️ אב-טיפוס / פרומפט",
+    title: "אב-טיפוס / פרומפט",
     description: "ה-PRD המוכן ל-Lovable",
     url: "/prd",
     sourceStep: "prd_generator",

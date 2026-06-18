@@ -73,7 +73,7 @@ export const SPRINT_BLOCKS: SprintBlock[] = [
   },
   {
     key: "build",
-    emoji: "🛠️",
+    emoji: "",
     title: "הבנייה",
     tagline: "דמו אמיתי, לא שקפים.",
     minutes: 180,

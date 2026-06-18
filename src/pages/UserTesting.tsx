@@ -174,7 +174,7 @@ const UserTesting = () => {
                 </div>
                 <div>
                   <div className="flex items-center relative">
-                    <label className="font-sketch text-xs block mb-1">📖 מה למדנו</label>
+                    <label className="font-sketch text-xs block mb-1">מה למדנו</label>
                     <SectionHelper stepKey="user_testing" sectionKey="whatLearned" currentData={getData()} previousData={previousData} />
                   </div>
                   <textarea className="sketch-input min-h-[50px] text-sm" placeholder="מה למדתם?" value={it.whatLearned} onChange={(e) => updateIteration(i, "whatLearned", e.target.value)} />

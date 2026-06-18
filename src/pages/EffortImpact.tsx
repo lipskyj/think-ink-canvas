@@ -438,7 +438,7 @@ const SimpleScoringMode = ({ ideas, setIdeas }: SimpleProps) => {
               onChange={(v) => setField(idea.id, "wow", v)}
             />
             <ScoreRow
-              label="🛠️ יודעים לבנות?"
+              label="יודעים לבנות?"
               options={CAN_OPTS as any}
               value={idea.canBuild}
               onChange={(v) => setField(idea.id, "canBuild", v)}

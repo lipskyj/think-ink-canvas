@@ -3,7 +3,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import HackathonTimerBar from "@/components/HackathonTimerBar";
 import UnstuckButton from "@/components/UnstuckButton";
 import { useHackathon } from "@/contexts/HackathonContext";
-import { Map } from "lucide-react";
+
 
 interface LayoutProps {
   children: React.ReactNode;

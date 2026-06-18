@@ -117,7 +117,7 @@ const PrototypeBrief = () => {
         setSuggestedFeatures(parsed.map((f: any) => ({
           name: String(f.name || "").trim(),
           description: String(f.description || "").trim(),
-          bucket: "unassigned",
+          bucket: "unassigned" as const,
         })).filter((f) => f.name));
       }
     } catch (e) {

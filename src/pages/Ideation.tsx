@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Plus, Sparkles, X, Timer, Play, RotateCcw, ChevronLeft, ChevronRight, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Plus, Sparkles, Star, X, Timer, Play, RotateCcw, ChevronLeft, ChevronRight, CheckCircle2, ArrowLeft, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAdmin } from "@/contexts/AdminContext";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import LinkedDataBanner from "@/components/LinkedDataBanner";

@@ -86,7 +86,7 @@ const Submissions = () => {
           </p>
         </header>
 
-        {isClassMode && session && (
+        {isClassMode && session ? (
           <section className="sketch-card mb-10">
             <div className="flex items-center gap-2 mb-4">
               <Save className="h-5 w-5" />
@@ -138,6 +138,8 @@ const Submissions = () => {
               </div>
             </div>
           </section>
+        ) : (
+          <CodeSubmit rows={rows} onSubmitted={fetchAll} />
         )}
 
         <section>

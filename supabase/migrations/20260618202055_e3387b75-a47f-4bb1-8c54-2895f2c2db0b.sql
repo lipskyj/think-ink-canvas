@@ -1,0 +1,5 @@
+ALTER TABLE public.classes
+  ADD COLUMN IF NOT EXISTS slides_url TEXT,
+  ADD COLUMN IF NOT EXISTS prototype_url TEXT,
+  ADD COLUMN IF NOT EXISTS submission_notes TEXT,
+  ADD COLUMN IF NOT EXISTS submitted_at TIMESTAMPTZ;

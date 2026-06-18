@@ -7,6 +7,7 @@ const PHASE_COLORS: Record<ProcessPhase, string> = {
   problem: "hsl(0, 70%, 55%)",
   solution: "hsl(40, 85%, 55%)",
   development: "hsl(145, 55%, 42%)",
+  presentation: "hsl(280, 70%, 55%)",
 };
 
 const PROBLEM_POSITIONS: Record<string, { x: number; y: number }> = {

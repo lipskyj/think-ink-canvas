@@ -243,7 +243,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
               aria-label="חזרה למפת השלבים"
               title="מפה"
             >
-              <Info className="h-4 w-4 rotate-0" />
+              <Home className="h-4 w-4" />
               <span className="sr-only">מפה</span>
             </button>
 

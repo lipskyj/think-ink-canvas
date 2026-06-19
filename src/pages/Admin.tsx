@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Layout from "@/components/Layout";
 import { STEPS, PHASES, getStepByKey } from "@/lib/steps";
 import { Switch } from "@/components/ui/switch";
 import {
   Lock, Unlock, Sparkles, Shield, LockOpen, Plus, Trash2, Copy, Users, Check,
-  ChevronDown, ChevronUp, Eye, Settings, X,
+  ChevronDown, ChevronUp, Eye, Settings, X, Play, Pause, Gauge, ArrowLeft, ArrowRight,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -170,6 +170,76 @@ export default function Admin() {
     await fetchClasses();
   };
 
+  /* ── Master controls (applied to every group at once) ── */
+  // Derive current global state from the first class row (treat all classes as kept in sync).
+  const ref = classes[0];
+  const masterAiEnabled = useMemo(() => classes.length > 0 && classes.every((c) => c.ai_enabled), [classes]);
+  // Working is "disabled" when EVERY step is locked across every class.
+  const workingDisabled = useMemo(
+    () => classes.length > 0 && classes.every((c) => STEPS.every((s) => c.locked_steps?.[s.key])),
+    [classes],
+  );
+  // Pacing — if no steps are locked anywhere, treat as self-paced. Otherwise admin-paced;
+  // the current open-up-to step is (first-locked-index − 1).
+  const adminPaceStep = useMemo(() => {
+    if (classes.length === 0) return null as number | null;
+    let firstLocked = -1;
+    for (let i = 0; i < STEPS.length; i++) {
+      if (classes.some((c) => c.locked_steps?.[STEPS[i].key])) {
+        firstLocked = i;
+        break;
+      }
+    }
+    if (firstLocked === -1) return null; // self-paced
+    if (workingDisabled) return null; // fully closed — not admin pace
+    return firstLocked - 1; // index of the last open step
+  }, [classes, workingDisabled]);
+  const isAdminPaced = adminPaceStep !== null;
+
+  const applyToAllClasses = async (updates: Partial<ClassRow>) => {
+    if (classes.length === 0) return;
+    const dbUpdates: any = { ...updates };
+    const { error } = await supabase.from("classes").update(dbUpdates).in("id", classes.map((c) => c.id));
+    if (error) {
+      toast({ title: "שגיאה", description: error.message, variant: "destructive" });
+      return;
+    }
+    await fetchClasses();
+  };
+
+  const toggleWorkingForAll = async () => {
+    if (workingDisabled) {
+      // Re-open: unlock everything everywhere
+      await applyToAllClasses({ locked_steps: {} });
+      toast({ title: "האירוע פתוח — כל הקבוצות יכולות לעבוד" });
+    } else {
+      // Close: lock every step everywhere
+      const allLocked: Record<string, boolean> = {};
+      STEPS.forEach((s) => { allLocked[s.key] = true; });
+      await applyToAllClasses({ locked_steps: allLocked });
+      toast({ title: "האירוע נסגר — אף קבוצה לא יכולה להתקדם" });
+    }
+  };
+
+  const toggleAiForAll = async () => {
+    await applyToAllClasses({ ai_enabled: !masterAiEnabled } as any);
+    toast({ title: !masterAiEnabled ? "AI הופעל לכל הקבוצות" : "AI כובה לכל הקבוצות" });
+  };
+
+  const setSelfPaced = async () => {
+    await applyToAllClasses({ locked_steps: {} });
+    toast({ title: "מצב חופשי — כל קבוצה מתקדמת בקצב שלה" });
+  };
+
+  const setAdminPaceAtStep = async (openUpToIndex: number) => {
+    // Lock every step AFTER openUpToIndex.
+    const locked: Record<string, boolean> = {};
+    STEPS.forEach((s, i) => { if (i > openUpToIndex) locked[s.key] = true; });
+    await applyToAllClasses({ locked_steps: locked });
+  };
+
+
+
   return (
     <Layout>
       <div className="max-w-4xl mx-auto">
@@ -256,6 +326,104 @@ export default function Admin() {
             </div>
           </div>
         </div>
+
+        {/* Master controls — apply to every group at once */}
+        {classes.length > 0 && (
+          <div className="sketch-card mb-6 border-2 border-foreground/40">
+            <div className="flex items-center gap-2 mb-4">
+              <Gauge className="h-5 w-5" />
+              <h2 className="font-sketch text-lg">שלט מרכזי לכל הקבוצות</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-3">
+              {/* Working open / closed */}
+              <div className={`sketch-border-thin p-3 rounded-md ${workingDisabled ? "bg-destructive/10" : "bg-secondary/30"}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-sketch text-sm">סטטוס האירוע</div>
+                  {workingDisabled ? <Pause className="h-4 w-4 text-destructive" /> : <Play className="h-4 w-4" />}
+                </div>
+                <p className="font-hand text-xs text-muted-foreground mb-3">
+                  {workingDisabled ? "האירוע סגור — אף קבוצה לא יכולה להתקדם בשלבים." : "האירוע פתוח — קבוצות יכולות לעבוד."}
+                </p>
+                <button
+                  onClick={toggleWorkingForAll}
+                  className={`text-xs px-3 py-1.5 w-full ${workingDisabled ? "sketch-btn" : "sketch-btn-outline"}`}
+                >
+                  {workingDisabled ? "פתח עבודה לכולם" : "סגור עבודה לכולם"}
+                </button>
+              </div>
+
+              {/* AI on / off */}
+              <div className={`sketch-border-thin p-3 rounded-md ${masterAiEnabled ? "bg-secondary/30" : "bg-destructive/10"}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-sketch text-sm">עזרת AI</div>
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <p className="font-hand text-xs text-muted-foreground mb-3">
+                  {masterAiEnabled ? "AI זמין בכל השלבים לכל הקבוצות." : "AI כבוי לכל הקבוצות — תלמידים עובדים לבד."}
+                </p>
+                <button
+                  onClick={toggleAiForAll}
+                  className={`text-xs px-3 py-1.5 w-full ${masterAiEnabled ? "sketch-btn-outline" : "sketch-btn"}`}
+                >
+                  {masterAiEnabled ? "כבה AI לכולם" : "הפעל AI לכולם"}
+                </button>
+              </div>
+
+              {/* Pacing mode */}
+              <div className={`sketch-border-thin p-3 rounded-md ${isAdminPaced ? "bg-secondary/40" : "bg-secondary/30"}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-sketch text-sm">קצב התקדמות</div>
+                  {isAdminPaced ? <Lock className="h-4 w-4" /> : <LockOpen className="h-4 w-4" />}
+                </div>
+                <div className="flex gap-1 mb-2">
+                  <button
+                    onClick={setSelfPaced}
+                    disabled={workingDisabled}
+                    className={`text-[11px] flex-1 px-2 py-1 ${!isAdminPaced && !workingDisabled ? "sketch-btn" : "sketch-btn-outline"} disabled:opacity-40`}
+                  >
+                    חופשי
+                  </button>
+                  <button
+                    onClick={() => setAdminPaceAtStep(0)}
+                    disabled={workingDisabled}
+                    className={`text-[11px] flex-1 px-2 py-1 ${isAdminPaced ? "sketch-btn" : "sketch-btn-outline"} disabled:opacity-40`}
+                  >
+                    בהובלת המנחה
+                  </button>
+                </div>
+                {isAdminPaced && adminPaceStep !== null && (
+                  <div className="mt-2">
+                    <p className="font-hand text-[11px] text-muted-foreground mb-1">
+                      פתוח עד שלב {STEPS[adminPaceStep]?.num}: {STEPS[adminPaceStep]?.title}
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setAdminPaceAtStep(Math.max(0, adminPaceStep - 1))}
+                        disabled={adminPaceStep === 0}
+                        className="sketch-btn-outline text-xs px-2 py-1 disabled:opacity-40"
+                        title="חזרה לשלב קודם"
+                      >
+                        <ArrowRight className="h-3 w-3" />
+                      </button>
+                      <div className="flex-1 text-center font-sketch text-base">
+                        {adminPaceStep + 1} / {STEPS.length}
+                      </div>
+                      <button
+                        onClick={() => setAdminPaceAtStep(Math.min(STEPS.length - 1, adminPaceStep + 1))}
+                        disabled={adminPaceStep >= STEPS.length - 1}
+                        className="sketch-btn text-xs px-2 py-1 disabled:opacity-40"
+                        title="פתח שלב הבא"
+                      >
+                        <ArrowLeft className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
 
         {/* Create new group */}
         <div className="sketch-card mb-6">

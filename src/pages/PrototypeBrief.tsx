@@ -65,60 +65,9 @@ const PrototypeBrief = () => {
   }), [brief.objective, brief.must, brief.assumptions]);
   useAutoFill("prototype_brief", autoFillFields);
 
-  const getData = useCallback(() => ({ ...brief, suggestedFeatures, seeded }), [brief, suggestedFeatures, seeded]);
+  const getData = useCallback(() => ({ ...brief }), [brief]);
   const hasContent = !!(brief.objective.trim() || brief.must.trim());
   const previousData = getAllPreviousData("prototype_brief");
-
-  const appendToBucket = (bucket: Bucket, line: string) => {
-    setBrief((prev) => {
-      const existing = (prev[bucket] || "").trim();
-      const next = existing ? `${existing}\n• ${line}` : `• ${line}`;
-      return { ...prev, [bucket]: next };
-    });
-  };
-
-  const assignFeature = (index: number, bucket: Bucket) => {
-    setSuggestedFeatures((prev) => {
-      const copy = [...prev];
-      const f = copy[index];
-      if (!f) return prev;
-      copy[index] = { ...f, bucket };
-      appendToBucket(bucket, `${f.name}${f.description ? ` — ${f.description}` : ""}`);
-      return copy;
-    });
-  };
-
-  const generateAiFeatures = async () => {
-    setAiFeaturesLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("ai-assist", {
-        body: {
-          stepKey: "prototype_brief",
-          stepTitle: "Brief — תכונות מוצעות",
-          mode: "section",
-          sectionKey: "features_json",
-          sectionPrompt: `על בסיס כיוון הפתרון של הצוות, הצע 6 תכונות מוצר קונקרטיות שיכולות להתאים (לדוגמה: leaderboard, צ׳אט קבוצתי, גלריה, התראות, פרופיל, שיתוף, וכו'). החזר אך ורק מערך JSON תקין בפורמט: [{"name":"שם התכונה","description":"משפט קצר בעברית"}]. בלי טקסט נוסף, בלי code fences.`,
-          currentData: { objective: brief.objective, must: brief.must },
-          previousData,
-        },
-      });
-      if (error) throw error;
-      const raw = (data?.content || "").trim().replace(/```json?/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        setSuggestedFeatures(parsed.map((f: any) => ({
-          id: crypto.randomUUID(),
-          name: String(f.name || "").trim(),
-          description: String(f.description || "").trim(),
-          bucket: "unassigned" as const,
-        })).filter((f) => f.name));
-      }
-    } catch (e) {
-      console.error("AI features failed", e);
-    } finally {
-      setAiFeaturesLoading(false);
-    }
-  };
 
 
   return (

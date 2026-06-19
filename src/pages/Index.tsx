@@ -233,88 +233,8 @@ const Index = () => {
         )}
 
 
-        {/* GROUP + EVENT CARD (only in class mode) */}
-        {isClassMode && session && (
-          <section className="grid md:grid-cols-2 gap-4 mb-12">
-            <div className="sketch-card">
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  <span className="pill-chip pill-chip-outline">הקבוצה שלכם</span>
-                </div>
-                <Link to="/team" className="sketch-btn-outline text-xs flex items-center gap-1 px-2 py-1">
-                  <Pencil className="h-3 w-3" /> ערוך
-                </Link>
-              </div>
 
-              {event?.team_avatar_url && (
-                <img
-                  src={event.team_avatar_url}
-                  alt={session.className}
-                  className="w-full max-w-[220px] mx-auto mb-3 rounded-md"
-                />
-              )}
 
-              <h2 className="display-huge mb-3 text-center" style={{ fontSize: "clamp(1.6rem,3vw,2.2rem)" }}>
-                {session.className}
-              </h2>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="font-hand text-base">{session.studentName}</span>
-                {isLeader && (
-                  <span className="pill-chip pill-chip-sun text-[10px] flex items-center gap-1">
-                    <Crown className="h-3 w-3" /> ראש קבוצה
-                  </span>
-                )}
-              </div>
-              {members.length > 1 && (
-                <p className="font-hand text-sm text-muted-foreground text-center">
-                  {members.filter((m) => m !== session.studentName).join(" · ")}
-                </p>
-              )}
-              <div className="mt-4 text-xs font-sketch tracking-wider uppercase text-muted-foreground text-center">
-                התקדמות: {completedCount}/{STEPS.length}
-              </div>
-            </div>
-
-            {(event?.event_date || event?.event_location || event?.event_topic || event?.organizer_logo_url) && (
-              <div className="sketch-card">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    <span className="pill-chip pill-chip-outline">פרטי האירוע</span>
-                  </div>
-                  {event.organizer_logo_url && (
-                    <img src={event.organizer_logo_url} alt="לוגו המארגן" className="h-10 max-w-[80px] object-contain" />
-                  )}
-                </div>
-                {event.event_topic && (
-                  <h3 className="display-huge mb-3" style={{ fontSize: "clamp(1.4rem,2.5vw,1.8rem)" }}>
-                    {event.event_topic}
-                  </h3>
-                )}
-                {event.event_description && (
-                  <p className="font-hand text-sm text-foreground/80 mb-3 whitespace-pre-wrap">
-                    {event.event_description}
-                  </p>
-                )}
-                <div className="space-y-2 font-hand text-base">
-                  {(event.event_date || event.event_time) && (
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 shrink-0" />
-                      <span>{[event.event_date, event.event_time].filter(Boolean).join(" · ")}</span>
-                    </div>
-                  )}
-                  {event.event_location && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 shrink-0" />
-                      <span>{event.event_location}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </section>
-        )}
 
         {/* 4 PHASES */}
         <section className="mb-12">

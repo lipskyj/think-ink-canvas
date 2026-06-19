@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Sparkles, Loader2, Plus, X, Crown, ArrowRight, RefreshCw, Save, Check } from "lucide-react";
+import { Users, Sparkles, Loader2, Plus, X, Crown, ArrowRight, ArrowLeft, RefreshCw, Save, Check, Rocket } from "lucide-react";
 import { TEAM_AVATAR_STYLES, type TeamAvatarStyleKey, getAvatarStyle } from "@/lib/teamAvatarStyles";
 
 type Gender = "male" | "female" | "other";

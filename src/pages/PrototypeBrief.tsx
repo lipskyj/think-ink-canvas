@@ -3,6 +3,7 @@ import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
 import CoherenceTracker from "@/components/CoherenceTracker";
+import Phase2Recap from "@/components/Phase2Recap";
 import { useAutoFill } from "@/hooks/useAutoFill";
 import { BRIEF_QUESTIONS } from "@/lib/briefQuestions";
 
@@ -72,7 +73,9 @@ const PrototypeBrief = () => {
 
   return (
     <StepPage stepKey="prototype_brief" onSave={getData} canComplete={hasContent}>
+      <Phase2Recap />
       <CoherenceTracker stepKey="prototype_brief" currentData={brief} />
+
 
       <div className="sketch-border p-5 mb-6 bg-secondary/30">
         <p className="font-hand text-lg">

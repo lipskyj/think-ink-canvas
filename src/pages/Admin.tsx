@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Layout from "@/components/Layout";
 import { STEPS, PHASES, getStepByKey } from "@/lib/steps";
 import { Switch } from "@/components/ui/switch";
 import {
   Lock, Unlock, Sparkles, Shield, LockOpen, Plus, Trash2, Copy, Users, Check,
-  ChevronDown, ChevronUp, Eye, Settings, X,
+  ChevronDown, ChevronUp, Eye, Settings, X, Play, Pause, Gauge, ArrowLeft, ArrowRight,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

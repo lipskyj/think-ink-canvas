@@ -62,7 +62,7 @@ const Index = () => {
 
   // Public event banner (shown to everyone, not only inside a class). Use the latest non-empty event fields across groups.
   const publicEvent = (() => {
-    const src = groups.find((g) => g.event_topic || g.event_date || g.event_location || g.organizer_logo_url);
+    const src = groups.find((g) => g.event_topic || g.event_date || g.event_location || g.organizer_logo_url || g.organizer_name);
     if (!src) return null;
     return {
       event_topic: src.event_topic,
@@ -71,6 +71,7 @@ const Index = () => {
       event_location: src.event_location,
       event_description: src.event_description,
       organizer_logo_url: src.organizer_logo_url,
+      organizer_name: src.organizer_name,
     };
   })();
   const teamCount = groups.length;

@@ -91,6 +91,17 @@ export default function Team() {
       });
       clearTimeout(timeout);
       if (error) throw error;
+      if (data?.error) {
+        if (data.creditLimit) {
+          toast({
+            title: "מכסת ה-AI של סדנת הכיתה נגמרה",
+            description: "המורה צריך/ה לחדש קרדיטים ב-Lovable. תוכלו להמשיך לעבוד בלי אווטאר.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw new Error(typeof data.error === "string" ? data.error : "שגיאה ביצירת אווטאר");
+      }
       if (data?.dataUrl) {
         setPendingAvatar(data.dataUrl);
         // Auto-persist the avatar immediately so it shows on the home page without a separate save click

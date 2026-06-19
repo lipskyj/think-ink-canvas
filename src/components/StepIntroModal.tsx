@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { useStepLSD } from "@/hooks/useStepLSD";
 import { getStepByKey } from "@/lib/steps";
@@ -112,7 +113,7 @@ export default function StepIntroModal({ stepKey }: Props) {
   // Stage 1 of 2 indicator (dot row) — purely visual, no LEARN/SEE/DO labels
   const stageIdx = stage === "learn" ? 0 : 1;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-stretch sm:items-center justify-center overflow-y-auto"
       role="dialog"
@@ -243,6 +244,7 @@ export default function StepIntroModal({ stepKey }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

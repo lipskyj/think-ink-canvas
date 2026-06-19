@@ -5,6 +5,7 @@ import CoherenceTracker from "@/components/CoherenceTracker";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useProject } from "@/contexts/ProjectContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 type Bucket = "must" | "should" | "could" | "wont";
 
@@ -117,7 +118,23 @@ export default function MoscowPrioritization() {
     setNewFeature("");
   };
 
+  const mustLimit = Math.max(1, Math.ceil(features.length * 0.3));
+
   const moveFeature = (id: string, bucket: MoscowFeature["bucket"]) => {
+    if (bucket === "must") {
+      const current = features.find((f) => f.id === id);
+      if (current?.bucket !== "must") {
+        const mustCount = features.filter((f) => f.bucket === "must").length;
+        if (mustCount >= mustLimit) {
+          toast({
+            title: "יותר מדי Must",
+            description: `MVP חייב להיות צמצום. מותר עד ${mustLimit} תכונות ב-Must (30% מהרשימה). הורידו אחת קודם.`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
     setFeatures((prev) => prev.map((feature) => (feature.id === id ? { ...feature, bucket } : feature)));
   };
 
@@ -182,9 +199,14 @@ export default function MoscowPrioritization() {
 
       {mvpFeatures.length > 0 && (
         <div className="sketch-border p-5 mb-6 bg-[hsl(var(--highlight))] text-[hsl(var(--highlight-foreground))]">
-          <div className="flex items-center gap-2 mb-2">
-            <Check className="h-5 w-5" />
-            <span className="font-sketch text-xl">זה ה-MVP שלכם כרגע</span>
+          <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5" />
+              <span className="font-sketch text-xl">זה ה-MVP שלכם כרגע</span>
+            </div>
+            <span className="pill-chip pill-chip-outline bg-background/80 text-foreground text-xs">
+              {mvpFeatures.length} / {mustLimit} Must (עד 30%)
+            </span>
           </div>
           <div className="flex flex-wrap gap-2">
             {mvpFeatures.map((feature) => (

@@ -119,12 +119,8 @@ export default function StepIntroModal({ stepKey }: Props) {
       aria-modal="true"
       aria-label={`שלב ${step.num} — ${step.title}`}
     >
-      {/* Strong vibrant blob backdrop — full screen */}
-      <div className="absolute inset-0 bg-background/70 backdrop-blur-xl" aria-hidden />
-      <div className="vibe-backdrop vibe-backdrop-strong" aria-hidden>
-        <span className="vibe-blob-3" />
-        <span className="vibe-blob-4" />
-      </div>
+      {/* Solid backdrop — fully covers underlying page so popup never blends with content */}
+      <div className="absolute inset-0 bg-background" aria-hidden />
 
       {/* Content */}
       <div className="relative w-full max-w-3xl mx-auto px-6 sm:px-10 py-10 my-auto">
@@ -151,7 +147,7 @@ export default function StepIntroModal({ stepKey }: Props) {
         {/* Glass body */}
         <div
           key={stage}
-          className="relative rounded-3xl bg-card/85 backdrop-blur-md border-2 border-foreground p-6 sm:p-10 min-h-[220px] shadow-[6px_6px_0_hsl(var(--foreground))] animate-fade-in"
+          className="relative rounded-3xl bg-card border-2 border-foreground p-6 sm:p-10 min-h-[220px] shadow-[6px_6px_0_hsl(var(--foreground))] animate-fade-in"
         >
           {loading && !content ? (
             <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground font-hand">

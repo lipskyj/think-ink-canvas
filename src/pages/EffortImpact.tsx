@@ -235,28 +235,12 @@ const EffortImpact = () => {
         <SimpleScoringMode ideas={ideas} setIdeas={setIdeas} />
       )}
 
-      {/* Unplaced ideas (advanced mode only) */}
+      {/* Instruction (advanced mode) — all ideas start in the middle */}
       {advancedMode && unplaced.length > 0 && (
-        <div className="sketch-border p-4 mb-4 bg-accent/10">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2 font-bold">
-             רעיונות שעדיין לא מוקמו — גררו אותם לגרף
+        <div className="sketch-border p-3 mb-4 bg-accent/10">
+          <p className="text-sm font-bold">
+            כל הרעיונות מופיעים במרכז המטריצה. גררו כל אחד לרבע המתאים — לפי מאמץ והשפעה.
           </p>
-          <div className="flex flex-wrap gap-2">
-            {unplaced.map((idea) => (
-              <div
-                key={idea.id}
-                className="sketch-border px-3 py-1.5 text-sm bg-background cursor-grab active:cursor-grabbing flex items-center gap-1.5 select-none"
-                onMouseDown={(e) => handleMouseDown(e, idea.id)}
-                onTouchStart={(e) => handleTouchStart(e, idea.id)}
-              >
-                <GripVertical className="h-3 w-3 text-muted-foreground" />
-                <span className="max-w-[200px] truncate">{idea.text}</span>
-                <button onClick={() => removeIdea(idea.id)} className="p-0.5 hover:bg-accent rounded-sm">
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
         </div>
       )}
 
@@ -301,6 +285,31 @@ const EffortImpact = () => {
                   <div className="text-[10px] text-muted-foreground/60">{q.desc}</div>
                 </div>
               ))}
+
+              {/* Unplaced ideas — clustered in the center, waiting to be dragged */}
+              {unplaced.map((idea, idx) => {
+                const offsetX = ((idx % 5) - 2) * 6;
+                const offsetY = (Math.floor(idx / 5) - 1) * 8;
+                return (
+                  <div
+                    key={idea.id}
+                    className={`absolute z-10 sketch-border px-2 py-1 text-xs bg-[hsl(var(--accent)/0.4)] shadow-md cursor-grab active:cursor-grabbing select-none flex items-center gap-1 border-dashed ${
+                      draggingId === idea.id ? "ring-2 ring-foreground scale-105" : ""
+                    }`}
+                    style={{
+                      left: `calc(50% + ${offsetX}px)`,
+                      top: `calc(50% + ${offsetY}px)`,
+                      transform: "translate(-50%, -50%)",
+                      maxWidth: "140px",
+                    }}
+                    onMouseDown={(e) => handleMouseDown(e, idea.id)}
+                    onTouchStart={(e) => handleTouchStart(e, idea.id)}
+                  >
+                    <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground" />
+                    <span className="truncate">{idea.text}</span>
+                  </div>
+                );
+              })}
 
               {/* Placed ideas */}
               {ideas

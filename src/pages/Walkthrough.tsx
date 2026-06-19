@@ -45,13 +45,26 @@ const DEMO_DATA: DemoStep[] = [
     title: "פרסונת משתמש",
     what: "בונים דמות מייצגת שמסכמת מי המשתמש שלנו — שם, גיל, מטרות, תסכולים וציטוט אופייני.",
     output: (
-      <div className="space-y-2 font-hand text-base">
-        <p><strong>שם:</strong> דנה כהן</p>
-        <p><strong>גיל:</strong> בת 15, תלמידת כיתה ט׳</p>
-        <p><strong>תפקיד:</strong> תלמידת תיכון שמתקשה במתמטיקה, אוהבת אמנות ומוזיקה</p>
-        <p><strong>מטרות:</strong> לעבור את מבחן המתמטיקה בלי להתבייש, להרגיש שאני מסוגלת</p>
-        <p><strong>תסכולים:</strong> לא מבינה אלגברה כי המורה מסבירה מהר מדי. מתביישת לשאול שאלות לפני כולם</p>
-        <p className="italic border-r-2 border-foreground/40 pr-3 mt-3">"הלוואי שהיה לי מישהו שמסביר לי בלי לשפוט, בקצב שלי"</p>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <img
+          src={personaDana}
+          alt="דנה כהן"
+          className="w-32 h-32 sm:w-40 sm:h-40 object-cover sketch-border-thin rounded-md shrink-0 bg-background"
+          loading="lazy"
+          width={512}
+          height={512}
+        />
+        <div className="space-y-1.5 font-hand text-base flex-1">
+          <p><strong>שם:</strong> דנה כהן</p>
+          <p><strong>גיל:</strong> בת 15, תלמידת כיתה ט׳</p>
+          <p><strong>תפקיד:</strong> תלמידת תיכון שמתקשה במתמטיקה, אוהבת אמנות ומוזיקה</p>
+          <p><strong>מטרות:</strong> לעבור את מבחן המתמטיקה בלי להתבייש, להרגיש שאני מסוגלת</p>
+          <p><strong>תסכולים:</strong> לא מבינה אלגברה כי המורה מסבירה מהר מדי. מתביישת לשאול שאלות לפני כולם</p>
+          <p className="flex gap-2 italic border-r-2 border-foreground/40 pr-3 mt-3">
+            <Quote className="h-4 w-4 shrink-0 mt-1" />
+            "הלוואי שהיה לי מישהו שמסביר לי בלי לשפוט, בקצב שלי"
+          </p>
+        </div>
       </div>
     ),
   },

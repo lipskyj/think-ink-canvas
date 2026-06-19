@@ -8,6 +8,7 @@ import { Calendar, MapPin, Lightbulb, ArrowLeft, Users, Crown, Loader2, LogIn, P
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface EventInfo {
   event_date?: string | null;
@@ -51,6 +52,9 @@ const Index = () => {
   const [groups, setGroups] = useState<GroupRow[]>([]);
   const [codeInput, setCodeInput] = useState("");
   const [joining, setJoining] = useState(false);
+  const [editGroup, setEditGroup] = useState<GroupRow | null>(null);
+  const [editCode, setEditCode] = useState("");
+  const [editAttempts, setEditAttempts] = useState(0);
 
   useEffect(() => {
     supabase
@@ -139,45 +143,45 @@ const Index = () => {
                 <img
                   src={publicEvent.organizer_logo_url}
                   alt={publicEvent.organizer_name || "לוגו המארגן"}
-                  className="h-32 max-w-[280px] object-contain mx-auto mb-6"
+                  className="h-20 sm:h-28 md:h-32 max-w-[180px] sm:max-w-[240px] md:max-w-[280px] object-contain mx-auto mb-4 sm:mb-6"
                 />
               )}
               {publicEvent.organizer_name && (
-                <p className="font-sketch text-2xl md:text-3xl text-foreground/80 mb-4">
+                <p className="font-sketch text-lg sm:text-2xl md:text-3xl text-foreground/80 mb-3 sm:mb-4">
                   {publicEvent.organizer_name}
                 </p>
               )}
-              <span className="pill-chip pill-chip-coral mb-8 inline-block text-base px-4 py-1.5">
+              <span className="pill-chip pill-chip-coral mb-6 sm:mb-8 inline-block text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-1.5">
                 האקתון לחשיבה עיצובית
               </span>
               {publicEvent.event_topic && (
                 <h1
-                  className="display-mega leading-[0.86] mb-12 px-2"
-                  style={{ fontSize: "clamp(4rem, 12vw, 9.5rem)" }}
+                  className="display-mega leading-[0.86] mb-8 sm:mb-12 px-2"
+                  style={{ fontSize: "clamp(2.5rem, 9vw, 9.5rem)" }}
                 >
                   {publicEvent.event_topic}
                 </h1>
               )}
-              <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-8 font-sketch text-foreground mb-8">
+              <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-14 gap-y-4 sm:gap-y-8 font-sketch text-foreground mb-6 sm:mb-8">
                 {(publicEvent.event_date || publicEvent.event_time) && (
-                  <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
-                    <Calendar className="h-12 w-12" strokeWidth={2.2} />
-                    <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
+                  <span className="inline-flex items-center gap-2 sm:gap-4 sketch-card !py-2 !px-3 sm:!py-5 sm:!px-7">
+                    <Calendar className="h-6 w-6 sm:h-12 sm:w-12" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(1rem, 3.4vw, 3rem)" }}>
                       {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
                     </span>
                   </span>
                 )}
                 {publicEvent.event_location && (
-                  <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
-                    <MapPin className="h-12 w-12" strokeWidth={2.2} />
-                    <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
+                  <span className="inline-flex items-center gap-2 sm:gap-4 sketch-card !py-2 !px-3 sm:!py-5 sm:!px-7">
+                    <MapPin className="h-6 w-6 sm:h-12 sm:w-12" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(1rem, 3.4vw, 3rem)" }}>
                       {publicEvent.event_location}
                     </span>
                   </span>
                 )}
-                <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
-                  <Users className="h-12 w-12" strokeWidth={2.2} />
-                  <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
+                <span className="inline-flex items-center gap-2 sm:gap-4 sketch-card !py-2 !px-3 sm:!py-5 sm:!px-7">
+                  <Users className="h-6 w-6 sm:h-12 sm:w-12" strokeWidth={2.2} />
+                  <span style={{ fontSize: "clamp(1rem, 3.4vw, 3rem)" }}>
                     {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
                   </span>
                 </span>
@@ -278,23 +282,9 @@ const Index = () => {
                       <Users className="h-3 w-3" /> הקבוצה
                     </span>
                     <button
-                      onClick={() => {
-                        const entered = window.prompt(`כדי לערוך את "${group.name}" הזינו את קוד הקבוצה (${group.join_code?.length || 2} תווים):`);
-                        if (!entered) return;
-                        if (entered.trim().toUpperCase() === (group.join_code || "").toUpperCase()) {
-                          setSession({
-                            classId: group.id,
-                            className: group.name,
-                            studentName: group.student_names?.[0] || "",
-                            isLeader: true,
-                          });
-                          navigate(`/team`);
-                        } else {
-                          toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
-                        }
-                      }}
+                      onClick={() => { setEditGroup(group); setEditCode(""); setEditAttempts(0); }}
                       className="absolute top-3 left-3 sketch-border-thin rounded-md p-1.5 bg-background hover:bg-secondary/40 transition"
-                      aria-label="ערוך קבוצה"
+                      aria-label={`ערוך את הקבוצה ${group.name}`}
                       title="ערוך קבוצה (דרוש קוד)"
                     >
                       <Pencil className="h-3.5 w-3.5" />
@@ -379,6 +369,71 @@ const Index = () => {
           </button>
         </section>
       </div>
+
+      <Dialog open={!!editGroup} onOpenChange={(open) => !open && setEditGroup(null)}>
+        <DialogContent className="sm:max-w-md" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="font-sketch text-2xl">עריכת "{editGroup?.name}"</DialogTitle>
+            <DialogDescription className="font-hand text-base">
+              הזינו את קוד הקבוצה הסודי שקיבלתם מהמארגן.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={editCode}
+            onChange={(e) => setEditCode(e.target.value.toUpperCase())}
+            placeholder="קוד"
+            maxLength={8}
+            className="text-center font-sketch text-3xl tracking-widest uppercase h-14"
+            dir="ltr"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key !== "Enter" || !editGroup) return;
+              if (editAttempts >= 5) {
+                toast({ title: "ניסיונות מרובים", description: "נסו שוב מאוחר יותר", variant: "destructive" });
+                return;
+              }
+              if (editCode.trim().toUpperCase() === (editGroup.join_code || "").toUpperCase()) {
+                setSession({
+                  classId: editGroup.id,
+                  className: editGroup.name,
+                  studentName: "",
+                  isLeader: false,
+                });
+                setEditGroup(null);
+                navigate("/team");
+              } else {
+                setEditAttempts((n) => n + 1);
+                toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
+              }
+            }}
+          />
+          <DialogFooter className="gap-2 sm:gap-2">
+            <button onClick={() => setEditGroup(null)} className="sketch-btn-outline">ביטול</button>
+            <button
+              disabled={!editCode.trim() || editAttempts >= 5}
+              onClick={() => {
+                if (!editGroup) return;
+                if (editCode.trim().toUpperCase() === (editGroup.join_code || "").toUpperCase()) {
+                  setSession({
+                    classId: editGroup.id,
+                    className: editGroup.name,
+                    studentName: "",
+                    isLeader: false,
+                  });
+                  setEditGroup(null);
+                  navigate("/team");
+                } else {
+                  setEditAttempts((n) => n + 1);
+                  toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
+                }
+              }}
+              className="sketch-btn disabled:opacity-50"
+            >
+              המשך
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

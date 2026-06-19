@@ -756,10 +756,7 @@ function ClassPanel({
       <div className="flex items-center justify-between cursor-pointer gap-3" onClick={onToggleExpand}>
         <div className="flex items-center gap-3 min-w-0">
           {cls.join_code && (
-            <div className="sketch-border-thin bg-yellow-100/60 dark:bg-yellow-900/30 px-3 py-2 rounded-md shrink-0">
-              <div className="text-[9px] uppercase tracking-wider text-muted-foreground font-sketch">קוד</div>
-              <div className="font-sketch text-2xl tracking-widest leading-none">{cls.join_code}</div>
-            </div>
+            <CodeChip code={cls.join_code} />
           )}
           <div className="min-w-0">
             <h3 className="font-sketch text-lg truncate">{cls.name}</h3>
@@ -1112,5 +1109,37 @@ function ClassPanel({
         </div>
       )}
     </div>
+  );
+}
+
+/** Masked join-code chip — click to reveal & copy, hides again on blur. */
+function CodeChip({ code }: { code: string }) {
+  const [revealed, setRevealed] = useState(false);
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        if (!revealed) {
+          setRevealed(true);
+          setTimeout(() => setRevealed(false), 4000);
+        } else {
+          navigator.clipboard.writeText(code);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        }
+      }}
+      className="sketch-border-thin bg-yellow-100/60 dark:bg-yellow-900/30 px-3 py-2 rounded-md shrink-0 text-right"
+      title={revealed ? "לחצו להעתקה" : "לחצו לחשיפת הקוד"}
+      aria-label={revealed ? `קוד הקבוצה ${code} — לחצו להעתקה` : "חשפו את קוד הקבוצה"}
+    >
+      <div className="text-[9px] uppercase tracking-wider text-muted-foreground font-sketch">
+        {copied ? "הועתק!" : "קוד"}
+      </div>
+      <div className="font-sketch text-2xl tracking-widest leading-none">
+        {revealed ? code : "•".repeat(code.length)}
+      </div>
+    </button>
   );
 }

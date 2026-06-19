@@ -65,6 +65,8 @@ const PrototypeBrief = () => {
   const [suggestedFeatures, setSuggestedFeatures] = useState<SuggestedFeature[]>([]);
   const [aiFeaturesLoading, setAiFeaturesLoading] = useState(false);
 
+  const [seeded, setSeeded] = useState(false);
+
   useEffect(() => {
     const saved = getStepData("prototype_brief");
     if (saved) {
@@ -75,17 +77,16 @@ const PrototypeBrief = () => {
         briefingAnswers: saved.briefingAnswers || {},
       }));
       if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures.map((f: any) => ({ ...f, id: f.id || crypto.randomUUID() })));
+      if (saved.seeded) setSeeded(true);
     }
   }, [getStepData]);
 
-  // Auto-derive suggested features from earlier steps the first time the user
-  // lands here (starred ideas → unassigned cards they can drag into Must / Should / Could).
-  useEffect(() => {
-    if (suggestedFeatures.length > 0) return;
+  // Derive suggestions from earlier steps — runs ONCE, then sets a flag so a
+  // user who deletes the suggestions doesn't get them re-injected on next render.
+  const seedFromPreviousSteps = useCallback(() => {
     const prev = getAllPreviousData("prototype_brief") as Record<string, any>;
     const derived: SuggestedFeature[] = [];
 
-    // Starred ideas from the Ideation step
     const ideation = prev?.ideation;
     if (ideation?.ideas && Array.isArray(ideation.ideas)) {
       for (const idea of ideation.ideas) {
@@ -94,7 +95,6 @@ const PrototypeBrief = () => {
       }
     }
 
-    // Top-quadrant items from the Effort/Impact matrix (high impact, low effort)
     const matrix = prev?.effort_impact;
     if (matrix?.items && Array.isArray(matrix.items)) {
       for (const it of matrix.items) {
@@ -104,7 +104,6 @@ const PrototypeBrief = () => {
       }
     }
 
-    // How Might We questions — useful framing fragments
     const hmw = prev?.how_might_we;
     if (hmw?.questions && Array.isArray(hmw.questions)) {
       for (const q of hmw.questions.slice(0, 3)) {
@@ -113,7 +112,6 @@ const PrototypeBrief = () => {
       }
     }
 
-    // De-dup by name
     const seen = new Set<string>();
     const unique = derived.filter((d) => {
       const k = d.name.toLowerCase();
@@ -121,8 +119,20 @@ const PrototypeBrief = () => {
       seen.add(k);
       return true;
     });
-    if (unique.length > 0) setSuggestedFeatures(unique);
-  }, [suggestedFeatures.length, getAllPreviousData]);
+    if (unique.length > 0) {
+      setSuggestedFeatures((curr) => [...curr, ...unique]);
+    }
+    setSeeded(true);
+  }, [getAllPreviousData]);
+
+  useEffect(() => {
+    if (seeded) return;
+    if (suggestedFeatures.length > 0) {
+      setSeeded(true);
+      return;
+    }
+    seedFromPreviousSteps();
+  }, [seeded, suggestedFeatures.length, seedFromPreviousSteps]);
 
   // Keep textual must/should/could/wont in sync with the drag-and-drop board.
   useEffect(() => {
@@ -152,7 +162,7 @@ const PrototypeBrief = () => {
   }), [brief.objective, brief.must, brief.assumptions]);
   useAutoFill("prototype_brief", autoFillFields);
 
-  const getData = useCallback(() => ({ ...brief, suggestedFeatures }), [brief, suggestedFeatures]);
+  const getData = useCallback(() => ({ ...brief, suggestedFeatures, seeded }), [brief, suggestedFeatures, seeded]);
   const hasContent = !!(brief.objective.trim() || brief.must.trim());
   const previousData = getAllPreviousData("prototype_brief");
 
@@ -275,16 +285,25 @@ const PrototypeBrief = () => {
         <div className="sketch-card">
           <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
             <label className="font-sketch text-xl">MoSCoW — תיעדוף תכונות</label>
-            {aiEnabled && (
+            <div className="flex flex-wrap gap-2">
               <button
-                onClick={generateAiFeatures}
-                disabled={aiFeaturesLoading}
-                className="sketch-btn flex items-center gap-2 text-sm"
+                onClick={seedFromPreviousSteps}
+                className="sketch-btn-outline flex items-center gap-2 text-sm"
+                title="טען מחדש רעיונות מהשלבים הקודמים"
               >
-                {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
+                <Plus className="h-4 w-4" /> מהשלבים הקודמים
               </button>
-            )}
+              {aiEnabled && (
+                <button
+                  onClick={generateAiFeatures}
+                  disabled={aiFeaturesLoading}
+                  className="sketch-btn flex items-center gap-2 text-sm"
+                >
+                  {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                  {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
+                </button>
+              )}
+            </div>
           </div>
           <p className="font-hand text-muted-foreground text-sm mb-2">
             ה-AI מציע תכונות (leaderboard, צ׳אט, גלריה, התראות...). גררו כל תכונה ל-Must / Should / Could / Won't.

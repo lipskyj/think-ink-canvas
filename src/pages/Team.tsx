@@ -64,9 +64,22 @@ export default function Team() {
   const updateMember = (i: number, patch: Partial<Member>) =>
     setMembers(members.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
 
+  const lastGenAt = (typeof window !== "undefined")
+    ? Number(window.sessionStorage.getItem("avatar:lastGen") || 0)
+    : 0;
   const generate = async () => {
+    const now = Date.now();
+    if (now - lastGenAt < 5000) {
+      toast({ title: "רגע אחד...", description: "אפשר ליצור אווטאר חדש כל 5 שניות" });
+      return;
+    }
+    window.sessionStorage.setItem("avatar:lastGen", String(now));
     setGenerating(true);
     setPendingAvatar(null);
+    const timeout = setTimeout(() => {
+      setGenerating(false);
+      toast({ title: "האווטאר לוקח יותר מדי זמן", description: "נסו שוב בעוד רגע", variant: "destructive" });
+    }, 30000);
     try {
       const { data, error } = await supabase.functions.invoke("generate-team-avatar", {
         body: {
@@ -76,6 +89,7 @@ export default function Team() {
           stylePrompt: getAvatarStyle(styleKey).prompt,
         },
       });
+      clearTimeout(timeout);
       if (error) throw error;
       if (data?.dataUrl) {
         setPendingAvatar(data.dataUrl);
@@ -83,6 +97,7 @@ export default function Team() {
         throw new Error("לא הוחזרה תמונה");
       }
     } catch (e: any) {
+      clearTimeout(timeout);
       toast({ title: "שגיאה ביצירת אווטאר", description: e.message || String(e), variant: "destructive" });
     } finally {
       setGenerating(false);
@@ -127,6 +142,12 @@ export default function Team() {
       </Layout>
     );
   }
+
+  // First-time identity gate — figure out who the user is in this group
+  if (!session.studentName) {
+    return <IdentityGate />;
+  }
+
 
   const previewSrc = pendingAvatar || avatarUrl;
 
@@ -259,24 +280,24 @@ export default function Team() {
 
           <div>
             <label className="font-sketch text-xs uppercase tracking-wider block mb-2">מה הקבוצה עושה?</label>
-            <Textarea
-              value={situation}
-              onChange={(e) => setSituation(e.target.value)}
-              rows={2}
-              dir="rtl"
-              placeholder="לדוגמה: רוקדים בים, מטיילים בעיר, יושבים סביב מחשב..."
-            />
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {SITUATION_PRESETS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setSituation(s)}
-                  className="pill-chip pill-chip-outline text-xs cursor-pointer"
-                >
-                  {s}
-                </button>
-              ))}
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="סיטואציה לאווטאר">
+              {SITUATION_PRESETS.map((s) => {
+                const selected = situation === s;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setSituation(s)}
+                    className={`pill-chip text-xs cursor-pointer transition ${
+                      selected ? "pill-chip-coral ring-2 ring-foreground" : "pill-chip-outline opacity-80 hover:opacity-100"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -331,6 +352,82 @@ export default function Team() {
             <Crown className="h-3 w-3" /> אתם ראש הקבוצה — השינויים שלכם משפיעים על כולם.
           </p>
         )}
+      </div>
+    </Layout>
+  );
+}
+
+/** Inline name-entry step shown the first time a user lands in a class. */
+function IdentityGate() {
+  const { session, setSession } = useClass();
+  const { toast } = useToast();
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    if (!session) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setBusy(true);
+    const { data: cls, error: fetchErr } = await supabase
+      .from("classes")
+      .select("student_names, leader_name")
+      .eq("id", session.classId)
+      .single();
+    if (fetchErr || !cls) {
+      toast({ title: "שגיאה", description: fetchErr?.message || "", variant: "destructive" });
+      setBusy(false);
+      return;
+    }
+    const roster: string[] = cls.student_names || [];
+    const willBeLeader = !cls.leader_name;
+    const updates: any = {};
+    if (!roster.includes(trimmed)) updates.student_names = [...roster, trimmed];
+    if (willBeLeader) updates.leader_name = trimmed;
+    if (Object.keys(updates).length) {
+      const { error } = await supabase.from("classes").update(updates).eq("id", session.classId);
+      if (error) {
+        toast({ title: "שגיאה", description: error.message, variant: "destructive" });
+        setBusy(false);
+        return;
+      }
+    }
+    try { localStorage.setItem(`class:${session.classId}:name`, trimmed); } catch {}
+    setSession({
+      ...session,
+      studentName: trimmed,
+      isLeader: willBeLeader || cls.leader_name === trimmed,
+    });
+    setBusy(false);
+  };
+
+  return (
+    <Layout>
+      <div className="max-w-md mx-auto pt-16">
+        <div className="sketch-card space-y-4">
+          <div>
+            <span className="pill-chip pill-chip-coral mb-2 inline-block">הצטרפות לקבוצה</span>
+            <h1 className="font-sketch text-2xl mb-1">איך קוראים לכם?</h1>
+            <p className="font-hand text-sm text-muted-foreground">
+              השם שלכם יופיע לחברי הקבוצה. הראשון שמצטרף הופך לראש הקבוצה.
+            </p>
+          </div>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="השם המלא שלכם"
+            dir="rtl"
+            autoFocus
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+          />
+          <button
+            onClick={submit}
+            disabled={busy || !name.trim()}
+            className="sketch-btn w-full disabled:opacity-50"
+          >
+            {busy ? "רגע..." : "כניסה לקבוצה"}
+          </button>
+        </div>
       </div>
     </Layout>
   );

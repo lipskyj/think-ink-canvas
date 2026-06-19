@@ -53,7 +53,7 @@ export default function PhaseRecap({
           <Trophy className="h-7 w-7" />
         </div>
         <div>
-          <div className="pill-chip pill-chip-coral inline-block mb-1">שלב {phaseNum}</div>
+          <div className="pill-chip pill-chip-coral inline-block mb-1">פאזה {phaseNum} הושלמה</div>
           <h2 className="font-sketch text-3xl md:text-4xl leading-tight">{headline}</h2>
         </div>
       </div>

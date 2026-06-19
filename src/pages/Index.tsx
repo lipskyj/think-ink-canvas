@@ -299,9 +299,6 @@ const Index = () => {
                     <span className="pill-chip pill-chip-outline absolute top-3 right-3 text-[10px] flex items-center gap-1">
                       <Users className="h-3 w-3" /> הקבוצה
                     </span>
-                    <span className="pill-chip pill-chip-outline absolute top-3 left-3 text-[10px]">
-                      {group.join_code || "—"}
-                    </span>
                     {group.team_avatar_url && (
                       <img
                         src={group.team_avatar_url}
@@ -309,19 +306,37 @@ const Index = () => {
                         className="w-24 h-24 mx-auto mb-3 object-cover rounded-md sketch-border-thin"
                       />
                     )}
-                    <h3 className="font-sketch text-2xl mb-2 leading-tight">{group.name}</h3>
+                    <h3 className="font-sketch text-2xl mb-3 leading-tight">{group.name}</h3>
                     {group.student_names && group.student_names.length > 0 && (
-                      <span className="pill-chip pill-chip-sun text-[11px] inline-flex items-center gap-1">
-                        <Crown className="h-3 w-3" /> {group.student_names[0]}
-                      </span>
+                      <div className="flex flex-wrap justify-center gap-1.5 mb-2">
+                        {group.student_names.map((n, i) => (
+                          <span
+                            key={i}
+                            className={`pill-chip text-[11px] inline-flex items-center gap-1 ${
+                              i === 0 ? "pill-chip-sun" : "pill-chip-outline"
+                            }`}
+                          >
+                            {i === 0 && <Crown className="h-3 w-3" />}
+                            {n}
+                          </span>
+                        ))}
+                      </div>
                     )}
-                    <p className="font-hand text-xs text-muted-foreground mt-3">
+                    <p className="font-hand text-xs text-muted-foreground mt-2">
                       {group.student_names?.length || 0} חברים
                     </p>
                   </div>
                 ))}
               </div>
 
+              {!isClassMode && (
+                <div className="text-center mt-6">
+                  <Link to="/team" className="sketch-btn-outline inline-flex items-center gap-2 text-base">
+                    <LogIn className="h-4 w-4" />
+                    הצטרפו עם קבוצה חדשה
+                  </Link>
+                </div>
+              )}
             </section>
           );
         })()}

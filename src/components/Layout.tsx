@@ -1,6 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import UnstuckButton from "@/components/UnstuckButton";
 import { useHackathon } from "@/contexts/HackathonContext";
 import { formatHMS, SPRINT_BLOCKS } from "@/lib/hackathon";
 import { Timer, Play, RotateCcw } from "lucide-react";
@@ -65,7 +64,6 @@ const Layout = ({ children }: LayoutProps) => {
             {children}
           </div>
         </main>
-        {state.enabled && <UnstuckButton />}
       </div>
     </SidebarProvider>
   );

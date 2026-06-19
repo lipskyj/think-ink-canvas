@@ -64,9 +64,22 @@ export default function Team() {
   const updateMember = (i: number, patch: Partial<Member>) =>
     setMembers(members.map((m, idx) => (idx === i ? { ...m, ...patch } : m)));
 
+  const lastGenAt = (typeof window !== "undefined")
+    ? Number(window.sessionStorage.getItem("avatar:lastGen") || 0)
+    : 0;
   const generate = async () => {
+    const now = Date.now();
+    if (now - lastGenAt < 5000) {
+      toast({ title: "רגע אחד...", description: "אפשר ליצור אווטאר חדש כל 5 שניות" });
+      return;
+    }
+    window.sessionStorage.setItem("avatar:lastGen", String(now));
     setGenerating(true);
     setPendingAvatar(null);
+    const timeout = setTimeout(() => {
+      setGenerating(false);
+      toast({ title: "האווטאר לוקח יותר מדי זמן", description: "נסו שוב בעוד רגע", variant: "destructive" });
+    }, 30000);
     try {
       const { data, error } = await supabase.functions.invoke("generate-team-avatar", {
         body: {
@@ -76,6 +89,7 @@ export default function Team() {
           stylePrompt: getAvatarStyle(styleKey).prompt,
         },
       });
+      clearTimeout(timeout);
       if (error) throw error;
       if (data?.dataUrl) {
         setPendingAvatar(data.dataUrl);
@@ -83,6 +97,7 @@ export default function Team() {
         throw new Error("לא הוחזרה תמונה");
       }
     } catch (e: any) {
+      clearTimeout(timeout);
       toast({ title: "שגיאה ביצירת אווטאר", description: e.message || String(e), variant: "destructive" });
     } finally {
       setGenerating(false);

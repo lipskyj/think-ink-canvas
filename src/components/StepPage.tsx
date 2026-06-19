@@ -28,6 +28,17 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   const [showAI, setShowAI] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [recapDismissed, setRecapDismissed] = useState<boolean>(() => {
+    if (!phaseRecapKey) return true;
+    return typeof window !== "undefined" && localStorage.getItem(phaseRecapKey) === "1";
+  });
+  useEffect(() => {
+    if (!phaseRecapKey) { setRecapDismissed(true); return; }
+    const check = () => setRecapDismissed(localStorage.getItem(phaseRecapKey) === "1");
+    check();
+    const id = setInterval(check, 300);
+    return () => clearInterval(id);
+  }, [phaseRecapKey]);
   const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null);
   useEffect(() => {
     const find = () => setToolbarSlot(document.getElementById("step-toolbar-slot"));

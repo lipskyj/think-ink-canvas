@@ -18,10 +18,12 @@ function Typewriter({
   text,
   speed = 16,
   className = "",
+  onDone,
 }: {
   text: string;
   speed?: number;
   className?: string;
+  onDone?: () => void;
 }) {
   const [i, setI] = useState(0);
   const [done, setDone] = useState(false);
@@ -33,6 +35,7 @@ function Typewriter({
     if (reduced) {
       setI(text.length);
       setDone(true);
+      onDone?.();
       return;
     }
     setI(0);
@@ -43,6 +46,7 @@ function Typewriter({
     if (done) return;
     if (i >= text.length) {
       setDone(true);
+      onDone?.();
       return;
     }
     const t = setTimeout(() => setI((n) => n + 1), speed);
@@ -51,11 +55,7 @@ function Typewriter({
 
   return (
     <span
-      onClick={() => {
-        setI(text.length);
-        setDone(true);
-      }}
-      className={`cursor-text ${className}`}
+      className={className}
     >
       {text.slice(0, i)}
       {!done && (
@@ -72,10 +72,14 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
   const seenKey = SEEN_PREFIX + stepKey;
 
   const [stage, setStage] = useState<Stage>("learn");
+  const [learnDone, setLearnDone] = useState(false);
+  const [seeDone, setSeeDone] = useState(false);
   const { content, loading, isFallback, regenerate } = useStepLSD(stepKey, true);
 
   useEffect(() => {
     setStage("learn");
+    setLearnDone(false);
+    setSeeDone(false);
   }, [stepKey]);
 
   const close = () => {
@@ -102,14 +106,16 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
       className="w-full max-w-3xl mx-auto px-2 sm:px-4 py-6"
       aria-label={`שלב ${step.num} — ${step.title}`}
     >
-      {/* Skip */}
-      <div className="flex justify-start mb-4">
-        <button
-          onClick={close}
-          className="text-foreground/70 hover:text-foreground transition-colors flex items-center gap-1 text-sm font-sketch tracking-wider uppercase"
-        >
-          <X className="h-4 w-4" /> דלג
-        </button>
+      {/* Skip — only after the typewriter for the current stage is done */}
+      <div className="flex justify-start mb-4 min-h-[24px]">
+        {((stage === "learn" && learnDone) || (stage === "see" && seeDone)) && (
+          <button
+            onClick={close}
+            className="text-foreground/70 hover:text-foreground transition-colors flex items-center gap-1 text-sm font-sketch tracking-wider uppercase animate-fade-in"
+          >
+            <X className="h-4 w-4" /> דלג
+          </button>
+        )}
       </div>
 
       {/* Step chip */}
@@ -140,6 +146,7 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
               key={"learn-" + (content.learn?.length ?? 0)}
               text={content.learn}
               className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
+              onDone={() => setLearnDone(true)}
             />
           ) : (
             <div className="space-y-6">
@@ -168,6 +175,7 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
                   key={"see-" + (content.see.execution?.length ?? 0)}
                   text={content.see.execution}
                   className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
+                  onDone={() => setSeeDone(true)}
                 />
               </div>
             </div>
@@ -202,18 +210,20 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-h-[40px]">
           {stage === "see" && (
             <button onClick={goBack} className="sketch-btn-outline text-sm">
               → חזרה
             </button>
           )}
-          <button
-            onClick={goNext}
-            className="sketch-btn text-sm flex items-center gap-1"
-          >
-            {stage === "learn" ? "המשך ←" : "בוא נעבוד ←"}
-          </button>
+          {((stage === "learn" && learnDone) || (stage === "see" && seeDone)) && (
+            <button
+              onClick={goNext}
+              className="sketch-btn text-sm flex items-center gap-1 animate-fade-in"
+            >
+              {stage === "learn" ? "המשך ←" : "בוא נעבוד ←"}
+            </button>
+          )}
         </div>
       </div>
     </section>

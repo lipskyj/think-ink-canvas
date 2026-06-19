@@ -31,6 +31,7 @@ interface GroupRow {
   event_topic?: string | null;
   event_description?: string | null;
   organizer_logo_url?: string | null;
+  organizer_name?: string | null;
 }
 
 const PHASE_BADGE: Record<string, string> = {

@@ -225,6 +225,36 @@ const PrdGenerator = () => {
           />
         </div>
       )}
+
+      {/* Money-time bridge between Step 9 (PRD) and Step 10 (Pitch) */}
+      {prdOutput && (
+        <div className="sketch-card mt-8 bg-gradient-to-br from-[hsl(var(--highlight)/0.25)] to-[hsl(var(--accent)/0.18)] border-2 border-foreground">
+          <div className="text-center">
+            <div className="font-sketch text-xs uppercase tracking-[0.3em] mb-2">⏱ Money Time</div>
+            <h3 className="display-huge mb-3" style={{ fontSize: "clamp(1.6rem,3vw,2.2rem)" }}>
+              עכשיו — צאו ובנו את זה.
+            </h3>
+            <p className="font-hand text-lg mb-4 max-w-xl mx-auto">
+              ה-PRD מוכן. קחו אותו, הדביקו ב-Lovable (או בכלי פיתוח אחר), ותבנו את ה-MVP האמיתי.
+              <br />
+              <strong>אל תחזרו לכאן עד שיש לכם מוצר עובד שאפשר להראות.</strong>
+            </p>
+            <div className="font-hand text-base text-muted-foreground mb-5">
+              כשיש לכם לינק לפרוטוטייפ עובד — חוזרים, ועוברים לשלב 10: הפיץ׳ וההצגה.
+            </div>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(prdOutput);
+                window.open("https://lovable.dev/", "_blank");
+                toast({ title: "הפרומפט הועתק — הדביקו ב-Lovable ותתחילו לבנות" });
+              }}
+              className="sketch-btn text-base px-6 py-3 inline-flex items-center gap-2"
+            >
+              <Sparkles className="h-5 w-5" /> פתחו ב-Lovable ובואו נבנה
+            </button>
+          </div>
+        </div>
+      )}
     </StepPage>
   );
 };

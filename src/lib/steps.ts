@@ -1,4 +1,4 @@
-import { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, Trophy, type LucideIcon } from "lucide-react";
+import { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, Trophy, ListChecks, type LucideIcon } from "lucide-react";
 
 export type ProcessPhase = "problem" | "solution" | "development" | "presentation";
 
@@ -130,8 +130,20 @@ export const STEPS: StepConfig[] = [
     whyItMatters: "בנייה בלי בריף מובילה לזחילת היקף ובזבוז מאמץ. בריף ברור שומר על אב-הטיפוס רזה ועל הבדיקה ממוקדת.",
   },
   {
-    key: "prd_generator",
+    key: "moscow_prioritization",
     num: 9,
+    title: "MoSCoW — תיעדוף תכונות",
+    url: "/moscow",
+    icon: ListChecks,
+    emoji: "",
+    learnMoreUrl: "https://www.productplan.com/glossary/moscow-prioritization/",
+    phase: "development",
+    description: "MoSCoW עוזר להפוך בריף רחב ל-MVP מעשי: Must, Should, Could, Won't. בוחרים מה חייב להיבנות עכשיו ומה נשאר מחוץ לסקופ.",
+    whyItMatters: "MVP טוב הוא החלטה קשה על מה לא לבנות. בלי תיעדוף, הצוות מנסה לבנות הכול — ולא מסיים מוצר עובד.",
+  },
+  {
+    key: "prd_generator",
+    num: 10,
     title: "PRD / פרומפט לקוד",
     url: "/prd",
     icon: FileOutput,
@@ -143,7 +155,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "pitch",
-    num: 10,
+    num: 11,
     title: "פיצ' והצגה",
     url: "/pitch",
     icon: Presentation,
@@ -155,7 +167,7 @@ export const STEPS: StepConfig[] = [
   },
   {
     key: "deliver",
-    num: 11,
+    num: 12,
     title: "הגשה לגלריה",
     url: "/submissions",
     icon: Trophy,

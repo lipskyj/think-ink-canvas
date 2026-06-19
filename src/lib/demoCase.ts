@@ -86,6 +86,21 @@ export const demoCaseData: Record<string, any> = {
       { name: "Leaderboard", description: "עידוד התקדמות בלי לחץ מוגזם", bucket: "could" },
     ],
   },
+  moscow_prioritization: {
+    features: [
+      { id: "demo-must-1", name: "הצטרפות לקבוצה עם קוד קצר", description: "הכניסה הראשונית להאקתון", bucket: "must" },
+      { id: "demo-must-2", name: "עריכת שם צוות וחברי צוות", description: "זהות ושייכות קבוצתית", bucket: "must" },
+      { id: "demo-must-3", name: "מסך משימה ראשון ברור", description: "הצעד הבא לכל צוות", bucket: "must" },
+      { id: "demo-should-1", name: "אווטאר קבוצתי שנוצר עם AI", description: "כיף, זהות ונראות בדף הבית", bucket: "should" },
+      { id: "demo-could-1", name: "Leaderboard ידידותי", description: "רק אם נשאר זמן", bucket: "could" },
+      { id: "demo-wont-1", name: "מערכת ציונים מלאה", description: "גדול מדי ל-MVP", bucket: "wont" },
+    ],
+    seeded: true,
+    must: "• הצטרפות לקבוצה עם קוד קצר\n• עריכת שם צוות וחברי צוות\n• מסך משימה ראשון ברור",
+    should: "• אווטאר קבוצתי שנוצר עם AI",
+    could: "• Leaderboard ידידותי",
+    wont: "• מערכת ציונים מלאה",
+  },
   prd_generator: {
     additionalNotes: "ממשק עברי, RTL, מתאים למובייל ולמסך כיתה.",
     prdOutput: `# PRD — פלטפורמת פתיחה וניהול צוותים להאקתון

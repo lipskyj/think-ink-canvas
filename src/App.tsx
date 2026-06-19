@@ -22,6 +22,7 @@ import AssumptionSelection from "./pages/AssumptionSelection";
 import EffortImpact from "./pages/EffortImpact";
 import Storyboard from "./pages/Storyboard";
 import PrototypeBrief from "./pages/PrototypeBrief";
+import MoscowPrioritization from "./pages/MoscowPrioritization";
 import UserTesting from "./pages/UserTesting";
 import PrdGenerator from "./pages/PrdGenerator";
 import Pitch from "./pages/Pitch";
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/assumptions" element={<AssumptionSelection />} />
             <Route path="/storyboard" element={<Storyboard />} />
             <Route path="/prototype-brief" element={<PrototypeBrief />} />
+            <Route path="/moscow" element={<MoscowPrioritization />} />
             <Route path="/user-testing" element={<UserTesting />} />
             <Route path="/prd" element={<PrdGenerator />} />
             <Route path="/pitch" element={<Pitch />} />

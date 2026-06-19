@@ -19,6 +19,7 @@ const STEP_LABELS: Record<string, string> = {
   assumption_selection: "הנחות",
   storyboard: "סטוריבורד",
   prototype_brief: "בריף אב-טיפוס",
+  moscow_prioritization: "MoSCoW — תיעדוף תכונות",
   user_testing: "בדיקות משתמשים",
 };
 
@@ -109,7 +110,7 @@ const PrdGenerator = () => {
     <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent}>
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
-           שלב זה אוסף את כל מה שעבדתם עליו ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.
+           שלב זה אוסף את המחקר, הבריף ותיעדוף ה-MVP, ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.
         </p>
       </div>
 
@@ -226,7 +227,7 @@ const PrdGenerator = () => {
         </div>
       )}
 
-      {/* Money-time bridge between Step 9 (PRD) and Step 10 (Pitch) */}
+      {/* Money-time bridge between PRD and Pitch */}
       {prdOutput && (
         <div className="sketch-card mt-8 bg-gradient-to-br from-[hsl(var(--highlight)/0.25)] to-[hsl(var(--accent)/0.18)] border-2 border-foreground">
           <div className="text-center">
@@ -240,7 +241,7 @@ const PrdGenerator = () => {
               <strong>אל תחזרו לכאן עד שיש לכם מוצר עובד שאפשר להראות.</strong>
             </p>
             <div className="font-hand text-base text-muted-foreground mb-5">
-              כשיש לכם לינק לפרוטוטייפ עובד — חוזרים, ועוברים לשלב 10: הפיץ׳ וההצגה.
+              כשיש לכם לינק לפרוטוטייפ עובד — חוזרים, ועוברים לשלב 11: הפיץ׳ וההצגה.
             </div>
             <button
               onClick={() => {

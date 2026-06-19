@@ -1,7 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Sparkles, Loader2, Plus } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAdmin } from "@/contexts/AdminContext";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
@@ -25,8 +22,6 @@ interface BriefState {
   fidelity?: string;
 }
 
-type Bucket = "must" | "should" | "could" | "wont";
-
 const STYLE_VIBES = [
   { key: "cyber", label: "סייבר / ניאון", swatch: ["#0a0a0a", "#00ff66", "#ff0055", "#7b81ff"], font: "'Heebo', sans-serif" },
   { key: "light", label: "בהיר ורגוע", swatch: ["#f5f7fb", "#a0caff", "#bdd0fe", "#ffd0e8"], font: "'Heebo', sans-serif" },
@@ -39,33 +34,13 @@ const STYLE_VIBES = [
   { key: "warm_elegant", label: "חם ואלגנטי", swatch: ["#f4ede2", "#caa478", "#8b6f47", "#3d2e1f"], font: "'Heebo', serif" },
 ];
 
-interface SuggestedFeature {
-  id: string;
-  name: string;
-  description: string;
-  bucket: Bucket | "unassigned";
-}
-
-const BUCKETS: { key: Bucket | "unassigned"; label: string; desc: string; bg: string }[] = [
-  { key: "unassigned", label: "תכונות מוצעות", desc: "גררו לאחת הקטגוריות מימין/למטה", bg: "bg-secondary/30" },
-  { key: "must", label: "Must — חובה", desc: "בלי זה אין מוצר", bg: "bg-[hsl(var(--primary)/0.10)]" },
-  { key: "should", label: "Should — חשוב", desc: "חשוב אך לא חוסם", bg: "bg-[hsl(var(--accent)/0.18)]" },
-  { key: "could", label: "Could — אם יש זמן", desc: "Nice-to-have", bg: "bg-[hsl(var(--highlight)/0.15)]" },
-  { key: "wont", label: "Won't — לא הפעם", desc: "מחוץ להיקף", bg: "bg-foreground/[0.05]" },
-];
-
 const PrototypeBrief = () => {
   const { getStepData, getAllPreviousData } = useProject();
-  const { aiEnabled } = useAdmin();
   const [brief, setBrief] = useState<BriefState>({
     objective: "", must: "", should: "", could: "", wont: "",
     assumptions: "", styleVibe: "", styleNotes: "", successCriteria: "",
     briefingAnswers: {},
   });
-  const [suggestedFeatures, setSuggestedFeatures] = useState<SuggestedFeature[]>([]);
-  const [aiFeaturesLoading, setAiFeaturesLoading] = useState(false);
-
-  const [seeded, setSeeded] = useState(false);
 
   useEffect(() => {
     const saved = getStepData("prototype_brief");
@@ -76,80 +51,8 @@ const PrototypeBrief = () => {
         must: saved.must || saved.keyFeatures || "",
         briefingAnswers: saved.briefingAnswers || {},
       }));
-      if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures.map((f: any) => ({ ...f, id: f.id || crypto.randomUUID() })));
-      if (saved.seeded) setSeeded(true);
     }
   }, [getStepData]);
-
-  // Derive suggestions from earlier steps — runs ONCE, then sets a flag so a
-  // user who deletes the suggestions doesn't get them re-injected on next render.
-  const seedFromPreviousSteps = useCallback(() => {
-    const prev = getAllPreviousData("prototype_brief") as Record<string, any>;
-    const derived: SuggestedFeature[] = [];
-
-    const ideation = prev?.ideation;
-    if (ideation?.ideas && Array.isArray(ideation.ideas)) {
-      for (const idea of ideation.ideas) {
-        const text = (idea?.text || "").trim();
-        if (text) derived.push({ id: crypto.randomUUID(), name: text, description: "", bucket: "unassigned" });
-      }
-    }
-
-    const matrix = prev?.effort_impact;
-    if (matrix?.items && Array.isArray(matrix.items)) {
-      for (const it of matrix.items) {
-        const text = (it?.text || it?.name || "").trim();
-        const isQuickWin = (it?.impact ?? 0) >= 0.5 && (it?.effort ?? 1) <= 0.5;
-        if (text && isQuickWin) derived.push({ id: crypto.randomUUID(), name: text, description: "Quick win", bucket: "unassigned" });
-      }
-    }
-
-    const hmw = prev?.how_might_we;
-    if (hmw?.questions && Array.isArray(hmw.questions)) {
-      for (const q of hmw.questions.slice(0, 3)) {
-        const text = (typeof q === "string" ? q : q?.text || "").trim();
-        if (text) derived.push({ id: crypto.randomUUID(), name: text, description: "מתוך HMW", bucket: "unassigned" });
-      }
-    }
-
-    const seen = new Set<string>();
-    const unique = derived.filter((d) => {
-      const k = d.name.toLowerCase();
-      if (seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-    if (unique.length > 0) {
-      setSuggestedFeatures((curr) => [...curr, ...unique]);
-    }
-    setSeeded(true);
-  }, [getAllPreviousData]);
-
-  useEffect(() => {
-    if (seeded) return;
-    if (suggestedFeatures.length > 0) {
-      setSeeded(true);
-      return;
-    }
-    seedFromPreviousSteps();
-  }, [seeded, suggestedFeatures.length, seedFromPreviousSteps]);
-
-  // Keep textual must/should/could/wont in sync with the drag-and-drop board.
-  useEffect(() => {
-    if (suggestedFeatures.length === 0) return;
-    const lines = (b: Bucket) =>
-      suggestedFeatures
-        .filter((f) => f.bucket === b)
-        .map((f) => `• ${f.name}${f.description ? ` — ${f.description}` : ""}`)
-        .join("\n");
-    setBrief((prev) => ({
-      ...prev,
-      must: lines("must"),
-      should: lines("should"),
-      could: lines("could"),
-      wont: lines("wont"),
-    }));
-  }, [suggestedFeatures]);
 
   const update = (field: keyof BriefState, value: string) => {
     setBrief((prev) => ({ ...prev, [field]: value }));
@@ -162,60 +65,9 @@ const PrototypeBrief = () => {
   }), [brief.objective, brief.must, brief.assumptions]);
   useAutoFill("prototype_brief", autoFillFields);
 
-  const getData = useCallback(() => ({ ...brief, suggestedFeatures, seeded }), [brief, suggestedFeatures, seeded]);
+  const getData = useCallback(() => ({ ...brief }), [brief]);
   const hasContent = !!(brief.objective.trim() || brief.must.trim());
   const previousData = getAllPreviousData("prototype_brief");
-
-  const appendToBucket = (bucket: Bucket, line: string) => {
-    setBrief((prev) => {
-      const existing = (prev[bucket] || "").trim();
-      const next = existing ? `${existing}\n• ${line}` : `• ${line}`;
-      return { ...prev, [bucket]: next };
-    });
-  };
-
-  const assignFeature = (index: number, bucket: Bucket) => {
-    setSuggestedFeatures((prev) => {
-      const copy = [...prev];
-      const f = copy[index];
-      if (!f) return prev;
-      copy[index] = { ...f, bucket };
-      appendToBucket(bucket, `${f.name}${f.description ? ` — ${f.description}` : ""}`);
-      return copy;
-    });
-  };
-
-  const generateAiFeatures = async () => {
-    setAiFeaturesLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("ai-assist", {
-        body: {
-          stepKey: "prototype_brief",
-          stepTitle: "Brief — תכונות מוצעות",
-          mode: "section",
-          sectionKey: "features_json",
-          sectionPrompt: `על בסיס כיוון הפתרון של הצוות, הצע 6 תכונות מוצר קונקרטיות שיכולות להתאים (לדוגמה: leaderboard, צ׳אט קבוצתי, גלריה, התראות, פרופיל, שיתוף, וכו'). החזר אך ורק מערך JSON תקין בפורמט: [{"name":"שם התכונה","description":"משפט קצר בעברית"}]. בלי טקסט נוסף, בלי code fences.`,
-          currentData: { objective: brief.objective, must: brief.must },
-          previousData,
-        },
-      });
-      if (error) throw error;
-      const raw = (data?.content || "").trim().replace(/```json?/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        setSuggestedFeatures(parsed.map((f: any) => ({
-          id: crypto.randomUUID(),
-          name: String(f.name || "").trim(),
-          description: String(f.description || "").trim(),
-          bucket: "unassigned" as const,
-        })).filter((f) => f.name));
-      }
-    } catch (e) {
-      console.error("AI features failed", e);
-    } finally {
-      setAiFeaturesLoading(false);
-    }
-  };
 
 
   return (
@@ -281,59 +133,6 @@ const PrototypeBrief = () => {
           <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="לדוגמה: לוודא שמשתמשים מבינים את הצעת הערך תוך 10 שניות..." value={brief.objective} onChange={(e) => update("objective", e.target.value)} />
         </div>
 
-        {/* MoSCoW — drag-and-drop board with AI-suggested features */}
-        <div className="sketch-card">
-          <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-            <label className="font-sketch text-xl">MoSCoW — תיעדוף תכונות</label>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={seedFromPreviousSteps}
-                className="sketch-btn-outline flex items-center gap-2 text-sm"
-                title="טען מחדש רעיונות מהשלבים הקודמים"
-              >
-                <Plus className="h-4 w-4" /> מהשלבים הקודמים
-              </button>
-              {aiEnabled && (
-                <button
-                  onClick={generateAiFeatures}
-                  disabled={aiFeaturesLoading}
-                  className="sketch-btn flex items-center gap-2 text-sm"
-                >
-                  {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                  {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
-                </button>
-              )}
-            </div>
-          </div>
-          <p className="font-hand text-muted-foreground text-sm mb-2">
-            ה-AI מציע תכונות (leaderboard, צ׳אט, גלריה, התראות...). גררו כל תכונה ל-Must / Should / Could / Won't.
-          </p>
-
-          <AddFeatureRow
-            onAdd={(name) => setSuggestedFeatures((prev) => [...prev, { id: crypto.randomUUID(), name, description: "", bucket: "unassigned" }])}
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-            {BUCKETS.map((b) => (
-              <BucketLane
-                key={b.key}
-                config={b}
-                features={suggestedFeatures.filter((f) => f.bucket === b.key)}
-                onDrop={(id) => setSuggestedFeatures((prev) => prev.map((f) => (f.id === id ? { ...f, bucket: b.key } : f)))}
-                onRemove={(id) => setSuggestedFeatures((prev) => prev.filter((f) => f.id !== id))}
-              />
-            ))}
-          </div>
-
-          {suggestedFeatures.length === 0 && (
-            <p className="font-hand text-sm text-muted-foreground mt-3 text-center">
-              עדיין אין תכונות. לחצו על "הצע תכונות עם AI" או הוסיפו ידנית.
-            </p>
-          )}
-        </div>
-
-
-
         {/* Style / vibe with visual swatches */}
         <div className="sketch-card">
           <label className="font-sketch text-xl block mb-1">סגנון והעדפות עיצוב</label>
@@ -393,87 +192,5 @@ const PrototypeBrief = () => {
     </StepPage>
   );
 };
-
-function AddFeatureRow({ onAdd }: { onAdd: (name: string) => void }) {
-  const [value, setValue] = useState("");
-  return (
-    <div className="flex items-center gap-2 mt-2">
-      <input
-        className="sketch-input flex-1"
-        placeholder="הוסיפו תכונה משלכם..."
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && value.trim()) {
-            onAdd(value.trim());
-            setValue("");
-          }
-        }}
-      />
-      <button
-        type="button"
-        onClick={() => { if (value.trim()) { onAdd(value.trim()); setValue(""); } }}
-        className="sketch-btn-outline flex items-center gap-1 text-sm px-3 py-2"
-      >
-        <Plus className="h-4 w-4" /> הוסף
-      </button>
-    </div>
-  );
-}
-
-function BucketLane({
-  config,
-  features,
-  onDrop,
-  onRemove,
-}: {
-  config: { key: Bucket | "unassigned"; label: string; desc: string; bg: string };
-  features: SuggestedFeature[];
-  onDrop: (id: string) => void;
-  onRemove: (id: string) => void;
-}) {
-  const [over, setOver] = useState(false);
-  return (
-    <div
-      className={`sketch-border-thin p-3 min-h-[140px] transition-all ${config.bg} ${over ? "ring-2 ring-foreground" : ""}`}
-      onDragOver={(e) => { e.preventDefault(); setOver(true); }}
-      onDragLeave={() => setOver(false)}
-      onDrop={(e) => {
-        e.preventDefault();
-        setOver(false);
-        const id = e.dataTransfer.getData("text/plain");
-        if (id) onDrop(id);
-      }}
-    >
-      <div className="mb-2">
-        <div className="font-sketch text-base">{config.label}</div>
-        <div className="font-hand text-xs text-muted-foreground">{config.desc}</div>
-      </div>
-      <div className="space-y-2">
-        {features.map((f) => (
-          <div
-            key={f.id}
-            draggable
-            onDragStart={(e) => e.dataTransfer.setData("text/plain", f.id)}
-            className="bg-background sketch-border-thin px-3 py-2 cursor-grab active:cursor-grabbing flex items-start gap-2"
-          >
-            <div className="flex-1 min-w-0">
-              <div className="font-sketch text-sm truncate">{f.name}</div>
-              {f.description && <div className="text-xs text-muted-foreground line-clamp-2">{f.description}</div>}
-            </div>
-            <button onClick={() => onRemove(f.id)} className="text-muted-foreground hover:text-foreground p-0.5">
-              <span className="text-xs">×</span>
-            </button>
-          </div>
-        ))}
-        {features.length === 0 && (
-          <div className="text-xs text-muted-foreground font-hand text-center py-3 border-2 border-dashed border-foreground/15 rounded">
-            גררו לכאן
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export default PrototypeBrief;

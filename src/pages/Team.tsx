@@ -92,19 +92,8 @@ export default function Team() {
       clearTimeout(timeout);
       if (error) throw error;
       if (data?.dataUrl) {
-        // Persist immediately — no separate "save" click needed for the avatar.
-        if (isLeader) {
-          const { error: upErr } = await supabase
-            .from("classes")
-            .update({ team_avatar_url: data.dataUrl, team_avatar_prompt: situation })
-            .eq("id", session.classId);
-          if (upErr) throw upErr;
-          setAvatarUrl(data.dataUrl);
-          setPendingAvatar(null);
-          toast({ title: "האווטאר נשמר!" });
-        } else {
-          setPendingAvatar(data.dataUrl);
-        }
+        setPendingAvatar(data.dataUrl);
+        toast({ title: "האווטאר מוכן", description: "לחצו שמור כדי שיופיע בדף הבית" });
       } else {
         throw new Error("לא הוחזרה תמונה");
       }
@@ -142,6 +131,7 @@ export default function Team() {
       setPendingAvatar(null);
     }
     setSession({ ...session, className: updates.name });
+    window.dispatchEvent(new CustomEvent("classes:changed"));
     toast({ title: "נשמר!" });
   };
 
@@ -335,9 +325,22 @@ export default function Team() {
                 className="w-full max-w-md mx-auto block"
               />
               {pendingAvatar && (
-                <p className="text-xs font-hand text-center text-muted-foreground mt-2">
-                  טיוטה — לחצו "שמור" כדי לקבע
-                </p>
+                <div className="text-center mt-3 space-y-2">
+                  <p className="text-xs font-hand text-muted-foreground">
+                    טיוטה — לחצו "שמור" כדי להציג בדף הבית
+                  </p>
+                  {isLeader && (
+                    <button
+                      type="button"
+                      onClick={saveAll}
+                      disabled={saving}
+                      className="sketch-btn text-sm inline-flex items-center gap-2 disabled:opacity-50"
+                    >
+                      {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                      שמור אווטאר לדף הבית
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           )}

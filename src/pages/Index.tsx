@@ -72,9 +72,13 @@ const Index = () => {
     // Also refetch when the tab regains focus (covers navigation back)
     const onFocus = () => fetchGroups();
     window.addEventListener("focus", onFocus);
+    window.addEventListener("pageshow", onFocus);
+    window.addEventListener("classes:changed", onFocus);
     return () => {
       supabase.removeChannel(channel);
       window.removeEventListener("focus", onFocus);
+      window.removeEventListener("pageshow", onFocus);
+      window.removeEventListener("classes:changed", onFocus);
     };
   }, []);
 

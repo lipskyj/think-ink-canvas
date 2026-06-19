@@ -28,7 +28,12 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   const { isClassMode } = useClass();
   const [showAI, setShowAI] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => {
+    if (phaseRecapKey && typeof window !== "undefined" && localStorage.getItem(phaseRecapKey) !== "1") {
+      return false;
+    }
+    return true;
+  });
   const [showExample, setShowExample] = useState(false);
   const demo = getDemoStep(stepKey);
   const [recapDismissed, setRecapDismissed] = useState<boolean>(() => {
@@ -49,10 +54,14 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
     const t = setTimeout(find, 0);
     return () => clearTimeout(t);
   }, [stepKey]);
-  // Reset intro visibility when the step changes
+  // Reset intro visibility when the step changes (but defer if phase recap is pending)
   useEffect(() => {
-    setShowIntro(true);
-  }, [stepKey]);
+    if (phaseRecapKey && typeof window !== "undefined" && localStorage.getItem(phaseRecapKey) !== "1") {
+      setShowIntro(false);
+    } else {
+      setShowIntro(true);
+    }
+  }, [stepKey, phaseRecapKey]);
   // Listen for re-open requests from the toolbar button
   useEffect(() => {
     const handler = (e: Event) => {

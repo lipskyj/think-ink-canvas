@@ -162,7 +162,7 @@ const PrototypeBrief = () => {
   }), [brief.objective, brief.must, brief.assumptions]);
   useAutoFill("prototype_brief", autoFillFields);
 
-  const getData = useCallback(() => ({ ...brief, suggestedFeatures }), [brief, suggestedFeatures]);
+  const getData = useCallback(() => ({ ...brief, suggestedFeatures, seeded }), [brief, suggestedFeatures, seeded]);
   const hasContent = !!(brief.objective.trim() || brief.must.trim());
   const previousData = getAllPreviousData("prototype_brief");
 

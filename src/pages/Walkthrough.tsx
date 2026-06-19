@@ -169,8 +169,12 @@ const DEMO_DATA: DemoStep[] = [
     output: (
       <>
         <div className="grid sm:grid-cols-2 gap-3 font-hand text-base">
-          <div className="sketch-border-thin p-3 bg-[hsl(var(--mint)/0.35)]">
+          <div className="relative sketch-border-thin p-3 pr-9 bg-[hsl(var(--mint)/0.5)] ring-2 ring-foreground/40">
+            <Star className="absolute right-2 top-2 h-4 w-4 fill-foreground text-foreground" />
             <strong>ניצחונות מהירים:</strong> מדריך ChatGPT לתלמידים, רשימת סרטוני יוטיוב בעברית
+            <div className="text-[10px] font-sketch tracking-wider uppercase text-foreground/70 mt-1.5">
+              ★ מתחילים מכאן — השפעה גבוהה, מאמץ נמוך
+            </div>
           </div>
           <div className="sketch-border-thin p-3 bg-[hsl(var(--sun)/0.35)]">
             <strong>הימורים גדולים:</strong> אפליקציה עם AI מותאם לתוכנית הישראלית, משחק עולם מתמטי
@@ -183,7 +187,7 @@ const DEMO_DATA: DemoStep[] = [
           </div>
         </div>
         <ChosenBox>
-          <strong>בחרנו:</strong> אפליקציה עם AI — תלמיד מצלם שאלה, ה-AI מסביר צעד-אחר-צעד ומוסיף תרגיל מותאם.
+          <strong>בחרנו (הימור גדול עם פוטנציאל אמיתי):</strong> אפליקציה עם AI — תלמיד מצלם שאלה, ה-AI מסביר צעד-אחר-צעד ומוסיף תרגיל מותאם.
         </ChosenBox>
       </>
     ),
@@ -231,51 +235,97 @@ const DEMO_DATA: DemoStep[] = [
     phase: "פיתוח הפתרון",
     phaseColor: "pill-chip-mint",
     title: "PRD / פרומפט לקוד",
-    what: "אוספים את כל החומר למסמך אחד — פרומפט מובנה שאפשר להדביק במערכת text-to-code.",
+    what: "אוספים את כל החומר למסמך אחד בעברית — מסמך אפיון מובנה שאפשר להעביר למפתחים או להדביק בכלי text-to-code.",
     output: (
-      <pre className="whitespace-pre-wrap font-mono text-xs bg-background/70 sketch-border-thin p-3 max-h-72 overflow-y-auto leading-relaxed" dir="ltr">{`# MathMate — PRD
+      <pre className="whitespace-pre-wrap font-mono text-xs bg-background/70 sketch-border-thin p-3 max-h-80 overflow-y-auto leading-relaxed text-right" dir="rtl">{`# MathMate — מסמך אפיון מוצר (PRD)
 
-## Problem
-40% of Israeli high-school students struggle with math.
-No access to personal help, ashamed to ask in class.
+## הבעיה
+40% מתלמידי התיכון בישראל מתקשים במתמטיקה.
+בכיתה של 35 תלמידים אין זמן להסבר אישי, ושיעור פרטי
+עולה 150 ₪ לשעה — מחיר שרוב המשפחות לא יכולות לעמוד בו.
+התלמידים מתביישים לשאול בכיתה, ונשארים מאחור בשקט.
 
-## Solution
-Personal AI tutor in Hebrew that explains step-by-step,
-adapted to the Israeli curriculum.
+## המשתמשת
+דנה, בת 15, כיתה ט׳. אוהבת אמנות ומוזיקה, מתקשה
+באלגברה, מתביישת לשאול לפני כולם.
+"הלוואי שהיה לי מישהו שמסביר לי בלי לשפוט, בקצב שלי."
 
-## Key features
-1. Scan question from notebook (OCR)
-2. AI explanation in Hebrew, animated steps
-3. Adaptive practice
-4. Visual concept map
-5. Exam simulation
+## הפתרון
+מורה פרטי AI אישי בעברית. דנה מצלמת שאלה מהמחברת,
+ה-AI מסביר צעד-אחר-צעד בקצב שלה, ומציע 3 תרגילי
+חימום מותאמים לרמה — הכל מותאם לתוכנית הלימודים
+של משרד החינוך הישראלי.
 
-## Build prompt
-Build a React Native (RTL Hebrew) app. Main screen with
-"Ask a question" button, AI explanation screen with steps,
-practice screen with 3 adapted exercises, progress screen.
-Colors: blue-purple. Backend: Firebase.`}</pre>
+## פיצ׳רים עיקריים (MVP)
+1. סריקת שאלה מהמחברת (OCR בעברית + סימנים מתמטיים)
+2. הסבר AI שלב-אחר-שלב בעברית, עם אנימציה של הפתרון
+3. תרגול אדפטיבי — קושי משתנה לפי ביצועי התלמיד
+4. מד התקדמות אישי לפי נושאים בתוכנית הלימודים
+5. "שאל שוב, אחרת" — מבקש מהמודל הסבר חלופי
+
+## מדדי הצלחה
+- 80% מהתלמידים מבינים נושא חדש תוך 20 דקות
+- עלייה ממוצעת של 15 נקודות בציון מבחן בית
+- 70% מדווחים על ירידה בחרדת מבחנים
+- 1,000 תלמידים פעילים חודשית עד סוף שנה א׳
+
+## פרומפט לכלי פיתוח
+בנה אפליקציית React מובייל ראשית (RTL, עברית).
+מסך בית עם כפתור גדול "צלם שאלה", מסך הסבר עם
+שלבים מתקפלים ואנימציות פשוטות, מסך תרגול עם
+3 שאלות מותאמות, ומסך התקדמות לפי נושאים.
+עיצוב: סקיצה בעברית, צבעי פסטל, אייקונים מצוירים ביד.
+שרת: Supabase. AI: GPT-4o-mini עם פרומפט מורה עברי.`}</pre>
     ),
   },
   {
     num: 11,
     phase: "הצגת הפתרון",
     phaseColor: "pill-chip",
-    title: "פיצ' והצגה",
-    what: "הופכים הכול לסיפור משכנע — פתיחה, בעיה, פתרון, ולידציה, חזון.",
+    title: "פיץ׳ והצגה",
+    what: "הופכים הכול לסיפור משכנע — מתחילים עם דנה, מציגים את הבעיה, את הפתרון, את הוולידציה ואת החזון.",
     output: (
       <div className="space-y-3 font-hand text-base">
-        <div className="bg-[hsl(var(--coral)/0.2)] sketch-border-thin p-3">
-          <strong>Elevator pitch:</strong> בישראל, 40% מתלמידי התיכון נכשלים במתמטיקה — לא כי הם לא חכמים, אלא כי בכיתה של 35 אין מי שיסביר אישית. אנחנו בנינו MathMate — AI אישי שמסביר בעברית 24/7. כמו מורה פרטי בכיס, בחינם.
+        <div className="bg-[hsl(var(--coral)/0.25)] sketch-border-thin p-4 ring-2 ring-foreground/30">
+          <div className="text-[10px] font-sketch tracking-wider uppercase text-foreground/70 mb-2">
+            ⏱️ Elevator pitch — 30 שניות
+          </div>
+          <p className="leading-relaxed">
+            תכירו את <strong>דנה</strong>. היא בת 15, ומתביישת לשאול בשיעור מתמטיקה.
+            ההורים שלה לא יכולים להרשות מורה פרטי ב-150 ₪ לשעה.
+            דנה לא לבד — <strong>1 מכל 3 תלמידי תיכון בישראל</strong> נכשלים במתמטיקה.
+            <br/><br/>
+            בנינו את <strong>MathMate</strong>: דנה מצלמת שאלה מהמחברת,
+            וה-AI מסביר לה בעברית, בקצב שלה, בלי לשפוט.
+            <strong> מורה פרטי בכיס, חינם, 24/7.</strong>
+          </p>
         </div>
-        <ul className="space-y-1.5 list-disc pr-6">
-          <li>🔴 הבעיה: 1 מכל 3 תלמידים לא עובר מתמטיקה</li>
-          <li>👧 הפרסונה: דנה — מתביישת לשאול, אין כסף למורה פרטי</li>
-          <li>💡 הפתרון: מצלמים שאלה → AI בעברית → תרגיל מותאם</li>
-          <li>📊 ולידציה: 20 תלמידים נבדקו, 85% הרגישו ביטחון מוגבר</li>
-          <li>🎯 יתרון: היחיד שמותאם לתוכנית הישראלית</li>
-          <li>🚀 חזון: עד 2027 — מורה פרטי AI לכל ילד בישראל</li>
-        </ul>
+        <div className="grid sm:grid-cols-2 gap-2">
+          <div className="sketch-border-thin p-3 bg-background/60">
+            <div className="font-sketch text-xs uppercase tracking-wider text-muted-foreground mb-1">הבעיה</div>
+            <p>33% מתלמידי התיכון נכשלים במתמטיקה. מורה פרטי עולה 6,000 ₪ לשנה.</p>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/60">
+            <div className="font-sketch text-xs uppercase tracking-wider text-muted-foreground mb-1">הפרסונה</div>
+            <p>דנה, ט׳: חכמה, מתביישת לשאול, אין כסף לעזרה אישית.</p>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/60">
+            <div className="font-sketch text-xs uppercase tracking-wider text-muted-foreground mb-1">הפתרון</div>
+            <p>סורקים שאלה ← הסבר AI בעברית ← 3 תרגילים מותאמים.</p>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/60">
+            <div className="font-sketch text-xs uppercase tracking-wider text-muted-foreground mb-1">ולידציה</div>
+            <p>20 תלמידים נבדקו. 85% הרגישו ביטחון מוגבר תוך שבוע.</p>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/60">
+            <div className="font-sketch text-xs uppercase tracking-wider text-muted-foreground mb-1">היתרון</div>
+            <p>היחיד שמותאם לתוכנית הלימודים הישראלית, בעברית, חינם.</p>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/60">
+            <div className="font-sketch text-xs uppercase tracking-wider text-muted-foreground mb-1">החזון</div>
+            <p>עד 2027 — מורה פרטי AI לכל ילד בישראל. שוויון הזדמנויות אמיתי.</p>
+          </div>
+        </div>
       </div>
     ),
   },

@@ -24,8 +24,12 @@ export function AppSidebar() {
 
   const handleLogout = () => {
     const classId = session?.classId;
+    // Forget the remembered identity so /join/:classId won't auto-restore it
+    if (classId) {
+      try { localStorage.removeItem(`class:${classId}:name`); } catch {}
+    }
     clearSession();
-    navigate(classId ? `/join/${classId}` : "/");
+    navigate("/");
   };
 
   return (

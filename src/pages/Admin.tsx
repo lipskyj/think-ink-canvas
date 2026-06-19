@@ -142,10 +142,10 @@ export default function Admin() {
 
   const updateClass = async (id: string, updates: Partial<ClassRow>) => {
     const dbUpdates: any = {};
-    const allowed: (keyof ClassRow)[] = [
+    const allowed: (keyof ClassRow | "organizer_name")[] = [
       "student_names","ai_enabled","locked_steps","name","leader_name",
       "event_date","event_time","event_location","event_topic",
-      "event_description","organizer_logo_url",
+      "event_description","organizer_logo_url","organizer_name" as any,
     ];
     for (const k of allowed) {
       if (updates[k] !== undefined) dbUpdates[k] = updates[k] as any;

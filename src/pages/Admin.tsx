@@ -756,21 +756,7 @@ function ClassPanel({
       <div className="flex items-center justify-between cursor-pointer gap-3" onClick={onToggleExpand}>
         <div className="flex items-center gap-3 min-w-0">
           {cls.join_code && (
-            <div
-              className="sketch-border-thin bg-yellow-100/60 dark:bg-yellow-900/30 px-3 py-2 rounded-md shrink-0 cursor-pointer select-none"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigator.clipboard.writeText(cls.join_code || "");
-              }}
-              title="לחצו להעתקה (הקוד מוסתר עד מעבר עכבר)"
-            >
-              <div className="text-[9px] uppercase tracking-wider text-muted-foreground font-sketch">קוד</div>
-              <div className="font-sketch text-2xl tracking-widest leading-none">
-                <span className="group-hover:hidden" aria-hidden>{"•".repeat(cls.join_code.length)}</span>
-                <span className="sr-only">{cls.join_code}</span>
-                <span className="hidden hover:inline">{cls.join_code}</span>
-              </div>
-            </div>
+            <CodeChip code={cls.join_code} />
           )}
           <div className="min-w-0">
             <h3 className="font-sketch text-lg truncate">{cls.name}</h3>

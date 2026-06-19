@@ -216,7 +216,7 @@ export default function Team() {
             <p className="font-hand text-sm text-muted-foreground mb-3">
               בחרו איך הקבוצה תיראה. כל סגנון מציג דוגמה אמיתית.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
               {TEAM_AVATAR_STYLES.map((s) => {
                 const selected = styleKey === s.key;
                 return (
@@ -224,8 +224,10 @@ export default function Team() {
                     key={s.key}
                     type="button"
                     onClick={() => setStyleKey(s.key)}
-                    className={`group relative overflow-hidden text-right sketch-border-thin rounded-md transition-all ${
-                      selected ? "ring-2 ring-foreground scale-[1.02]" : "hover:scale-[1.01]"
+                    title={`${s.label} — ${s.description}`}
+                    aria-label={s.label}
+                    className={`group relative overflow-hidden sketch-border-thin rounded-md transition-all ${
+                      selected ? "ring-2 ring-foreground scale-[1.03]" : "hover:scale-[1.02] opacity-90 hover:opacity-100"
                     }`}
                   >
                     <div className="aspect-square w-full overflow-hidden bg-secondary/30">
@@ -243,14 +245,13 @@ export default function Team() {
                         <Check className="h-3.5 w-3.5" />
                       </div>
                     )}
-                    <div className="p-2 bg-background">
-                      <div className="font-sketch text-sm leading-tight">{s.label}</div>
-                      <div className="font-hand text-[11px] text-muted-foreground leading-tight">{s.description}</div>
-                    </div>
                   </button>
                 );
               })}
             </div>
+            <p className="font-hand text-xs text-muted-foreground mt-2 text-center">
+              סגנון נבחר: <strong className="font-sketch">{getAvatarStyle(styleKey).label}</strong> — {getAvatarStyle(styleKey).description}
+            </p>
           </div>
 
 

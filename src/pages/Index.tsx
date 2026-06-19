@@ -43,7 +43,7 @@ const PHASE_BADGE: Record<string, string> = {
 
 const Index = () => {
   const { isStepCompleted, isLoading, loadDemoCase } = useProject();
-  const { session, isClassMode, isLeader } = useClass();
+  const { session, isClassMode, isLeader, setSession } = useClass();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [event, setEvent] = useState<EventInfo | null>(null);
@@ -207,37 +207,8 @@ const Index = () => {
 
 
 
-        {/* JOIN BY CODE — only when not yet in a group */}
-        {!isClassMode && (
-          <section className="sketch-card mb-12 max-w-2xl mx-auto border-2">
-            <div className="flex items-center gap-3 mb-4">
-              <LogIn className="h-7 w-7" />
-              <h2 className="font-sketch text-3xl">הצטרפו לקבוצה</h2>
-            </div>
-            <p className="font-hand text-lg text-muted-foreground mb-5">
-              הזינו את קוד הקבוצה שקיבלתם מהמארגן (למשל A6, Z2).
-            </p>
-            <div className="flex gap-3">
-              <Input
-                value={codeInput}
-                onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-                placeholder="A6"
-                maxLength={4}
-                className="text-center font-sketch text-4xl tracking-widest uppercase h-16"
-                dir="ltr"
-                onKeyDown={(e) => e.key === "Enter" && joinByCode()}
-              />
-              <button
-                onClick={joinByCode}
-                disabled={joining || !codeInput.trim()}
-                className="sketch-btn flex items-center gap-2 disabled:opacity-50 text-lg px-6"
-              >
-                {joining ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowLeft className="h-5 w-5" />}
-                המשך
-              </button>
-            </div>
-          </section>
-        )}
+
+
 
 
 
@@ -311,7 +282,13 @@ const Index = () => {
                         const entered = window.prompt(`כדי לערוך את "${group.name}" הזינו את קוד הקבוצה (${group.join_code?.length || 2} תווים):`);
                         if (!entered) return;
                         if (entered.trim().toUpperCase() === (group.join_code || "").toUpperCase()) {
-                          navigate(`/join/${group.id}`);
+                          setSession({
+                            classId: group.id,
+                            className: group.name,
+                            studentName: group.student_names?.[0] || "",
+                            isLeader: true,
+                          });
+                          navigate(`/team`);
                         } else {
                           toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
                         }

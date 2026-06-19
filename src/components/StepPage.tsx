@@ -24,12 +24,26 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   const { isClassMode } = useClass();
   const [showAI, setShowAI] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null);
   useEffect(() => {
     const find = () => setToolbarSlot(document.getElementById("step-toolbar-slot"));
     find();
     const t = setTimeout(find, 0);
     return () => clearTimeout(t);
+  }, [stepKey]);
+  // Reset intro visibility when the step changes
+  useEffect(() => {
+    setShowIntro(true);
+  }, [stepKey]);
+  // Listen for re-open requests from the toolbar button
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.stepKey === stepKey) setShowIntro(true);
+    };
+    window.addEventListener("lsd:open", handler as EventListener);
+    return () => window.removeEventListener("lsd:open", handler as EventListener);
   }, [stepKey]);
   const locked = isClassMode && isStepLocked(stepKey);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -115,7 +129,9 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
 
   return (
     <Layout>
-      <StepIntroModal stepKey={stepKey} />
+      {showIntro ? (
+        <StepIntroModal stepKey={stepKey} onClose={() => setShowIntro(false)} />
+      ) : (
       <div className="max-w-4xl mx-auto">
         {/* באנר נעילה */}
         {locked && (
@@ -256,6 +272,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
           </div>
         )}
       </div>
+      )}
     </Layout>
   );
 }

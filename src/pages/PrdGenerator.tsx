@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import StepPage from "@/components/StepPage";
+import Phase3Recap from "@/components/Phase3Recap";
 import { useProject } from "@/contexts/ProjectContext";
 import { STEPS } from "@/lib/steps";
 import { supabase } from "@/integrations/supabase/client";
@@ -108,6 +109,7 @@ const PrdGenerator = () => {
 
   return (
     <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent}>
+      <Phase3Recap />
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
            שלב זה אוסף את המחקר, הבריף ותיעדוף ה-MVP, ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.

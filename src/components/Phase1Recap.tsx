@@ -67,8 +67,8 @@ export default function Phase1Recap() {
     <PhaseRecap
       storageKey="phase1_recap_dismissed"
       phaseNum={1}
-      headline="סיימתם את שלב 1 — הגדרת הבעיה!"
-      intro="כל מה שעשיתם עד עכשיו עומד מאחורי הרעיונות שתעלו בשלב הבא. הנה תזכורת קצרה:"
+      headline="סיימתם את פאזה 1 — הבנת המשתמש והגדרת הבעיה!"
+      intro="לפני שעוברים ליצירת רעיונות, הנה תזכורת של מה שגיליתם:"
       items={items}
       nextHint="עכשיו עוברים לשלב 2 — גיבוש הפתרון. תפקידכם להציף הרבה רעיונות בלי לשפוט."
     />

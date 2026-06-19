@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Copy, Play, Pause, RotateCcw, Mic, Download, FileText, ArrowRight, Volume2, Image as ImageIcon, ExternalLink } from "lucide-react";
 import PitchStylePicker from "@/components/PitchStylePicker";
+import Phase3Recap from "@/components/Phase3Recap";
 
 import { getPitchStyle, PitchStyleKey } from "@/lib/pitchStyles";
 import { buildPitchDeck } from "@/lib/pitchDeck";
@@ -213,6 +214,7 @@ const Pitch = () => {
   return (
     <Layout>
       <div className="max-w-3xl mx-auto space-y-6" dir="rtl">
+        <Phase3Recap />
         <div className="text-center">
           <h1 className="font-sketch text-4xl mb-2">הפיץ׳</h1>
           <p className="font-hand text-xl text-muted-foreground">

@@ -306,6 +306,22 @@ const Index = () => {
                     <span className="pill-chip pill-chip-outline absolute top-3 right-3 text-[10px] flex items-center gap-1">
                       <Users className="h-3 w-3" /> הקבוצה
                     </span>
+                    <button
+                      onClick={() => {
+                        const entered = window.prompt(`כדי לערוך את "${group.name}" הזינו את קוד הקבוצה (${group.join_code?.length || 2} תווים):`);
+                        if (!entered) return;
+                        if (entered.trim().toUpperCase() === (group.join_code || "").toUpperCase()) {
+                          navigate(`/join/${group.id}`);
+                        } else {
+                          toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
+                        }
+                      }}
+                      className="absolute top-3 left-3 sketch-border-thin rounded-md p-1.5 bg-background hover:bg-secondary/40 transition"
+                      aria-label="ערוך קבוצה"
+                      title="ערוך קבוצה (דרוש קוד)"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
                     {group.team_avatar_url && (
                       <img
                         src={group.team_avatar_url}

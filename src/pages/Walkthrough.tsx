@@ -1,7 +1,32 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
-import { ArrowLeft, ArrowRight, Home, CheckCircle2, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, CheckCircle2, Play, Star, Quote } from "lucide-react";
+import personaDana from "@/assets/persona-dana.png";
+
+// Small reusable avatar of the persona — shown across steps so the story stays anchored to a real person
+const PersonaChip = ({ size = "sm" }: { size?: "sm" | "md" }) => (
+  <div className="inline-flex items-center gap-2 sketch-border-thin bg-background px-2 py-1 rounded-md">
+    <img
+      src={personaDana}
+      alt="דנה — הפרסונה"
+      className={size === "md" ? "w-10 h-10 object-cover rounded-sm" : "w-7 h-7 object-cover rounded-sm"}
+      loading="lazy"
+    />
+    <span className="font-sketch text-sm">דנה, כיתה ט׳</span>
+  </div>
+);
+
+// Reusable highlight box for "the chosen one" — the selection that propagates to the next step
+const ChosenBox = ({ children }: { children: React.ReactNode }) => (
+  <div className="mt-3 relative bg-[hsl(var(--sun)/0.45)] sketch-border-thin p-3 pr-10">
+    <Star className="absolute right-2 top-2 h-5 w-5 fill-foreground text-foreground" />
+    <div className="font-hand text-base">{children}</div>
+    <div className="text-[10px] font-sketch tracking-wider uppercase text-muted-foreground mt-1.5">
+      ↓ זה מה שעובר לשלב הבא
+    </div>
+  </div>
+);
 
 interface DemoStep {
   num: number;
@@ -20,13 +45,26 @@ const DEMO_DATA: DemoStep[] = [
     title: "פרסונת משתמש",
     what: "בונים דמות מייצגת שמסכמת מי המשתמש שלנו — שם, גיל, מטרות, תסכולים וציטוט אופייני.",
     output: (
-      <div className="space-y-2 font-hand text-base">
-        <p><strong>שם:</strong> דנה כהן</p>
-        <p><strong>גיל:</strong> בת 15, תלמידת כיתה ט׳</p>
-        <p><strong>תפקיד:</strong> תלמידת תיכון שמתקשה במתמטיקה, אוהבת אמנות ומוזיקה</p>
-        <p><strong>מטרות:</strong> לעבור את מבחן המתמטיקה בלי להתבייש, להרגיש שאני מסוגלת</p>
-        <p><strong>תסכולים:</strong> לא מבינה אלגברה כי המורה מסבירה מהר מדי. מתביישת לשאול שאלות לפני כולם</p>
-        <p className="italic border-r-2 border-foreground/40 pr-3 mt-3">"הלוואי שהיה לי מישהו שמסביר לי בלי לשפוט, בקצב שלי"</p>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <img
+          src={personaDana}
+          alt="דנה כהן"
+          className="w-32 h-32 sm:w-40 sm:h-40 object-cover sketch-border-thin rounded-md shrink-0 bg-background"
+          loading="lazy"
+          width={512}
+          height={512}
+        />
+        <div className="space-y-1.5 font-hand text-base flex-1">
+          <p><strong>שם:</strong> דנה כהן</p>
+          <p><strong>גיל:</strong> בת 15, תלמידת כיתה ט׳</p>
+          <p><strong>תפקיד:</strong> תלמידת תיכון שמתקשה במתמטיקה, אוהבת אמנות ומוזיקה</p>
+          <p><strong>מטרות:</strong> לעבור את מבחן המתמטיקה בלי להתבייש, להרגיש שאני מסוגלת</p>
+          <p><strong>תסכולים:</strong> לא מבינה אלגברה כי המורה מסבירה מהר מדי. מתביישת לשאול שאלות לפני כולם</p>
+          <p className="flex gap-2 italic border-r-2 border-foreground/40 pr-3 mt-3">
+            <Quote className="h-4 w-4 shrink-0 mt-1" />
+            "הלוואי שהיה לי מישהו שמסביר לי בלי לשפוט, בקצב שלי"
+          </p>
+        </div>
       </div>
     ),
   },
@@ -54,16 +92,19 @@ const DEMO_DATA: DemoStep[] = [
     title: "חמישה למה",
     what: "שואלים 'למה' חמש פעמים כדי להגיע משורש הבעיה.",
     output: (
-      <ol className="space-y-2 font-hand text-base list-decimal pr-6">
-        <li>ההסברים של המורה מהירים ולא מותאמים לכל תלמיד</li>
-        <li>יש 35 תלמידים בכיתה ואין זמן לתשומת לב אישית</li>
-        <li>תלמידים מתביישים לשאול שאלות בכיתה</li>
-        <li>אין כלים ללמוד ולתרגל בקצב האישי, בבית</li>
-        <li>הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית</li>
-        <li className="list-none mt-3 p-3 bg-[hsl(var(--sun)/0.35)] sketch-border-thin">
+      <>
+        <div className="flex items-center gap-2 mb-3"><PersonaChip /><span className="font-hand text-sm text-muted-foreground">— שואלים עליה למה</span></div>
+        <ol className="space-y-2 font-hand text-base list-decimal pr-6">
+          <li>ההסברים של המורה מהירים ולא מותאמים לכל תלמיד</li>
+          <li>יש 35 תלמידים בכיתה ואין זמן לתשומת לב אישית</li>
+          <li>תלמידים מתביישים לשאול שאלות בכיתה</li>
+          <li>אין כלים ללמוד ולתרגל בקצב האישי, בבית</li>
+          <li>הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית</li>
+        </ol>
+        <ChosenBox>
           <strong>שורש הבעיה:</strong> אין פלטפורמת תרגול אישית בעברית שמאפשרת ללמוד ללא בושה, בקצב שלהם
-        </li>
-      </ol>
+        </ChosenBox>
+      </>
     ),
   },
   {
@@ -73,13 +114,13 @@ const DEMO_DATA: DemoStep[] = [
     title: "הצהרת נקודת מבט (POV)",
     what: "ממקדים את כל מה שלמדנו במשפט אחד: [משתמש] צריך [צורך] כי [תובנה].",
     output: (
-      <div className="font-hand text-lg leading-relaxed bg-background/50 sketch-border-thin p-4">
+      <ChosenBox>
         <strong>דנה, תלמידת כיתה ט׳ שמתקשה באלגברה</strong>
         <span className="text-primary font-bold mx-2">צריכה</span>
         <strong>דרך לתרגל ולהבין מתמטיקה בלי לחץ חברתי</strong>
         <span className="text-primary font-bold mx-2">כי</span>
         <strong>היא מפחדת לשאול שאלות בכיתה ולא מוצאת הסברים מותאמים לתוכנית הישראלית.</strong>
-      </div>
+      </ChosenBox>
     ),
   },
   {
@@ -89,14 +130,16 @@ const DEMO_DATA: DemoStep[] = [
     title: "איך נוכל (HMW)",
     what: "ממסגרים את הבעיה כהזדמנות פתוחה ליצירתיות.",
     output: (
-      <ul className="space-y-2 font-hand text-base list-disc pr-6">
-        <li>איך נוכל לעזור לתלמידים לתרגל מתמטיקה ללא בושה ובקצב שלהם?</li>
-        <li>איך נוכל להפוך את לימוד האלגברה לחוויה כיפית ולא מאיימת?</li>
-        <li>איך נוכל לספק הסבר אישי לכל תלמיד בלי מורה פרטי?</li>
-        <li className="list-none mt-3 p-3 bg-[hsl(var(--sun)/0.35)] sketch-border-thin">
+      <>
+        <ul className="space-y-2 font-hand text-base list-disc pr-6">
+          <li>איך נוכל לעזור לתלמידים לתרגל מתמטיקה ללא בושה ובקצב שלהם?</li>
+          <li>איך נוכל להפוך את לימוד האלגברה לחוויה כיפית ולא מאיימת?</li>
+          <li>איך נוכל לספק הסבר אישי לכל תלמיד בלי מורה פרטי?</li>
+        </ul>
+        <ChosenBox>
           <strong>נבחר:</strong> איך נוכל לעזור לתלמידים לתרגל מתמטיקה ללא בושה ובקצב שלהם?
-        </li>
-      </ul>
+        </ChosenBox>
+      </>
     ),
   },
   {
@@ -124,23 +167,25 @@ const DEMO_DATA: DemoStep[] = [
     title: "מטריצת מאמץ-השפעה",
     what: "מתעדפים רעיונות לפי ציר מאמץ וציר השפעה — ובוחרים את הניצחונות המהירים.",
     output: (
-      <div className="grid sm:grid-cols-2 gap-3 font-hand text-base">
-        <div className="sketch-border-thin p-3 bg-[hsl(var(--mint)/0.35)]">
-          <strong>ניצחונות מהירים:</strong> מדריך ChatGPT לתלמידים, רשימת סרטוני יוטיוב בעברית
+      <>
+        <div className="grid sm:grid-cols-2 gap-3 font-hand text-base">
+          <div className="sketch-border-thin p-3 bg-[hsl(var(--mint)/0.35)]">
+            <strong>ניצחונות מהירים:</strong> מדריך ChatGPT לתלמידים, רשימת סרטוני יוטיוב בעברית
+          </div>
+          <div className="sketch-border-thin p-3 bg-[hsl(var(--sun)/0.35)]">
+            <strong>הימורים גדולים:</strong> אפליקציה עם AI מותאם לתוכנית הישראלית, משחק עולם מתמטי
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <strong>מילויים:</strong> בוט וואטסאפ סטטי, פורום תלמידים
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <strong>בזבזני זמן:</strong> משחק VR מלא, מורה רובוט פיזי
+          </div>
         </div>
-        <div className="sketch-border-thin p-3 bg-[hsl(var(--sun)/0.35)]">
-          <strong>הימורים גדולים:</strong> אפליקציה עם AI מותאם לתוכנית הישראלית, משחק עולם מתמטי
-        </div>
-        <div className="sketch-border-thin p-3 bg-background/50">
-          <strong>מילויים:</strong> בוט וואטסאפ סטטי, פורום תלמידים
-        </div>
-        <div className="sketch-border-thin p-3 bg-background/50">
-          <strong>בזבזני זמן:</strong> משחק VR מלא, מורה רובוט פיזי
-        </div>
-        <div className="sm:col-span-2 mt-2 p-3 bg-background/70 sketch-border-thin">
+        <ChosenBox>
           <strong>בחרנו:</strong> אפליקציה עם AI — תלמיד מצלם שאלה, ה-AI מסביר צעד-אחר-צעד ומוסיף תרגיל מותאם.
-        </div>
-      </div>
+        </ChosenBox>
+      </>
     ),
   },
   {

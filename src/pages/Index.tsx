@@ -138,9 +138,14 @@ const Index = () => {
               {publicEvent.organizer_logo_url && (
                 <img
                   src={publicEvent.organizer_logo_url}
-                  alt="לוגו המארגן"
-                  className="h-32 max-w-[280px] object-contain mx-auto mb-8"
+                  alt={publicEvent.organizer_name || "לוגו המארגן"}
+                  className="h-32 max-w-[280px] object-contain mx-auto mb-6"
                 />
+              )}
+              {publicEvent.organizer_name && (
+                <p className="font-sketch text-2xl md:text-3xl text-foreground/80 mb-4">
+                  {publicEvent.organizer_name}
+                </p>
               )}
               <span className="pill-chip pill-chip-coral mb-8 inline-block text-base px-4 py-1.5">
                 האקתון לחשיבה עיצובית

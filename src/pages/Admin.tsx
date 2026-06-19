@@ -180,10 +180,9 @@ export default function Admin() {
     [classes],
   );
   // Pacing — if no steps are locked anywhere, treat as self-paced. Otherwise admin-paced;
-  // the current step is the first step that's still unlocked everywhere.
+  // the current open-up-to step is (first-locked-index − 1).
   const adminPaceStep = useMemo(() => {
     if (classes.length === 0) return null as number | null;
-    // Find the smallest step index that is locked in any class
     let firstLocked = -1;
     for (let i = 0; i < STEPS.length; i++) {
       if (classes.some((c) => c.locked_steps?.[STEPS[i].key])) {
@@ -191,9 +190,9 @@ export default function Admin() {
         break;
       }
     }
-    if (firstLocked === -1) return null; // self-paced (nothing locked)
-    if (workingDisabled) return null; // fully closed, not "admin pace"
-    return firstLocked; // current open step is firstLocked - 1? actually firstLocked is the first locked step, so open = firstLocked - 1
+    if (firstLocked === -1) return null; // self-paced
+    if (workingDisabled) return null; // fully closed — not admin pace
+    return firstLocked - 1; // index of the last open step
   }, [classes, workingDisabled]);
   const isAdminPaced = adminPaceStep !== null;
 

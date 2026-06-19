@@ -130,40 +130,40 @@ const Index = () => {
     <Layout>
       <div className="max-w-5xl mx-auto pb-16">
         {/* HERO — tailored to the event when admin has set details */}
-        <section className="text-center pt-6 pb-12">
+        <section className="text-center pt-6 pb-10">
           {publicEvent ? (
             <>
               {publicEvent.organizer_logo_url && (
                 <img
                   src={publicEvent.organizer_logo_url}
                   alt="לוגו המארגן"
-                  className="h-20 max-w-[200px] object-contain mx-auto mb-5"
+                  className="h-24 max-w-[240px] object-contain mx-auto mb-6"
                 />
               )}
-              <span className="pill-chip pill-chip-coral mb-5 inline-block">האקתון לחשיבה עיצובית</span>
+              <span className="pill-chip pill-chip-coral mb-6 inline-block">האקתון לחשיבה עיצובית</span>
               {publicEvent.event_topic && (
-                <h1 className="display-mega leading-[0.9] mb-5">
+                <h1 className="display-mega leading-[0.88] mb-8" style={{ fontSize: "clamp(3rem, 8vw, 6rem)" }}>
                   {publicEvent.event_topic}
                 </h1>
               )}
-              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-hand text-xl md:text-2xl text-foreground/80 mb-4">
+              <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 font-hand text-3xl md:text-4xl text-foreground/85 mb-5">
                 {(publicEvent.event_date || publicEvent.event_time) && (
-                  <span className="inline-flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
+                  <span className="inline-flex items-center gap-3">
+                    <Calendar className="h-8 w-8" strokeWidth={2.2} />
                     {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
                   </span>
                 )}
                 {publicEvent.event_location && (
-                  <span className="inline-flex items-center gap-2">
-                    <MapPin className="h-5 w-5" /> {publicEvent.event_location}
+                  <span className="inline-flex items-center gap-3">
+                    <MapPin className="h-8 w-8" strokeWidth={2.2} /> {publicEvent.event_location}
                   </span>
                 )}
-                <span className="inline-flex items-center gap-2">
-                  <Users className="h-5 w-5" /> {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
+                <span className="inline-flex items-center gap-3">
+                  <Users className="h-8 w-8" strokeWidth={2.2} /> {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
                 </span>
               </div>
               {publicEvent.event_description && (
-                <p className="font-hand text-lg md:text-xl max-w-2xl mx-auto leading-snug text-foreground/75 whitespace-pre-wrap">
+                <p className="font-hand text-xl md:text-2xl max-w-2xl mx-auto leading-snug text-foreground/75 whitespace-pre-wrap">
                   {publicEvent.event_description}
                 </p>
               )}
@@ -187,30 +187,30 @@ const Index = () => {
 
         {/* JOIN BY CODE — only when not yet in a group */}
         {!isClassMode && (
-          <section className="sketch-card mb-12 max-w-md mx-auto">
-            <div className="flex items-center gap-2 mb-3">
-              <LogIn className="h-5 w-5" />
-              <h2 className="font-sketch text-lg">הצטרפו לקבוצה</h2>
+          <section className="sketch-card mb-12 max-w-2xl mx-auto border-2">
+            <div className="flex items-center gap-3 mb-4">
+              <LogIn className="h-7 w-7" />
+              <h2 className="font-sketch text-3xl">הצטרפו לקבוצה</h2>
             </div>
-            <p className="font-hand text-sm text-muted-foreground mb-3">
+            <p className="font-hand text-lg text-muted-foreground mb-5">
               הזינו את קוד הקבוצה שקיבלתם מהמארגן (למשל A6, Z2).
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <Input
                 value={codeInput}
                 onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
                 placeholder="A6"
                 maxLength={4}
-                className="text-center font-sketch text-2xl tracking-widest uppercase"
+                className="text-center font-sketch text-4xl tracking-widest uppercase h-16"
                 dir="ltr"
                 onKeyDown={(e) => e.key === "Enter" && joinByCode()}
               />
               <button
                 onClick={joinByCode}
                 disabled={joining || !codeInput.trim()}
-                className="sketch-btn flex items-center gap-1 disabled:opacity-50"
+                className="sketch-btn flex items-center gap-2 disabled:opacity-50 text-lg px-6"
               >
-                {joining ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowLeft className="h-4 w-4" />}
+                {joining ? <Loader2 className="h-5 w-5 animate-spin" /> : <ArrowLeft className="h-5 w-5" />}
                 המשך
               </button>
             </div>
@@ -342,10 +342,10 @@ const Index = () => {
         {(() => {
           const editedGroups = groups.filter(
             (g) =>
-              g.team_avatar_url ||
-              (g.student_names && g.student_names.length > 0) ||
-              (g.name && g.join_code && g.name.trim().toUpperCase() !== g.join_code.trim().toUpperCase()),
+              !!g.team_avatar_url ||
+              (g.student_names && g.student_names.length > 0),
           );
+
           if (editedGroups.length === 0) return null;
           return (
             <section className="mb-12">

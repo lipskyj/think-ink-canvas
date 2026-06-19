@@ -72,6 +72,7 @@ const PrototypeBrief = () => {
         ...prev,
         ...saved,
         must: saved.must || saved.keyFeatures || "",
+        briefingAnswers: saved.briefingAnswers || {},
       }));
       if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures.map((f: any) => ({ ...f, id: f.id || crypto.randomUUID() })));
     }

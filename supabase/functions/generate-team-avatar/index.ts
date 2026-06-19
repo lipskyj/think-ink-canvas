@@ -8,15 +8,11 @@ interface Body {
   teamName?: string;
   members?: { name?: string; gender?: "male" | "female" | "other" }[];
   situation?: string;
+  stylePrompt?: string;
 }
 
-const STYLE = [
-  "Flat-color cartoon illustration in the same style as a friendly animated character named Noam:",
-  "warm cream/off-white background, simple confident hand-drawn black outlines,",
-  "soft flat colors (mustard yellow, coral pink, mint green, warm browns),",
-  "expressive faces with simple eyes and eyebrows, slightly sketchy lines, modern storybook feel,",
-  "no gradients, no shading complexity, no photorealism, no text, no logos.",
-].join(" ");
+const DEFAULT_STYLE =
+  "Flat-color cartoon illustration in a friendly storybook style: warm cream background, confident hand-drawn black outlines, soft flat colors, expressive simple faces, slightly sketchy lines, no gradients, no photorealism, no text, no logos.";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -43,10 +39,11 @@ Deno.serve(async (req) => {
       : "a small group of young people";
 
     const situation = (body.situation || "").trim() || "standing together, smiling, casual pose";
+    const stylePrompt = (body.stylePrompt || "").trim() || DEFAULT_STYLE;
 
-    const prompt = `${STYLE} A team portrait of ${memberDesc}. Situation: ${situation}. Group of ${
+    const prompt = `${stylePrompt} A team portrait of ${memberDesc}. Situation: ${situation}. Group of ${
       members.length || 3
-    } characters together, friendly cartoon style matching the Noam character reference.`;
+    } characters together.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
       method: "POST",

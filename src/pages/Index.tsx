@@ -129,54 +129,59 @@ const Index = () => {
   return (
     <Layout>
       <div className="max-w-5xl mx-auto pb-16">
-        {/* HERO */}
+        {/* HERO — tailored to the event when admin has set details */}
         <section className="text-center pt-6 pb-12">
-          <span className="pill-chip pill-chip-coral mb-6 inline-block">האקתון לחשיבה עיצובית</span>
-          <h1 className="display-mega leading-[0.85] mb-4">
-            חשוב.<br/>צור.<br/>הצג.
-          </h1>
-          <p className="font-hand text-2xl md:text-3xl max-w-2xl mx-auto leading-snug text-foreground/80">
-            לוקחים בעיה אמיתית, חופרים בה לעומק, ובונים פתרון שאפשר להראות —
-            תוך שימוש בכלי AI שעוזרים לכם לחשוב חד יותר.
-          </p>
-        </section>
-
-        {/* PUBLIC EVENT BANNER — always visible, fed from admin */}
-        {publicEvent && (
-          <section className="sketch-card mb-8 flex items-start gap-4 flex-wrap">
-            {publicEvent.organizer_logo_url && (
-              <img src={publicEvent.organizer_logo_url} alt="לוגו המארגן" className="h-16 max-w-[120px] object-contain sketch-border-thin bg-background p-1 rounded shrink-0" />
-            )}
-            <div className="flex-1 min-w-[240px]">
-              {publicEvent.event_topic && (
-                <h2 className="display-huge mb-2" style={{ fontSize: "clamp(1.4rem,2.5vw,2rem)" }}>
-                  {publicEvent.event_topic}
-                </h2>
+          {publicEvent ? (
+            <>
+              {publicEvent.organizer_logo_url && (
+                <img
+                  src={publicEvent.organizer_logo_url}
+                  alt="לוגו המארגן"
+                  className="h-20 max-w-[200px] object-contain mx-auto mb-5"
+                />
               )}
-              <div className="flex flex-wrap gap-x-5 gap-y-1 font-hand text-base text-foreground/80">
+              <span className="pill-chip pill-chip-coral mb-5 inline-block">האקתון לחשיבה עיצובית</span>
+              {publicEvent.event_topic && (
+                <h1 className="display-mega leading-[0.9] mb-5">
+                  {publicEvent.event_topic}
+                </h1>
+              )}
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-hand text-xl md:text-2xl text-foreground/80 mb-4">
                 {(publicEvent.event_date || publicEvent.event_time) && (
-                  <span className="inline-flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
+                  <span className="inline-flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
                     {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
                   </span>
                 )}
                 {publicEvent.event_location && (
-                  <span className="inline-flex items-center gap-1">
-                    <MapPin className="h-4 w-4" /> {publicEvent.event_location}
+                  <span className="inline-flex items-center gap-2">
+                    <MapPin className="h-5 w-5" /> {publicEvent.event_location}
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1">
-                  <Users className="h-4 w-4" /> {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
+                <span className="inline-flex items-center gap-2">
+                  <Users className="h-5 w-5" /> {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
                 </span>
               </div>
               {publicEvent.event_description && (
-                <p className="font-hand text-sm text-muted-foreground mt-2 whitespace-pre-wrap">
+                <p className="font-hand text-lg md:text-xl max-w-2xl mx-auto leading-snug text-foreground/75 whitespace-pre-wrap">
                   {publicEvent.event_description}
                 </p>
               )}
-            </div>
-          </section>
-        )}
+            </>
+          ) : (
+            <>
+              <span className="pill-chip pill-chip-coral mb-6 inline-block">האקתון לחשיבה עיצובית</span>
+              <h1 className="display-mega leading-[0.85] mb-4">
+                חשוב.<br/>צור.<br/>הצג.
+              </h1>
+              <p className="font-hand text-2xl md:text-3xl max-w-2xl mx-auto leading-snug text-foreground/80">
+                לוקחים בעיה אמיתית, חופרים בה לעומק, ובונים פתרון שאפשר להראות —
+                תוך שימוש בכלי AI שעוזרים לכם לחשוב חד יותר.
+              </p>
+            </>
+          )}
+        </section>
+
 
 
 
@@ -333,44 +338,49 @@ const Index = () => {
 
         {/* 10 steps list removed — too much info on the landing page */}
 
-        {/* GROUPS */}
-        {groups.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-end justify-between mb-4 gap-4 flex-wrap">
-              <div>
-                <span className="pill-chip pill-chip-outline mb-3 inline-block">קבוצות</span>
-                <h2 className="display-huge">מי כבר בפנים.</h2>
-              </div>
-              <p className="font-hand text-base text-muted-foreground max-w-sm">
-                כל קבוצה נכנסת עם הקוד שלה, מעדכנת שם וחברים, ומגישה תוצרים בסוף.
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {groups.map((group) => (
-                <div key={group.id} className="sketch-card flex items-center gap-3">
-                  {group.team_avatar_url ? (
-                    <img src={group.team_avatar_url} alt={group.name} className="w-14 h-14 object-cover rounded-md sketch-border-thin shrink-0" />
-                  ) : (
-                    <div className="w-14 h-14 sketch-border-thin rounded-md flex items-center justify-center shrink-0 bg-secondary/40">
-                      <Users className="h-6 w-6" />
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-sketch text-base truncate">{group.name}</h3>
-                    <p className="font-hand text-xs text-muted-foreground">
-                      {group.student_names?.length || 0} חברים
-                    </p>
-                  </div>
-                  {group.join_code && (
-                    <span className="sketch-border-thin bg-secondary/40 px-2 py-1 font-sketch tracking-widest text-sm" dir="ltr">
-                      {group.join_code}
-                    </span>
-                  )}
+        {/* GROUPS — only those that have customized themselves */}
+        {(() => {
+          const editedGroups = groups.filter(
+            (g) =>
+              g.team_avatar_url ||
+              (g.student_names && g.student_names.length > 0) ||
+              (g.name && g.join_code && g.name.trim().toUpperCase() !== g.join_code.trim().toUpperCase()),
+          );
+          if (editedGroups.length === 0) return null;
+          return (
+            <section className="mb-12">
+              <div className="flex items-end justify-between mb-4 gap-4 flex-wrap">
+                <div>
+                  <span className="pill-chip pill-chip-outline mb-3 inline-block">קבוצות</span>
+                  <h2 className="display-huge">מי כבר בפנים.</h2>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+                <p className="font-hand text-base text-muted-foreground max-w-sm">
+                  הקבוצות שכבר נכנסו, עדכנו שם וצוות, וצבעו את האווטאר שלהן.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {editedGroups.map((group) => (
+                  <div key={group.id} className="sketch-card flex items-center gap-3">
+                    {group.team_avatar_url ? (
+                      <img src={group.team_avatar_url} alt={group.name} className="w-14 h-14 object-cover rounded-md sketch-border-thin shrink-0" />
+                    ) : (
+                      <div className="w-14 h-14 sketch-border-thin rounded-md flex items-center justify-center shrink-0 bg-secondary/40">
+                        <Users className="h-6 w-6" />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-sketch text-base truncate">{group.name}</h3>
+                      <p className="font-hand text-xs text-muted-foreground">
+                        {group.student_names?.length || 0} חברים
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })()}
+
 
 
         {/* SUBMISSIONS LINK */}

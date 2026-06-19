@@ -6,7 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Sparkles, Loader2, Plus, X, Crown, ArrowRight, RefreshCw, Save } from "lucide-react";
+import { Users, Sparkles, Loader2, Plus, X, Crown, ArrowRight, RefreshCw, Save, Check } from "lucide-react";
+import { TEAM_AVATAR_STYLES, type TeamAvatarStyleKey, getAvatarStyle } from "@/lib/teamAvatarStyles";
 
 type Gender = "male" | "female" | "other";
 interface Member { name: string; gender: Gender }
@@ -30,6 +31,7 @@ export default function Team() {
   const [teamName, setTeamName] = useState("");
   const [members, setMembers] = useState<Member[]>([]);
   const [situation, setSituation] = useState("");
+  const [styleKey, setStyleKey] = useState<TeamAvatarStyleKey>("noam");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [pendingAvatar, setPendingAvatar] = useState<string | null>(null);
 
@@ -71,6 +73,7 @@ export default function Team() {
           teamName,
           members: members.filter((m) => m.name.trim() || m.gender),
           situation,
+          stylePrompt: getAvatarStyle(styleKey).prompt,
         },
       });
       if (error) throw error;
@@ -207,6 +210,34 @@ export default function Team() {
             <Sparkles className="h-5 w-5" />
             <h2 className="font-sketch text-lg">אווטאר הקבוצה</h2>
           </div>
+
+          <div>
+            <label className="font-sketch text-xs uppercase tracking-wider block mb-2">סגנון ויזואלי</label>
+            <div className="grid grid-cols-3 gap-2">
+              {TEAM_AVATAR_STYLES.map((s) => {
+                const selected = styleKey === s.key;
+                return (
+                  <button
+                    key={s.key}
+                    type="button"
+                    onClick={() => setStyleKey(s.key)}
+                    className={`text-right sketch-border-thin rounded-md p-2 transition-colors ${
+                      selected ? "ring-2 ring-foreground bg-secondary/40" : "bg-background hover:bg-secondary/20"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-2xl leading-none">{s.emoji}</span>
+                      {selected && <Check className="h-3.5 w-3.5" />}
+                    </div>
+                    <div className="font-sketch text-sm leading-tight">{s.label}</div>
+                    <div className="font-hand text-[11px] text-muted-foreground leading-tight">{s.description}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+
 
           <div>
             <label className="font-sketch text-xs uppercase tracking-wider block mb-2">מה הקבוצה עושה?</label>

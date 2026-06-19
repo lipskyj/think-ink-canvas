@@ -115,7 +115,15 @@ export default function Team() {
       }
     } catch (e: any) {
       clearTimeout(timeout);
-      toast({ title: "שגיאה ביצירת אווטאר", description: e.message || String(e), variant: "destructive" });
+      const raw = e?.message || String(e);
+      const isCredit = /credit_limit_reached|credit limit|402|403/i.test(raw);
+      toast({
+        title: isCredit ? "מכסת ה-AI של סדנת הכיתה נגמרה" : "שגיאה ביצירת אווטאר",
+        description: isCredit
+          ? "המורה צריך/ה לחדש קרדיטים ב-Lovable כדי להמשיך לייצר תמונות. תוכלו להמשיך לעבוד בלי אווטאר."
+          : raw,
+        variant: "destructive",
+      });
     } finally {
       setGenerating(false);
     }

@@ -342,10 +342,10 @@ const Index = () => {
         {(() => {
           const editedGroups = groups.filter(
             (g) =>
-              g.team_avatar_url ||
-              (g.student_names && g.student_names.length > 0) ||
-              (g.name && g.join_code && g.name.trim().toUpperCase() !== g.join_code.trim().toUpperCase()),
+              !!g.team_avatar_url ||
+              (g.student_names && g.student_names.length > 0),
           );
+
           if (editedGroups.length === 0) return null;
           return (
             <section className="mb-12">

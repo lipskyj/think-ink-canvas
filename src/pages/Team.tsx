@@ -326,7 +326,7 @@ export default function Team() {
               />
               {pendingAvatar && (
                 <p className="text-xs font-hand text-center text-muted-foreground mt-2">
-                  טיוטה — לחצו "שמור" כדי לקבע
+                  טיוטה — לחצו "שמור" כדי להציג בדף הבית
                 </p>
               )}
             </div>

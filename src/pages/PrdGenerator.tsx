@@ -109,6 +109,7 @@ const PrdGenerator = () => {
 
   return (
     <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent}>
+      <Phase3Recap />
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
            שלב זה אוסף את המחקר, הבריף ותיעדוף ה-MVP, ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.

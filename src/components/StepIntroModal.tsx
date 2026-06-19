@@ -67,6 +67,15 @@ function Typewriter({
   );
 }
 
+/** Tiny helper — fires onDone exactly once on mount. Used when SEE stage renders static demo content. */
+function DoneOnMount({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    onDone();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
+
 export default function StepIntroModal({ stepKey, onClose }: Props) {
   const step = getStepByKey(stepKey);
   const seenKey = SEEN_PREFIX + stepKey;

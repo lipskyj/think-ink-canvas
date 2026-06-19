@@ -59,7 +59,7 @@ const FiveWhys = () => {
       const { data, error } = await supabase.functions.invoke("ai-assist", {
         body: {
           stepKey: "five_whys",
-          stepTitle: "חמישה למה",
+          stepTitle: "חמש למה",
           mode: "why_suggestions",
           currentData: { problem, whys, whyIndex },
           previousData,

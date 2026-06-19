@@ -1,7 +1,32 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
-import { ArrowLeft, ArrowRight, Home, CheckCircle2, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, CheckCircle2, Play, Star, Quote } from "lucide-react";
+import personaDana from "@/assets/persona-dana.png";
+
+// Small reusable avatar of the persona — shown across steps so the story stays anchored to a real person
+const PersonaChip = ({ size = "sm" }: { size?: "sm" | "md" }) => (
+  <div className="inline-flex items-center gap-2 sketch-border-thin bg-background px-2 py-1 rounded-md">
+    <img
+      src={personaDana}
+      alt="דנה — הפרסונה"
+      className={size === "md" ? "w-10 h-10 object-cover rounded-sm" : "w-7 h-7 object-cover rounded-sm"}
+      loading="lazy"
+    />
+    <span className="font-sketch text-sm">דנה, כיתה ט׳</span>
+  </div>
+);
+
+// Reusable highlight box for "the chosen one" — the selection that propagates to the next step
+const ChosenBox = ({ children }: { children: React.ReactNode }) => (
+  <div className="mt-3 relative bg-[hsl(var(--sun)/0.45)] sketch-border-thin p-3 pr-10">
+    <Star className="absolute right-2 top-2 h-5 w-5 fill-foreground text-foreground" />
+    <div className="font-hand text-base">{children}</div>
+    <div className="text-[10px] font-sketch tracking-wider uppercase text-muted-foreground mt-1.5">
+      ↓ זה מה שעובר לשלב הבא
+    </div>
+  </div>
+);
 
 interface DemoStep {
   num: number;

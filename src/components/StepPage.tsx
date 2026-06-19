@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock, BookOpen, Home } from "lucide-react";
+import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock, BookOpen, Home, Eye, Pencil } from "lucide-react";
 import Layout from "@/components/Layout";
 import { useProject } from "@/contexts/ProjectContext";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useClass } from "@/contexts/ClassContext";
 import { getStepByKey, getPreviousStep, getNextStep, TOTAL_STEPS } from "@/lib/steps";
+import { getDemoStep } from "@/lib/demoSteps";
 import AIAssistant from "@/components/AIAssistant";
 import StepIntroModal from "@/components/StepIntroModal";
 import UnstuckButton from "@/components/UnstuckButton";

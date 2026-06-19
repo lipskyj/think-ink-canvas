@@ -244,6 +244,7 @@ export default function StepIntroModal({ stepKey }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -18,10 +18,12 @@ function Typewriter({
   text,
   speed = 16,
   className = "",
+  onDone,
 }: {
   text: string;
   speed?: number;
   className?: string;
+  onDone?: () => void;
 }) {
   const [i, setI] = useState(0);
   const [done, setDone] = useState(false);
@@ -33,6 +35,7 @@ function Typewriter({
     if (reduced) {
       setI(text.length);
       setDone(true);
+      onDone?.();
       return;
     }
     setI(0);
@@ -43,6 +46,7 @@ function Typewriter({
     if (done) return;
     if (i >= text.length) {
       setDone(true);
+      onDone?.();
       return;
     }
     const t = setTimeout(() => setI((n) => n + 1), speed);
@@ -51,11 +55,7 @@ function Typewriter({
 
   return (
     <span
-      onClick={() => {
-        setI(text.length);
-        setDone(true);
-      }}
-      className={`cursor-text ${className}`}
+      className={className}
     >
       {text.slice(0, i)}
       {!done && (

@@ -130,44 +130,66 @@ const Index = () => {
     <Layout>
       <div className="max-w-5xl mx-auto pb-16">
         {/* HERO — tailored to the event when admin has set details */}
-        <section className="text-center pt-6 pb-10">
+        <section className="text-center pt-4 pb-14 relative">
           {publicEvent ? (
             <>
+              {/* Festive confetti accents */}
+              <div className="pointer-events-none absolute inset-0 overflow-hidden -z-10" aria-hidden>
+                <span className="absolute top-6 left-[12%] text-3xl rotate-[-15deg] opacity-70">✨</span>
+                <span className="absolute top-20 right-[10%] text-4xl rotate-[20deg] opacity-60">🎉</span>
+                <span className="absolute bottom-10 left-[20%] text-2xl rotate-[10deg] opacity-50">🎊</span>
+                <span className="absolute bottom-20 right-[18%] text-3xl rotate-[-8deg] opacity-60">⭐</span>
+              </div>
+
               {publicEvent.organizer_logo_url && (
                 <img
                   src={publicEvent.organizer_logo_url}
                   alt="לוגו המארגן"
-                  className="h-24 max-w-[240px] object-contain mx-auto mb-6"
+                  className="h-28 max-w-[260px] object-contain mx-auto mb-6"
                 />
               )}
-              <span className="pill-chip pill-chip-coral mb-6 inline-block">האקתון לחשיבה עיצובית</span>
+              <span className="pill-chip pill-chip-coral mb-8 inline-block text-base px-4 py-1.5">
+                🎯 האקתון לחשיבה עיצובית
+              </span>
               {publicEvent.event_topic && (
-                <h1 className="display-mega leading-[0.88] mb-8" style={{ fontSize: "clamp(3rem, 8vw, 6rem)" }}>
+                <h1
+                  className="display-mega leading-[0.86] mb-10 px-2"
+                  style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)" }}
+                >
                   {publicEvent.event_topic}
                 </h1>
               )}
-              <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 font-hand text-3xl md:text-4xl text-foreground/85 mb-5">
+              <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 font-sketch text-foreground mb-6">
                 {(publicEvent.event_date || publicEvent.event_time) && (
-                  <span className="inline-flex items-center gap-3">
-                    <Calendar className="h-8 w-8" strokeWidth={2.2} />
-                    {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
+                  <span className="inline-flex items-center gap-3 sketch-card !py-3 !px-5">
+                    <Calendar className="h-9 w-9" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(1.5rem, 2.6vw, 2.25rem)" }}>
+                      {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
+                    </span>
                   </span>
                 )}
                 {publicEvent.event_location && (
-                  <span className="inline-flex items-center gap-3">
-                    <MapPin className="h-8 w-8" strokeWidth={2.2} /> {publicEvent.event_location}
+                  <span className="inline-flex items-center gap-3 sketch-card !py-3 !px-5">
+                    <MapPin className="h-9 w-9" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(1.5rem, 2.6vw, 2.25rem)" }}>
+                      {publicEvent.event_location}
+                    </span>
                   </span>
                 )}
-                <span className="inline-flex items-center gap-3">
-                  <Users className="h-8 w-8" strokeWidth={2.2} /> {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
+                <span className="inline-flex items-center gap-3 sketch-card !py-3 !px-5">
+                  <Users className="h-9 w-9" strokeWidth={2.2} />
+                  <span style={{ fontSize: "clamp(1.5rem, 2.6vw, 2.25rem)" }}>
+                    {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
+                  </span>
                 </span>
               </div>
               {publicEvent.event_description && (
-                <p className="font-hand text-xl md:text-2xl max-w-2xl mx-auto leading-snug text-foreground/75 whitespace-pre-wrap">
+                <p className="font-hand text-2xl md:text-3xl max-w-3xl mx-auto leading-snug text-foreground/80 whitespace-pre-wrap mt-6">
                   {publicEvent.event_description}
                 </p>
               )}
             </>
+
           ) : (
             <>
               <span className="pill-chip pill-chip-coral mb-6 inline-block">האקתון לחשיבה עיצובית</span>

@@ -31,6 +31,7 @@ export default function Team() {
   const [teamName, setTeamName] = useState("");
   const [members, setMembers] = useState<Member[]>([]);
   const [situation, setSituation] = useState("");
+  const [styleKey, setStyleKey] = useState<TeamAvatarStyleKey>("noam");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [pendingAvatar, setPendingAvatar] = useState<string | null>(null);
 

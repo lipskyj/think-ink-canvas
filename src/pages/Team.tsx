@@ -92,19 +92,8 @@ export default function Team() {
       clearTimeout(timeout);
       if (error) throw error;
       if (data?.dataUrl) {
-        // Persist immediately — no separate "save" click needed for the avatar.
-        if (isLeader) {
-          const { error: upErr } = await supabase
-            .from("classes")
-            .update({ team_avatar_url: data.dataUrl, team_avatar_prompt: situation })
-            .eq("id", session.classId);
-          if (upErr) throw upErr;
-          setAvatarUrl(data.dataUrl);
-          setPendingAvatar(null);
-          toast({ title: "האווטאר נשמר!" });
-        } else {
-          setPendingAvatar(data.dataUrl);
-        }
+        setPendingAvatar(data.dataUrl);
+        toast({ title: "האווטאר מוכן", description: "לחצו שמור כדי שיופיע בדף הבית" });
       } else {
         throw new Error("לא הוחזרה תמונה");
       }
@@ -142,6 +131,7 @@ export default function Team() {
       setPendingAvatar(null);
     }
     setSession({ ...session, className: updates.name });
+    window.dispatchEvent(new CustomEvent("classes:changed"));
     toast({ title: "נשמר!" });
   };
 

@@ -143,6 +143,12 @@ export default function Team() {
     );
   }
 
+  // First-time identity gate — figure out who the user is in this group
+  if (!session.studentName) {
+    return <IdentityGate />;
+  }
+
+
   const previewSrc = pendingAvatar || avatarUrl;
 
   return (

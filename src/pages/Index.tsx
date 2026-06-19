@@ -358,25 +358,35 @@ const Index = () => {
                   הקבוצות שכבר נכנסו, עדכנו שם וצוות, וצבעו את האווטאר שלהן.
                 </p>
               </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {editedGroups.map((group) => (
-                  <div key={group.id} className="sketch-card flex items-center gap-3">
-                    {group.team_avatar_url ? (
-                      <img src={group.team_avatar_url} alt={group.name} className="w-14 h-14 object-cover rounded-md sketch-border-thin shrink-0" />
-                    ) : (
-                      <div className="w-14 h-14 sketch-border-thin rounded-md flex items-center justify-center shrink-0 bg-secondary/40">
-                        <Users className="h-6 w-6" />
-                      </div>
+                  <div key={group.id} className="sketch-card relative pt-10 text-center">
+                    <span className="pill-chip pill-chip-outline absolute top-3 right-3 text-[10px] flex items-center gap-1">
+                      <Users className="h-3 w-3" /> הקבוצה
+                    </span>
+                    <span className="pill-chip pill-chip-outline absolute top-3 left-3 text-[10px]">
+                      {group.join_code || "—"}
+                    </span>
+                    {group.team_avatar_url && (
+                      <img
+                        src={group.team_avatar_url}
+                        alt={group.name}
+                        className="w-24 h-24 mx-auto mb-3 object-cover rounded-md sketch-border-thin"
+                      />
                     )}
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-sketch text-base truncate">{group.name}</h3>
-                      <p className="font-hand text-xs text-muted-foreground">
-                        {group.student_names?.length || 0} חברים
-                      </p>
-                    </div>
+                    <h3 className="font-sketch text-2xl mb-2 leading-tight">{group.name}</h3>
+                    {group.student_names && group.student_names.length > 0 && (
+                      <span className="pill-chip pill-chip-sun text-[11px] inline-flex items-center gap-1">
+                        <Crown className="h-3 w-3" /> {group.student_names[0]}
+                      </span>
+                    )}
+                    <p className="font-hand text-xs text-muted-foreground mt-3">
+                      {group.student_names?.length || 0} חברים
+                    </p>
                   </div>
                 ))}
               </div>
+
             </section>
           );
         })()}

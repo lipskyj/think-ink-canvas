@@ -199,9 +199,14 @@ export default function MoscowPrioritization() {
 
       {mvpFeatures.length > 0 && (
         <div className="sketch-border p-5 mb-6 bg-[hsl(var(--highlight))] text-[hsl(var(--highlight-foreground))]">
-          <div className="flex items-center gap-2 mb-2">
-            <Check className="h-5 w-5" />
-            <span className="font-sketch text-xl">זה ה-MVP שלכם כרגע</span>
+          <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5" />
+              <span className="font-sketch text-xl">זה ה-MVP שלכם כרגע</span>
+            </div>
+            <span className="pill-chip pill-chip-outline bg-background/80 text-foreground text-xs">
+              {mvpFeatures.length} / {mustLimit} Must (עד 30%)
+            </span>
           </div>
           <div className="flex flex-wrap gap-2">
             {mvpFeatures.map((feature) => (

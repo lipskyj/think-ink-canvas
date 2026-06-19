@@ -119,12 +119,8 @@ export default function StepIntroModal({ stepKey }: Props) {
       aria-modal="true"
       aria-label={`שלב ${step.num} — ${step.title}`}
     >
-      {/* Strong vibrant blob backdrop — full screen */}
-      <div className="absolute inset-0 bg-background/70 backdrop-blur-xl" aria-hidden />
-      <div className="vibe-backdrop vibe-backdrop-strong" aria-hidden>
-        <span className="vibe-blob-3" />
-        <span className="vibe-blob-4" />
-      </div>
+      {/* Solid backdrop — fully covers underlying page so popup never blends with content */}
+      <div className="absolute inset-0 bg-background" aria-hidden />
 
       {/* Content */}
       <div className="relative w-full max-w-3xl mx-auto px-6 sm:px-10 py-10 my-auto">

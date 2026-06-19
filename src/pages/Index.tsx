@@ -143,45 +143,45 @@ const Index = () => {
                 <img
                   src={publicEvent.organizer_logo_url}
                   alt={publicEvent.organizer_name || "לוגו המארגן"}
-                  className="h-32 max-w-[280px] object-contain mx-auto mb-6"
+                  className="h-20 sm:h-28 md:h-32 max-w-[180px] sm:max-w-[240px] md:max-w-[280px] object-contain mx-auto mb-4 sm:mb-6"
                 />
               )}
               {publicEvent.organizer_name && (
-                <p className="font-sketch text-2xl md:text-3xl text-foreground/80 mb-4">
+                <p className="font-sketch text-lg sm:text-2xl md:text-3xl text-foreground/80 mb-3 sm:mb-4">
                   {publicEvent.organizer_name}
                 </p>
               )}
-              <span className="pill-chip pill-chip-coral mb-8 inline-block text-base px-4 py-1.5">
+              <span className="pill-chip pill-chip-coral mb-6 sm:mb-8 inline-block text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-1.5">
                 האקתון לחשיבה עיצובית
               </span>
               {publicEvent.event_topic && (
                 <h1
-                  className="display-mega leading-[0.86] mb-12 px-2"
-                  style={{ fontSize: "clamp(4rem, 12vw, 9.5rem)" }}
+                  className="display-mega leading-[0.86] mb-8 sm:mb-12 px-2"
+                  style={{ fontSize: "clamp(2.5rem, 9vw, 9.5rem)" }}
                 >
                   {publicEvent.event_topic}
                 </h1>
               )}
-              <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-8 font-sketch text-foreground mb-8">
+              <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-14 gap-y-4 sm:gap-y-8 font-sketch text-foreground mb-6 sm:mb-8">
                 {(publicEvent.event_date || publicEvent.event_time) && (
-                  <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
-                    <Calendar className="h-12 w-12" strokeWidth={2.2} />
-                    <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
+                  <span className="inline-flex items-center gap-2 sm:gap-4 sketch-card !py-2 !px-3 sm:!py-5 sm:!px-7">
+                    <Calendar className="h-6 w-6 sm:h-12 sm:w-12" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(1rem, 3.4vw, 3rem)" }}>
                       {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
                     </span>
                   </span>
                 )}
                 {publicEvent.event_location && (
-                  <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
-                    <MapPin className="h-12 w-12" strokeWidth={2.2} />
-                    <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
+                  <span className="inline-flex items-center gap-2 sm:gap-4 sketch-card !py-2 !px-3 sm:!py-5 sm:!px-7">
+                    <MapPin className="h-6 w-6 sm:h-12 sm:w-12" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(1rem, 3.4vw, 3rem)" }}>
                       {publicEvent.event_location}
                     </span>
                   </span>
                 )}
-                <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
-                  <Users className="h-12 w-12" strokeWidth={2.2} />
-                  <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
+                <span className="inline-flex items-center gap-2 sm:gap-4 sketch-card !py-2 !px-3 sm:!py-5 sm:!px-7">
+                  <Users className="h-6 w-6 sm:h-12 sm:w-12" strokeWidth={2.2} />
+                  <span style={{ fontSize: "clamp(1rem, 3.4vw, 3rem)" }}>
                     {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
                   </span>
                 </span>

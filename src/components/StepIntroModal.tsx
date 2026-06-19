@@ -74,7 +74,11 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
   const [stage, setStage] = useState<Stage>("learn");
   const [learnDone, setLearnDone] = useState(false);
   const [seeDone, setSeeDone] = useState(false);
-  const { content, loading, isFallback, regenerate } = useStepLSD(stepKey, true);
+  const demo = getDemoStep(stepKey);
+  const { content: lsdContent, loading, isFallback, regenerate } = useStepLSD(stepKey, !demo);
+  // Prefer hand-crafted demo content when available; fall back to AI/LSD otherwise.
+  const learnText = demo?.learn || lsdContent?.learn || "";
+  const hasContent = !!(demo || lsdContent);
 
   useEffect(() => {
     setStage("learn");

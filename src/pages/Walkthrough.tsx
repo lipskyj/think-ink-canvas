@@ -94,13 +94,27 @@ const DEMO_DATA: DemoStep[] = [
     output: (
       <>
         <div className="flex items-center gap-2 mb-3"><PersonaChip /><span className="font-hand text-sm text-muted-foreground">— שואלים עליה למה</span></div>
-        <ol className="space-y-2 font-hand text-base list-decimal pr-6">
-          <li>ההסברים של המורה מהירים ולא מותאמים לכל תלמיד</li>
-          <li>יש 35 תלמידים בכיתה ואין זמן לתשומת לב אישית</li>
-          <li>תלמידים מתביישים לשאול שאלות בכיתה</li>
-          <li>אין כלים ללמוד ולתרגל בקצב האישי, בבית</li>
-          <li>הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית</li>
-        </ol>
+        <div className="space-y-3 font-hand text-base">
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <div><strong>1.</strong> כי ההסברים של המורה מהירים ולא מותאמים לכל תלמיד.</div>
+            <div className="text-sm text-muted-foreground mt-1">↩ למה?</div>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <div><strong>2.</strong> כי יש 35 תלמידים בכיתה ואין זמן לתשומת לב אישית.</div>
+            <div className="text-sm text-muted-foreground mt-1">↩ למה?</div>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <div><strong>3.</strong> כי תלמידים מתביישים לשאול שאלות בכיתה.</div>
+            <div className="text-sm text-muted-foreground mt-1">↩ למה?</div>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <div><strong>4.</strong> כי אין כלים ללמוד ולתרגל בקצב האישי, בבית.</div>
+            <div className="text-sm text-muted-foreground mt-1">↩ למה?</div>
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <div><strong>5.</strong> כי הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית.</div>
+          </div>
+        </div>
         <ChosenBox>
           <strong>שורש הבעיה:</strong> אין פלטפורמת תרגול אישית בעברית שמאפשרת ללמוד ללא בושה, בקצב שלהם
         </ChosenBox>

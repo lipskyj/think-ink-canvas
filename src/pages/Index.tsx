@@ -338,44 +338,49 @@ const Index = () => {
 
         {/* 10 steps list removed — too much info on the landing page */}
 
-        {/* GROUPS */}
-        {groups.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-end justify-between mb-4 gap-4 flex-wrap">
-              <div>
-                <span className="pill-chip pill-chip-outline mb-3 inline-block">קבוצות</span>
-                <h2 className="display-huge">מי כבר בפנים.</h2>
-              </div>
-              <p className="font-hand text-base text-muted-foreground max-w-sm">
-                כל קבוצה נכנסת עם הקוד שלה, מעדכנת שם וחברים, ומגישה תוצרים בסוף.
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {groups.map((group) => (
-                <div key={group.id} className="sketch-card flex items-center gap-3">
-                  {group.team_avatar_url ? (
-                    <img src={group.team_avatar_url} alt={group.name} className="w-14 h-14 object-cover rounded-md sketch-border-thin shrink-0" />
-                  ) : (
-                    <div className="w-14 h-14 sketch-border-thin rounded-md flex items-center justify-center shrink-0 bg-secondary/40">
-                      <Users className="h-6 w-6" />
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-sketch text-base truncate">{group.name}</h3>
-                    <p className="font-hand text-xs text-muted-foreground">
-                      {group.student_names?.length || 0} חברים
-                    </p>
-                  </div>
-                  {group.join_code && (
-                    <span className="sketch-border-thin bg-secondary/40 px-2 py-1 font-sketch tracking-widest text-sm" dir="ltr">
-                      {group.join_code}
-                    </span>
-                  )}
+        {/* GROUPS — only those that have customized themselves */}
+        {(() => {
+          const editedGroups = groups.filter(
+            (g) =>
+              g.team_avatar_url ||
+              (g.student_names && g.student_names.length > 0) ||
+              (g.name && g.join_code && g.name.trim().toUpperCase() !== g.join_code.trim().toUpperCase()),
+          );
+          if (editedGroups.length === 0) return null;
+          return (
+            <section className="mb-12">
+              <div className="flex items-end justify-between mb-4 gap-4 flex-wrap">
+                <div>
+                  <span className="pill-chip pill-chip-outline mb-3 inline-block">קבוצות</span>
+                  <h2 className="display-huge">מי כבר בפנים.</h2>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+                <p className="font-hand text-base text-muted-foreground max-w-sm">
+                  הקבוצות שכבר נכנסו, עדכנו שם וצוות, וצבעו את האווטאר שלהן.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {editedGroups.map((group) => (
+                  <div key={group.id} className="sketch-card flex items-center gap-3">
+                    {group.team_avatar_url ? (
+                      <img src={group.team_avatar_url} alt={group.name} className="w-14 h-14 object-cover rounded-md sketch-border-thin shrink-0" />
+                    ) : (
+                      <div className="w-14 h-14 sketch-border-thin rounded-md flex items-center justify-center shrink-0 bg-secondary/40">
+                        <Users className="h-6 w-6" />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-sketch text-base truncate">{group.name}</h3>
+                      <p className="font-hand text-xs text-muted-foreground">
+                        {group.student_names?.length || 0} חברים
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })()}
+
 
 
         {/* SUBMISSIONS LINK */}

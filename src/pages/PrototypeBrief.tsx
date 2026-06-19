@@ -60,6 +60,7 @@ const PrototypeBrief = () => {
   const [brief, setBrief] = useState<BriefState>({
     objective: "", must: "", should: "", could: "", wont: "",
     assumptions: "", styleVibe: "", styleNotes: "", successCriteria: "",
+    briefingAnswers: {},
   });
   const [suggestedFeatures, setSuggestedFeatures] = useState<SuggestedFeature[]>([]);
   const [aiFeaturesLoading, setAiFeaturesLoading] = useState(false);

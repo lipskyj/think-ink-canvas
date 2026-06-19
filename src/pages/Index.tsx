@@ -369,6 +369,71 @@ const Index = () => {
           </button>
         </section>
       </div>
+
+      <Dialog open={!!editGroup} onOpenChange={(open) => !open && setEditGroup(null)}>
+        <DialogContent className="sm:max-w-md" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="font-sketch text-2xl">עריכת "{editGroup?.name}"</DialogTitle>
+            <DialogDescription className="font-hand text-base">
+              הזינו את קוד הקבוצה הסודי שקיבלתם מהמארגן.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={editCode}
+            onChange={(e) => setEditCode(e.target.value.toUpperCase())}
+            placeholder="קוד"
+            maxLength={8}
+            className="text-center font-sketch text-3xl tracking-widest uppercase h-14"
+            dir="ltr"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key !== "Enter" || !editGroup) return;
+              if (editAttempts >= 5) {
+                toast({ title: "ניסיונות מרובים", description: "נסו שוב מאוחר יותר", variant: "destructive" });
+                return;
+              }
+              if (editCode.trim().toUpperCase() === (editGroup.join_code || "").toUpperCase()) {
+                setSession({
+                  classId: editGroup.id,
+                  className: editGroup.name,
+                  studentName: "",
+                  isLeader: false,
+                });
+                setEditGroup(null);
+                navigate("/team");
+              } else {
+                setEditAttempts((n) => n + 1);
+                toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
+              }
+            }}
+          />
+          <DialogFooter className="gap-2 sm:gap-2">
+            <button onClick={() => setEditGroup(null)} className="sketch-btn-outline">ביטול</button>
+            <button
+              disabled={!editCode.trim() || editAttempts >= 5}
+              onClick={() => {
+                if (!editGroup) return;
+                if (editCode.trim().toUpperCase() === (editGroup.join_code || "").toUpperCase()) {
+                  setSession({
+                    classId: editGroup.id,
+                    className: editGroup.name,
+                    studentName: "",
+                    isLeader: false,
+                  });
+                  setEditGroup(null);
+                  navigate("/team");
+                } else {
+                  setEditAttempts((n) => n + 1);
+                  toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
+                }
+              }}
+              className="sketch-btn disabled:opacity-50"
+            >
+              המשך
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

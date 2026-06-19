@@ -169,7 +169,7 @@ const EffortImpact = () => {
   const bestChoice = useMemo(() => {
     const placedQuickWins = ideas.filter((i) => i.placed && i.x < 50 && i.y < 50);
     const candidates = placedQuickWins.length ? placedQuickWins : ideas.filter((i) => i.placed);
-    return [...candidates].sort((a, b) => (b.y - b.x) - (a.y - a.x))[0] || null;
+    return [...candidates].sort((a, b) => (a.x + a.y) - (b.x + b.y))[0] || null;
   }, [ideas]);
 
   const getData = useCallback(() => ({ ideas, bestChoice }), [ideas, bestChoice]);

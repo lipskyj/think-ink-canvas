@@ -21,10 +21,11 @@ const Layout = ({ children }: LayoutProps) => {
         <AppSidebar />
         <main className="flex-1 flex flex-col">
           <HackathonTimerBar />
-          <header className="h-12 flex items-center border-b-2 border-foreground/15 px-4 gap-3 backdrop-blur-sm bg-background/60 flex-nowrap whitespace-nowrap overflow-x-auto">
+          <header className="min-h-12 flex items-center border-b-2 border-foreground/15 px-4 gap-2 backdrop-blur-sm bg-background/60 flex-nowrap whitespace-nowrap overflow-x-auto">
             <SidebarTrigger title="מפת כל השלבים" />
             <span className="font-sketch text-base tracking-tight shrink-0">מפת השלבים</span>
-            <span className="mr-auto pill-chip pill-chip-outline shrink-0">ערכת חשיבה עיצובית</span>
+            <span className="pill-chip pill-chip-outline shrink-0">ערכת חשיבה עיצובית</span>
+            <div id="step-toolbar-slot" className="flex items-center gap-2 flex-nowrap mr-auto" />
           </header>
           <div className="flex-1 p-6 md:p-8 overflow-auto">
             {children}

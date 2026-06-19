@@ -327,6 +327,104 @@ export default function Admin() {
           </div>
         </div>
 
+        {/* Master controls — apply to every group at once */}
+        {classes.length > 0 && (
+          <div className="sketch-card mb-6 border-2 border-foreground/40">
+            <div className="flex items-center gap-2 mb-4">
+              <Gauge className="h-5 w-5" />
+              <h2 className="font-sketch text-lg">שלט מרכזי לכל הקבוצות</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-3">
+              {/* Working open / closed */}
+              <div className={`sketch-border-thin p-3 rounded-md ${workingDisabled ? "bg-destructive/10" : "bg-secondary/30"}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-sketch text-sm">סטטוס האירוע</div>
+                  {workingDisabled ? <Pause className="h-4 w-4 text-destructive" /> : <Play className="h-4 w-4" />}
+                </div>
+                <p className="font-hand text-xs text-muted-foreground mb-3">
+                  {workingDisabled ? "האירוע סגור — אף קבוצה לא יכולה להתקדם בשלבים." : "האירוע פתוח — קבוצות יכולות לעבוד."}
+                </p>
+                <button
+                  onClick={toggleWorkingForAll}
+                  className={`text-xs px-3 py-1.5 w-full ${workingDisabled ? "sketch-btn" : "sketch-btn-outline"}`}
+                >
+                  {workingDisabled ? "פתח עבודה לכולם" : "סגור עבודה לכולם"}
+                </button>
+              </div>
+
+              {/* AI on / off */}
+              <div className={`sketch-border-thin p-3 rounded-md ${masterAiEnabled ? "bg-secondary/30" : "bg-destructive/10"}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-sketch text-sm">עזרת AI</div>
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <p className="font-hand text-xs text-muted-foreground mb-3">
+                  {masterAiEnabled ? "AI זמין בכל השלבים לכל הקבוצות." : "AI כבוי לכל הקבוצות — תלמידים עובדים לבד."}
+                </p>
+                <button
+                  onClick={toggleAiForAll}
+                  className={`text-xs px-3 py-1.5 w-full ${masterAiEnabled ? "sketch-btn-outline" : "sketch-btn"}`}
+                >
+                  {masterAiEnabled ? "כבה AI לכולם" : "הפעל AI לכולם"}
+                </button>
+              </div>
+
+              {/* Pacing mode */}
+              <div className={`sketch-border-thin p-3 rounded-md ${isAdminPaced ? "bg-secondary/40" : "bg-secondary/30"}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-sketch text-sm">קצב התקדמות</div>
+                  {isAdminPaced ? <Lock className="h-4 w-4" /> : <LockOpen className="h-4 w-4" />}
+                </div>
+                <div className="flex gap-1 mb-2">
+                  <button
+                    onClick={setSelfPaced}
+                    disabled={workingDisabled}
+                    className={`text-[11px] flex-1 px-2 py-1 ${!isAdminPaced && !workingDisabled ? "sketch-btn" : "sketch-btn-outline"} disabled:opacity-40`}
+                  >
+                    חופשי
+                  </button>
+                  <button
+                    onClick={() => setAdminPaceAtStep(0)}
+                    disabled={workingDisabled}
+                    className={`text-[11px] flex-1 px-2 py-1 ${isAdminPaced ? "sketch-btn" : "sketch-btn-outline"} disabled:opacity-40`}
+                  >
+                    בהובלת המנחה
+                  </button>
+                </div>
+                {isAdminPaced && adminPaceStep !== null && (
+                  <div className="mt-2">
+                    <p className="font-hand text-[11px] text-muted-foreground mb-1">
+                      פתוח עד שלב {STEPS[adminPaceStep]?.num}: {STEPS[adminPaceStep]?.title}
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setAdminPaceAtStep(Math.max(0, adminPaceStep - 1))}
+                        disabled={adminPaceStep === 0}
+                        className="sketch-btn-outline text-xs px-2 py-1 disabled:opacity-40"
+                        title="חזרה לשלב קודם"
+                      >
+                        <ArrowRight className="h-3 w-3" />
+                      </button>
+                      <div className="flex-1 text-center font-sketch text-base">
+                        {adminPaceStep + 1} / {STEPS.length}
+                      </div>
+                      <button
+                        onClick={() => setAdminPaceAtStep(Math.min(STEPS.length - 1, adminPaceStep + 1))}
+                        disabled={adminPaceStep >= STEPS.length - 1}
+                        className="sketch-btn text-xs px-2 py-1 disabled:opacity-40"
+                        title="פתח שלב הבא"
+                      >
+                        <ArrowLeft className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+
         {/* Create new group */}
         <div className="sketch-card mb-6">
           <div className="flex items-center gap-3 mb-2">

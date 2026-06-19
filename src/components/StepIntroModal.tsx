@@ -147,7 +147,7 @@ export default function StepIntroModal({ stepKey }: Props) {
         {/* Glass body */}
         <div
           key={stage}
-          className="relative rounded-3xl bg-card/85 backdrop-blur-md border-2 border-foreground p-6 sm:p-10 min-h-[220px] shadow-[6px_6px_0_hsl(var(--foreground))] animate-fade-in"
+          className="relative rounded-3xl bg-card border-2 border-foreground p-6 sm:p-10 min-h-[220px] shadow-[6px_6px_0_hsl(var(--foreground))] animate-fade-in"
         >
           {loading && !content ? (
             <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground font-hand">

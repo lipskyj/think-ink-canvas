@@ -1,7 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Sparkles, Loader2, Plus } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAdmin } from "@/contexts/AdminContext";
 import StepPage from "@/components/StepPage";
 import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
@@ -25,8 +22,6 @@ interface BriefState {
   fidelity?: string;
 }
 
-type Bucket = "must" | "should" | "could" | "wont";
-
 const STYLE_VIBES = [
   { key: "cyber", label: "סייבר / ניאון", swatch: ["#0a0a0a", "#00ff66", "#ff0055", "#7b81ff"], font: "'Heebo', sans-serif" },
   { key: "light", label: "בהיר ורגוע", swatch: ["#f5f7fb", "#a0caff", "#bdd0fe", "#ffd0e8"], font: "'Heebo', sans-serif" },
@@ -39,33 +34,13 @@ const STYLE_VIBES = [
   { key: "warm_elegant", label: "חם ואלגנטי", swatch: ["#f4ede2", "#caa478", "#8b6f47", "#3d2e1f"], font: "'Heebo', serif" },
 ];
 
-interface SuggestedFeature {
-  id: string;
-  name: string;
-  description: string;
-  bucket: Bucket | "unassigned";
-}
-
-const BUCKETS: { key: Bucket | "unassigned"; label: string; desc: string; bg: string }[] = [
-  { key: "unassigned", label: "תכונות מוצעות", desc: "גררו לאחת הקטגוריות מימין/למטה", bg: "bg-secondary/30" },
-  { key: "must", label: "Must — חובה", desc: "בלי זה אין מוצר", bg: "bg-[hsl(var(--primary)/0.10)]" },
-  { key: "should", label: "Should — חשוב", desc: "חשוב אך לא חוסם", bg: "bg-[hsl(var(--accent)/0.18)]" },
-  { key: "could", label: "Could — אם יש זמן", desc: "Nice-to-have", bg: "bg-[hsl(var(--highlight)/0.15)]" },
-  { key: "wont", label: "Won't — לא הפעם", desc: "מחוץ להיקף", bg: "bg-foreground/[0.05]" },
-];
-
 const PrototypeBrief = () => {
   const { getStepData, getAllPreviousData } = useProject();
-  const { aiEnabled } = useAdmin();
   const [brief, setBrief] = useState<BriefState>({
     objective: "", must: "", should: "", could: "", wont: "",
     assumptions: "", styleVibe: "", styleNotes: "", successCriteria: "",
     briefingAnswers: {},
   });
-  const [suggestedFeatures, setSuggestedFeatures] = useState<SuggestedFeature[]>([]);
-  const [aiFeaturesLoading, setAiFeaturesLoading] = useState(false);
-
-  const [seeded, setSeeded] = useState(false);
 
   useEffect(() => {
     const saved = getStepData("prototype_brief");
@@ -76,80 +51,8 @@ const PrototypeBrief = () => {
         must: saved.must || saved.keyFeatures || "",
         briefingAnswers: saved.briefingAnswers || {},
       }));
-      if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures.map((f: any) => ({ ...f, id: f.id || crypto.randomUUID() })));
-      if (saved.seeded) setSeeded(true);
     }
   }, [getStepData]);
-
-  // Derive suggestions from earlier steps — runs ONCE, then sets a flag so a
-  // user who deletes the suggestions doesn't get them re-injected on next render.
-  const seedFromPreviousSteps = useCallback(() => {
-    const prev = getAllPreviousData("prototype_brief") as Record<string, any>;
-    const derived: SuggestedFeature[] = [];
-
-    const ideation = prev?.ideation;
-    if (ideation?.ideas && Array.isArray(ideation.ideas)) {
-      for (const idea of ideation.ideas) {
-        const text = (idea?.text || "").trim();
-        if (text) derived.push({ id: crypto.randomUUID(), name: text, description: "", bucket: "unassigned" });
-      }
-    }
-
-    const matrix = prev?.effort_impact;
-    if (matrix?.items && Array.isArray(matrix.items)) {
-      for (const it of matrix.items) {
-        const text = (it?.text || it?.name || "").trim();
-        const isQuickWin = (it?.impact ?? 0) >= 0.5 && (it?.effort ?? 1) <= 0.5;
-        if (text && isQuickWin) derived.push({ id: crypto.randomUUID(), name: text, description: "Quick win", bucket: "unassigned" });
-      }
-    }
-
-    const hmw = prev?.how_might_we;
-    if (hmw?.questions && Array.isArray(hmw.questions)) {
-      for (const q of hmw.questions.slice(0, 3)) {
-        const text = (typeof q === "string" ? q : q?.text || "").trim();
-        if (text) derived.push({ id: crypto.randomUUID(), name: text, description: "מתוך HMW", bucket: "unassigned" });
-      }
-    }
-
-    const seen = new Set<string>();
-    const unique = derived.filter((d) => {
-      const k = d.name.toLowerCase();
-      if (seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-    if (unique.length > 0) {
-      setSuggestedFeatures((curr) => [...curr, ...unique]);
-    }
-    setSeeded(true);
-  }, [getAllPreviousData]);
-
-  useEffect(() => {
-    if (seeded) return;
-    if (suggestedFeatures.length > 0) {
-      setSeeded(true);
-      return;
-    }
-    seedFromPreviousSteps();
-  }, [seeded, suggestedFeatures.length, seedFromPreviousSteps]);
-
-  // Keep textual must/should/could/wont in sync with the drag-and-drop board.
-  useEffect(() => {
-    if (suggestedFeatures.length === 0) return;
-    const lines = (b: Bucket) =>
-      suggestedFeatures
-        .filter((f) => f.bucket === b)
-        .map((f) => `• ${f.name}${f.description ? ` — ${f.description}` : ""}`)
-        .join("\n");
-    setBrief((prev) => ({
-      ...prev,
-      must: lines("must"),
-      should: lines("should"),
-      could: lines("could"),
-      wont: lines("wont"),
-    }));
-  }, [suggestedFeatures]);
 
   const update = (field: keyof BriefState, value: string) => {
     setBrief((prev) => ({ ...prev, [field]: value }));

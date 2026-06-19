@@ -132,85 +132,76 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
           </div>
         )}
 
-        {/* סרגל ניווט עליון — RTL: קודם בימין, הבא בשמאל */}
-        <div className="flex items-center justify-between mb-6 gap-2 flex-wrap">
-          <div className="flex items-center gap-2">
-            {prev && (
-              <button
-                onClick={() => navigateWithSave(prev.url)}
-                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-                aria-label="השלב הקודם"
-                title="הקודם"
-              >
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            )}
+        {/* סרגל עליון מאוחד — כל הניווט והפעולות בשורה אחת */}
+        <div className="flex items-center gap-2 mb-4 flex-nowrap overflow-x-auto">
+          {prev && (
             <button
-              onClick={() => navigateWithSave("/")}
-              className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-              aria-label="חזרה למפת השלבים"
-              title="מפה"
+              onClick={() => navigateWithSave(prev.url)}
+              className="sketch-btn-outline text-sm flex items-center justify-center w-9 h-9 p-0 shrink-0"
+              aria-label="השלב הקודם"
+              title="הקודם"
             >
-              <Home className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </button>
-          </div>
+          )}
+          <button
+            onClick={() => navigateWithSave("/")}
+            className="sketch-btn-outline text-sm flex items-center justify-center w-9 h-9 p-0 shrink-0"
+            aria-label="חזרה למפת השלבים"
+            title="מפה"
+          >
+            <Home className="h-4 w-4" />
+          </button>
+          {next && (
+            <button
+              onClick={() => navigateWithSave(next.url)}
+              className="sketch-btn-outline text-sm flex items-center justify-center w-9 h-9 p-0 shrink-0"
+              aria-label="השלב הבא"
+              title="הבא"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+          )}
 
-          <div className="flex items-center gap-2">
-            {!locked && completed && (
-              <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1">
-                פתח מחדש
-              </button>
-            )}
-            {next && (
-              <button
-                onClick={() => navigateWithSave(next.url)}
-                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-                aria-label="השלב הבא"
-                title="הבא"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+          <span className="pill-chip pill-chip-coral shrink-0">שלב {String(step.num).padStart(2, "0")}</span>
+          <span className="pill-chip pill-chip-outline shrink-0 whitespace-nowrap">{step.num} / {TOTAL_STEPS}</span>
+          {completed && <span className="pill-chip pill-chip-mint shrink-0">הושלם</span>}
+
+          <div className="flex-1" />
+
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
+            className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
+            title="הקדמה"
+          >
+            <BookOpen className="h-3 w-3" /> הקדמה
+          </button>
+          {aiEnabled && (
+            <button
+              onClick={() => setShowAI(!showAI)}
+              className={`sketch-btn-outline text-sm flex items-center gap-1 shrink-0 ${showAI ? "bg-foreground text-background" : ""}`}
+            >
+              <Sparkles className="h-3 w-3" /> סייע AI
+            </button>
+          )}
+          <a
+            href={step.learnMoreUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
+          >
+            <ExternalLink className="h-3 w-3" /> למד עוד
+          </a>
+          {!locked && completed && (
+            <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0">
+              פתח מחדש
+            </button>
+          )}
         </div>
 
         {/* כותרת */}
-        <div className="flex items-start justify-between mb-8 gap-4 flex-wrap">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="pill-chip pill-chip-coral">שלב {String(step.num).padStart(2, "0")}</span>
-              <span className="pill-chip pill-chip-outline">{step.num} / {TOTAL_STEPS}</span>
-              {completed && <span className="pill-chip pill-chip-mint">הושלם</span>}
-            </div>
-            <h1 className="display-huge mb-1">
-              {step.title}
-            </h1>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
-              className="sketch-btn-outline text-sm flex items-center gap-1"
-              title="הקדמה"
-            >
-              <BookOpen className="h-3 w-3" /> הקדמה
-            </button>
-            {aiEnabled && (
-              <button
-                onClick={() => setShowAI(!showAI)}
-                className={`sketch-btn-outline text-sm flex items-center gap-1 ${showAI ? "bg-foreground text-background" : ""}`}
-              >
-                <Sparkles className="h-3 w-3" /> סייע AI
-              </button>
-            )}
-            <a
-              href={step.learnMoreUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sketch-btn-outline text-sm flex items-center gap-1"
-            >
-              <ExternalLink className="h-3 w-3" /> למד עוד
-            </a>
-          </div>
+        <div className="mb-6">
+          <h1 className="display-huge mb-1">{step.title}</h1>
         </div>
 
 

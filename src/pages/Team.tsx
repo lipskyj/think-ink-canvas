@@ -259,24 +259,24 @@ export default function Team() {
 
           <div>
             <label className="font-sketch text-xs uppercase tracking-wider block mb-2">מה הקבוצה עושה?</label>
-            <Textarea
-              value={situation}
-              onChange={(e) => setSituation(e.target.value)}
-              rows={2}
-              dir="rtl"
-              placeholder="לדוגמה: רוקדים בים, מטיילים בעיר, יושבים סביב מחשב..."
-            />
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {SITUATION_PRESETS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setSituation(s)}
-                  className="pill-chip pill-chip-outline text-xs cursor-pointer"
-                >
-                  {s}
-                </button>
-              ))}
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="סיטואציה לאווטאר">
+              {SITUATION_PRESETS.map((s) => {
+                const selected = situation === s;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setSituation(s)}
+                    className={`pill-chip text-xs cursor-pointer transition ${
+                      selected ? "pill-chip-coral ring-2 ring-foreground" : "pill-chip-outline opacity-80 hover:opacity-100"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

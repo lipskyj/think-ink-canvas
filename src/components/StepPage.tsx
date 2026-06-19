@@ -282,15 +282,20 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         </fieldset>
 
         {/* CTA תחתון — סיימתי, המשך הלאה */}
-        {!locked && !completed && canComplete && (
-          <div className="mt-10 flex justify-center">
+        {!locked && !completed && (
+          <div className="mt-10 flex flex-col items-center gap-2">
             <button
               onClick={handleComplete}
-              className="sketch-btn text-base flex items-center gap-2 px-6 py-3 shadow-md"
+              disabled={!canComplete}
+              className="sketch-btn text-base flex items-center gap-2 px-6 py-3 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              title={!canComplete ? "מלאו את השלב כדי להמשיך" : undefined}
             >
               <CheckCircle className="h-4 w-4" /> סיימתי, המשך הלאה
               <ArrowLeft className="h-4 w-4" />
             </button>
+            {!canComplete && (
+              <p className="font-hand text-xs text-muted-foreground">מלאו את השלב כדי להמשיך</p>
+            )}
           </div>
         )}
       </div>

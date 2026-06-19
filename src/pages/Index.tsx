@@ -371,33 +371,23 @@ const Index = () => {
           </Link>
         </section>
 
-        {/* CTA */}
-        <section className="sketch-card text-center bg-gradient-to-br from-card to-secondary/40">
-          <Lightbulb className="h-10 w-10 mx-auto mb-3" strokeWidth={2.2} />
-          <h2 className="display-huge mb-3" style={{ fontSize: "clamp(1.8rem,3.5vw,2.6rem)" }}>
-            צאו לדרך — שלב {String(firstStep.num).padStart(2, "0")}
-          </h2>
-          <p className="font-hand text-lg text-muted-foreground mb-5">
-            מתחילים מ{firstStep.title}. כל אחד יכול. אין תשובות נכונות.
-          </p>
-          <Link to={firstStep.url} className="sketch-btn inline-flex items-center gap-2 text-base">
-            בואו נתחיל <ArrowLeft className="h-4 w-4" />
+        {/* Extra entry points — standalone, no box */}
+        <section className="flex flex-wrap items-center justify-center gap-3 mt-6">
+          <Link
+            to="/walkthrough"
+            className="sketch-btn-outline inline-flex items-center gap-2 text-base"
+          >
+            ראו דוגמה מקצה לקצה
           </Link>
           <button
             onClick={async () => {
               await loadDemoCase();
               navigate("/effort-impact");
             }}
-            className="sketch-btn-outline inline-flex items-center gap-2 text-base mt-3 mr-2"
+            className="sketch-btn-outline inline-flex items-center gap-2 text-base"
           >
             טען מקרה בוחן מוכן
           </button>
-          <Link
-            to="/walkthrough"
-            className="sketch-btn-outline inline-flex items-center gap-2 text-base mt-3 mr-2"
-          >
-            ראו דוגמה מקצה לקצה
-          </Link>
         </section>
       </div>
 

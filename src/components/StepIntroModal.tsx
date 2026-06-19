@@ -210,18 +210,20 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-h-[40px]">
           {stage === "see" && (
             <button onClick={goBack} className="sketch-btn-outline text-sm">
               → חזרה
             </button>
           )}
-          <button
-            onClick={goNext}
-            className="sketch-btn text-sm flex items-center gap-1"
-          >
-            {stage === "learn" ? "המשך ←" : "בוא נעבוד ←"}
-          </button>
+          {((stage === "learn" && learnDone) || (stage === "see" && seeDone)) && (
+            <button
+              onClick={goNext}
+              className="sketch-btn text-sm flex items-center gap-1 animate-fade-in"
+            >
+              {stage === "learn" ? "המשך ←" : "בוא נעבוד ←"}
+            </button>
+          )}
         </div>
       </div>
     </section>

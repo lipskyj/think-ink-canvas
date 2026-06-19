@@ -24,6 +24,13 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   const { isClassMode } = useClass();
   const [showAI, setShowAI] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    const find = () => setToolbarSlot(document.getElementById("step-toolbar-slot"));
+    find();
+    const t = setTimeout(find, 0);
+    return () => clearTimeout(t);
+  }, [stepKey]);
   const locked = isClassMode && isStepLocked(stepKey);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasInitialized = useRef(false);

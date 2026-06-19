@@ -1,6 +1,16 @@
 // Visual style presets for team avatar generation.
-// Each style ships with a Hebrew label, short description, an emoji preview,
+// Each style ships with a Hebrew label, short description, a sample image,
 // and the English prompt fragment sent to the image model.
+
+import sampleNoam from "@/assets/style-noam.jpg";
+import samplePixel from "@/assets/style-pixel.jpg";
+import sampleAnime from "@/assets/style-anime.jpg";
+import sampleComics from "@/assets/style-comics.jpg";
+import sampleCaricature from "@/assets/style-caricature.jpg";
+import sampleFlat from "@/assets/style-flat.jpg";
+import sampleWatercolor from "@/assets/style-watercolor.jpg";
+import sampleLowpoly from "@/assets/style-lowpoly.jpg";
+import sampleSticker from "@/assets/style-sticker.jpg";
 
 export type TeamAvatarStyleKey =
   | "noam"
@@ -17,9 +27,10 @@ export interface TeamAvatarStyle {
   key: TeamAvatarStyleKey;
   label: string;
   description: string;
-  emoji: string;
+  sample: string;
   prompt: string;
 }
+
 
 export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
   {

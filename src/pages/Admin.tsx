@@ -52,6 +52,7 @@ export default function Admin() {
     event_time: "",
     event_location: "",
     organizer_logo_url: "",
+    organizer_name: "",
   });
   const eventDraftHydrated = useRef(false);
 

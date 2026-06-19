@@ -268,60 +268,14 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         {children}
         </fieldset>
 
-        {/* סרגל תחתון — RTL: קודם בצד ימין, הבא בצד שמאל */}
-        <div className="mt-8 flex items-center justify-between flex-wrap gap-3">
-          {/* ימין: חזרה אחורה */}
-          <div className="flex items-center gap-2">
-            {prev && (
-              <button
-                onClick={() => navigateWithSave(prev.url)}
-                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-                aria-label="השלב הקודם"
-                title="הקודם"
-              >
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-
-          {/* אמצע / שמאל: בית, השלמה והשלב הבא */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigateWithSave("/")}
-              className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-              aria-label="חזרה למפת השלבים"
-              title="מפה"
-            >
-              <Home className="h-4 w-4" />
-              <span className="sr-only">מפה</span>
+        {/* CTA תחתון — רק כפתור ההשלמה */}
+        {!locked && !completed && canComplete && (
+          <div className="mt-8 flex justify-center">
+            <button onClick={handleComplete} className="sketch-btn text-sm flex items-center gap-1">
+              <CheckCircle className="h-3 w-3" /> השלם והמשך
             </button>
-
-            {!locked && (
-              completed ? (
-                <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1">
-                  פתח מחדש
-                </button>
-              ) : (
-                canComplete && (
-                  <button onClick={handleComplete} className="sketch-btn text-sm flex items-center gap-1">
-                    <CheckCircle className="h-3 w-3" /> השלם והמשך
-                  </button>
-                )
-              )
-            )}
-
-            {next && (
-              <button
-                onClick={() => navigateWithSave(next.url)}
-                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
-                aria-label="השלב הבא"
-                title="הבא"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-            )}
           </div>
-        </div>
+        )}
       </div>
     </Layout>
   );

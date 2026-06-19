@@ -67,6 +67,16 @@ const PointOfView = () => {
         </p>
       </div>
 
+      <div className="sketch-border p-4 mb-4 bg-card">
+        <p className="font-hand text-base text-foreground/80 leading-relaxed">
+          מבנה ה-POV: <span className="font-bold">פרסונה</span>
+          {" + "}<span className="text-2xl font-bold text-primary mx-1">צריך</span>{" + "}
+          <span className="font-bold">צורך</span>
+          {" + "}<span className="text-2xl font-bold text-primary mx-1">כי</span>{" + "}
+          <span className="font-bold">תובנה / סיבה</span>
+        </p>
+      </div>
+
       <div className="sketch-card mb-6">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <span className="pill-chip pill-chip-outline">הצהרת ה-POV שלכם</span>
@@ -82,20 +92,28 @@ const PointOfView = () => {
 
         {!editing ? (
           <p className="text-2xl leading-relaxed">
-            <strong>{user || "___"}</strong> צריך <strong>{need || "___"}</strong> כי <strong>{insight || "___"}</strong>.
+            <strong>{user || "___"}</strong>
+            <span className="text-3xl font-bold text-primary mx-2">צריך</span>
+            <strong>{cleanNeed || "___"}</strong>
+            <span className="text-3xl font-bold text-primary mx-2">כי</span>
+            <strong>{cleanInsight || "___"}</strong>.
           </p>
         ) : (
           <div className="space-y-3 animate-fade-in">
             <div>
-              <label className="text-sm text-muted-foreground block mb-1">משתמש</label>
+              <label className="text-sm text-muted-foreground block mb-1">פרסונה (מי?)</label>
               <input className="sketch-input" value={user} onChange={(e) => setUser(e.target.value)} />
             </div>
             <div>
-              <label className="text-sm text-muted-foreground block mb-1">צורך</label>
+              <label className="text-sm text-muted-foreground block mb-1">
+                צורך — מה הוא <span className="font-bold text-primary">צריך</span>? (בלי המילה "צריך")
+              </label>
               <input className="sketch-input" value={need} onChange={(e) => setNeed(e.target.value)} />
             </div>
             <div>
-              <label className="text-sm text-muted-foreground block mb-1">תובנה</label>
+              <label className="text-sm text-muted-foreground block mb-1">
+                תובנה — <span className="font-bold text-primary">כי</span>...? (בלי המילה "כי")
+              </label>
               <input className="sketch-input" value={insight} onChange={(e) => setInsight(e.target.value)} />
             </div>
           </div>

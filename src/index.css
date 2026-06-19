@@ -277,16 +277,7 @@
   }
 
   .notebook-lines {
-    --line-height: 1.75rem;
-    line-height: var(--line-height);
-    padding-top: calc(var(--line-height) - 1px);
-    background-image: repeating-linear-gradient(
-      transparent,
-      transparent calc(var(--line-height) - 1px),
-      hsl(var(--border) / 0.25) calc(var(--line-height) - 1px),
-      hsl(var(--border) / 0.25) var(--line-height)
-    );
-    background-position: 0 0;
+    line-height: 1.6;
   }
 
   .animate-draw-path {

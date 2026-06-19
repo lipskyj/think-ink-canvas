@@ -410,8 +410,8 @@ const Index = () => {
                 setSession({
                   classId: editGroup.id,
                   className: editGroup.name,
-                  studentName: "",
-                  isLeader: false,
+                  studentName: "__editor__",
+                  isLeader: true,
                 });
                 setEditGroup(null);
                 navigate("/team");
@@ -420,6 +420,7 @@ const Index = () => {
                 toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
               }
             }}
+
           />
           <DialogFooter className="gap-2 sm:gap-2">
             <button onClick={() => setEditGroup(null)} className="sketch-btn-outline">ביטול</button>
@@ -431,8 +432,8 @@ const Index = () => {
                   setSession({
                     classId: editGroup.id,
                     className: editGroup.name,
-                    studentName: "",
-                    isLeader: false,
+                    studentName: "__editor__",
+                    isLeader: true,
                   });
                   setEditGroup(null);
                   navigate("/team");
@@ -440,6 +441,7 @@ const Index = () => {
                   setEditAttempts((n) => n + 1);
                   toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
                 }
+
               }}
               className="sketch-btn disabled:opacity-50"
             >

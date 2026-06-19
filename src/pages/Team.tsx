@@ -93,7 +93,23 @@ export default function Team() {
       if (error) throw error;
       if (data?.dataUrl) {
         setPendingAvatar(data.dataUrl);
-        toast({ title: "האווטאר מוכן", description: "לחצו שמור כדי שיופיע בדף הבית" });
+        // Auto-persist the avatar immediately so it shows on the home page without a separate save click
+        if (isLeader) {
+          const { error: upErr } = await supabase
+            .from("classes")
+            .update({ team_avatar_url: data.dataUrl, team_avatar_prompt: situation })
+            .eq("id", session.classId);
+          if (!upErr) {
+            setAvatarUrl(data.dataUrl);
+            setPendingAvatar(null);
+            window.dispatchEvent(new CustomEvent("classes:changed"));
+            toast({ title: "האווטאר נשמר", description: "מופיע בדף הבית" });
+          } else {
+            toast({ title: "האווטאר מוכן", description: "לחצו שמור כדי לשמור" });
+          }
+        } else {
+          toast({ title: "האווטאר מוכן", description: "רק ראש הקבוצה יכול לשמור" });
+        }
       } else {
         throw new Error("לא הוחזרה תמונה");
       }

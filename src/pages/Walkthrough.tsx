@@ -92,13 +92,19 @@ const DEMO_DATA: DemoStep[] = [
     title: "חמישה למה",
     what: "שואלים 'למה' חמש פעמים כדי להגיע משורש הבעיה.",
     output: (
-      <ol className="space-y-2 font-hand text-base list-decimal pr-6">
-        <li>ההסברים של המורה מהירים ולא מותאמים לכל תלמיד</li>
-        <li>יש 35 תלמידים בכיתה ואין זמן לתשומת לב אישית</li>
-        <li>תלמידים מתביישים לשאול שאלות בכיתה</li>
-        <li>אין כלים ללמוד ולתרגל בקצב האישי, בבית</li>
-        <li>הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית</li>
-      </ol>
+      <>
+        <div className="flex items-center gap-2 mb-3"><PersonaChip /><span className="font-hand text-sm text-muted-foreground">— שואלים עליה למה</span></div>
+        <ol className="space-y-2 font-hand text-base list-decimal pr-6">
+          <li>ההסברים של המורה מהירים ולא מותאמים לכל תלמיד</li>
+          <li>יש 35 תלמידים בכיתה ואין זמן לתשומת לב אישית</li>
+          <li>תלמידים מתביישים לשאול שאלות בכיתה</li>
+          <li>אין כלים ללמוד ולתרגל בקצב האישי, בבית</li>
+          <li>הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית</li>
+        </ol>
+        <ChosenBox>
+          <strong>שורש הבעיה:</strong> אין פלטפורמת תרגול אישית בעברית שמאפשרת ללמוד ללא בושה, בקצב שלהם
+        </ChosenBox>
+      </>
     ),
   },
   {
@@ -108,13 +114,13 @@ const DEMO_DATA: DemoStep[] = [
     title: "הצהרת נקודת מבט (POV)",
     what: "ממקדים את כל מה שלמדנו במשפט אחד: [משתמש] צריך [צורך] כי [תובנה].",
     output: (
-      <div className="font-hand text-lg leading-relaxed bg-background/50 sketch-border-thin p-4">
+      <ChosenBox>
         <strong>דנה, תלמידת כיתה ט׳ שמתקשה באלגברה</strong>
         <span className="text-primary font-bold mx-2">צריכה</span>
         <strong>דרך לתרגל ולהבין מתמטיקה בלי לחץ חברתי</strong>
         <span className="text-primary font-bold mx-2">כי</span>
         <strong>היא מפחדת לשאול שאלות בכיתה ולא מוצאת הסברים מותאמים לתוכנית הישראלית.</strong>
-      </div>
+      </ChosenBox>
     ),
   },
   {
@@ -124,14 +130,16 @@ const DEMO_DATA: DemoStep[] = [
     title: "איך נוכל (HMW)",
     what: "ממסגרים את הבעיה כהזדמנות פתוחה ליצירתיות.",
     output: (
-      <ul className="space-y-2 font-hand text-base list-disc pr-6">
-        <li>איך נוכל לעזור לתלמידים לתרגל מתמטיקה ללא בושה ובקצב שלהם?</li>
-        <li>איך נוכל להפוך את לימוד האלגברה לחוויה כיפית ולא מאיימת?</li>
-        <li>איך נוכל לספק הסבר אישי לכל תלמיד בלי מורה פרטי?</li>
-        <li className="list-none mt-3 p-3 bg-[hsl(var(--sun)/0.35)] sketch-border-thin">
+      <>
+        <ul className="space-y-2 font-hand text-base list-disc pr-6">
+          <li>איך נוכל לעזור לתלמידים לתרגל מתמטיקה ללא בושה ובקצב שלהם?</li>
+          <li>איך נוכל להפוך את לימוד האלגברה לחוויה כיפית ולא מאיימת?</li>
+          <li>איך נוכל לספק הסבר אישי לכל תלמיד בלי מורה פרטי?</li>
+        </ul>
+        <ChosenBox>
           <strong>נבחר:</strong> איך נוכל לעזור לתלמידים לתרגל מתמטיקה ללא בושה ובקצב שלהם?
-        </li>
-      </ul>
+        </ChosenBox>
+      </>
     ),
   },
   {
@@ -159,23 +167,25 @@ const DEMO_DATA: DemoStep[] = [
     title: "מטריצת מאמץ-השפעה",
     what: "מתעדפים רעיונות לפי ציר מאמץ וציר השפעה — ובוחרים את הניצחונות המהירים.",
     output: (
-      <div className="grid sm:grid-cols-2 gap-3 font-hand text-base">
-        <div className="sketch-border-thin p-3 bg-[hsl(var(--mint)/0.35)]">
-          <strong>ניצחונות מהירים:</strong> מדריך ChatGPT לתלמידים, רשימת סרטוני יוטיוב בעברית
+      <>
+        <div className="grid sm:grid-cols-2 gap-3 font-hand text-base">
+          <div className="sketch-border-thin p-3 bg-[hsl(var(--mint)/0.35)]">
+            <strong>ניצחונות מהירים:</strong> מדריך ChatGPT לתלמידים, רשימת סרטוני יוטיוב בעברית
+          </div>
+          <div className="sketch-border-thin p-3 bg-[hsl(var(--sun)/0.35)]">
+            <strong>הימורים גדולים:</strong> אפליקציה עם AI מותאם לתוכנית הישראלית, משחק עולם מתמטי
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <strong>מילויים:</strong> בוט וואטסאפ סטטי, פורום תלמידים
+          </div>
+          <div className="sketch-border-thin p-3 bg-background/50">
+            <strong>בזבזני זמן:</strong> משחק VR מלא, מורה רובוט פיזי
+          </div>
         </div>
-        <div className="sketch-border-thin p-3 bg-[hsl(var(--sun)/0.35)]">
-          <strong>הימורים גדולים:</strong> אפליקציה עם AI מותאם לתוכנית הישראלית, משחק עולם מתמטי
-        </div>
-        <div className="sketch-border-thin p-3 bg-background/50">
-          <strong>מילויים:</strong> בוט וואטסאפ סטטי, פורום תלמידים
-        </div>
-        <div className="sketch-border-thin p-3 bg-background/50">
-          <strong>בזבזני זמן:</strong> משחק VR מלא, מורה רובוט פיזי
-        </div>
-        <div className="sm:col-span-2 mt-2 p-3 bg-background/70 sketch-border-thin">
+        <ChosenBox>
           <strong>בחרנו:</strong> אפליקציה עם AI — תלמיד מצלם שאלה, ה-AI מסביר צעד-אחר-צעד ומוסיף תרגיל מותאם.
-        </div>
-      </div>
+        </ChosenBox>
+      </>
     ),
   },
   {

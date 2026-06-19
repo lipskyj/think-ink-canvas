@@ -70,6 +70,7 @@ export type Database = {
           locked_steps: Json
           name: string
           organizer_logo_url: string | null
+          organizer_name: string | null
           prototype_url: string | null
           slides_url: string | null
           student_names: string[]
@@ -92,6 +93,7 @@ export type Database = {
           locked_steps?: Json
           name: string
           organizer_logo_url?: string | null
+          organizer_name?: string | null
           prototype_url?: string | null
           slides_url?: string | null
           student_names?: string[]
@@ -114,6 +116,7 @@ export type Database = {
           locked_steps?: Json
           name?: string
           organizer_logo_url?: string | null
+          organizer_name?: string | null
           prototype_url?: string | null
           slides_url?: string | null
           student_names?: string[]

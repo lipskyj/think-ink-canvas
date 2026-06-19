@@ -31,6 +31,7 @@ interface GroupRow {
   event_topic?: string | null;
   event_description?: string | null;
   organizer_logo_url?: string | null;
+  organizer_name?: string | null;
 }
 
 const PHASE_BADGE: Record<string, string> = {
@@ -54,14 +55,14 @@ const Index = () => {
   useEffect(() => {
     supabase
       .from("classes")
-      .select("id, name, join_code, student_names, team_avatar_url, event_date, event_time, event_location, event_topic, event_description, organizer_logo_url")
+      .select("id, name, join_code, student_names, team_avatar_url, event_date, event_time, event_location, event_topic, event_description, organizer_logo_url, organizer_name")
       .order("created_at", { ascending: false })
       .then(({ data }) => setGroups((data || []) as GroupRow[]));
   }, []);
 
   // Public event banner (shown to everyone, not only inside a class). Use the latest non-empty event fields across groups.
   const publicEvent = (() => {
-    const src = groups.find((g) => g.event_topic || g.event_date || g.event_location || g.organizer_logo_url);
+    const src = groups.find((g) => g.event_topic || g.event_date || g.event_location || g.organizer_logo_url || g.organizer_name);
     if (!src) return null;
     return {
       event_topic: src.event_topic,
@@ -70,6 +71,7 @@ const Index = () => {
       event_location: src.event_location,
       event_description: src.event_description,
       organizer_logo_url: src.organizer_logo_url,
+      organizer_name: src.organizer_name,
     };
   })();
   const teamCount = groups.length;
@@ -136,9 +138,14 @@ const Index = () => {
               {publicEvent.organizer_logo_url && (
                 <img
                   src={publicEvent.organizer_logo_url}
-                  alt="לוגו המארגן"
-                  className="h-32 max-w-[280px] object-contain mx-auto mb-8"
+                  alt={publicEvent.organizer_name || "לוגו המארגן"}
+                  className="h-32 max-w-[280px] object-contain mx-auto mb-6"
                 />
+              )}
+              {publicEvent.organizer_name && (
+                <p className="font-sketch text-2xl md:text-3xl text-foreground/80 mb-4">
+                  {publicEvent.organizer_name}
+                </p>
               )}
               <span className="pill-chip pill-chip-coral mb-8 inline-block text-base px-4 py-1.5">
                 האקתון לחשיבה עיצובית
@@ -299,6 +306,22 @@ const Index = () => {
                     <span className="pill-chip pill-chip-outline absolute top-3 right-3 text-[10px] flex items-center gap-1">
                       <Users className="h-3 w-3" /> הקבוצה
                     </span>
+                    <button
+                      onClick={() => {
+                        const entered = window.prompt(`כדי לערוך את "${group.name}" הזינו את קוד הקבוצה (${group.join_code?.length || 2} תווים):`);
+                        if (!entered) return;
+                        if (entered.trim().toUpperCase() === (group.join_code || "").toUpperCase()) {
+                          navigate(`/join/${group.id}`);
+                        } else {
+                          toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
+                        }
+                      }}
+                      className="absolute top-3 left-3 sketch-border-thin rounded-md p-1.5 bg-background hover:bg-secondary/40 transition"
+                      aria-label="ערוך קבוצה"
+                      title="ערוך קבוצה (דרוש קוד)"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
                     {group.team_avatar_url && (
                       <img
                         src={group.team_avatar_url}

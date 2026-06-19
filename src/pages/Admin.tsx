@@ -52,6 +52,7 @@ export default function Admin() {
     event_time: "",
     event_location: "",
     organizer_logo_url: "",
+    organizer_name: "",
   });
   const eventDraftHydrated = useRef(false);
 
@@ -71,7 +72,7 @@ export default function Admin() {
   useEffect(() => {
     if (!classes.length) return;
     if (eventDraftHydrated.current) return;
-    const source = classes.find((cls) => cls.event_topic || cls.event_description || cls.event_date || cls.event_time || cls.event_location || cls.organizer_logo_url) || classes[0];
+    const source = classes.find((cls) => cls.event_topic || cls.event_description || cls.event_date || cls.event_time || cls.event_location || cls.organizer_logo_url || (cls as any).organizer_name) || classes[0];
     eventDraftHydrated.current = true;
     setEventDraft({
       event_topic: source.event_topic || "",
@@ -80,6 +81,7 @@ export default function Admin() {
       event_time: source.event_time || "",
       event_location: source.event_location || "",
       organizer_logo_url: source.organizer_logo_url || "",
+      organizer_name: (source as any).organizer_name || "",
     });
   }, [classes]);
 
@@ -140,10 +142,10 @@ export default function Admin() {
 
   const updateClass = async (id: string, updates: Partial<ClassRow>) => {
     const dbUpdates: any = {};
-    const allowed: (keyof ClassRow)[] = [
+    const allowed: (keyof ClassRow | "organizer_name")[] = [
       "student_names","ai_enabled","locked_steps","name","leader_name",
       "event_date","event_time","event_location","event_topic",
-      "event_description","organizer_logo_url",
+      "event_description","organizer_logo_url","organizer_name" as any,
     ];
     for (const k of allowed) {
       if (updates[k] !== undefined) dbUpdates[k] = updates[k] as any;
@@ -264,6 +266,12 @@ export default function Admin() {
             )}
           </div>
           <div className="space-y-3">
+            <Input
+              placeholder="שם בית הספר / הארגון המארח"
+              value={eventDraft.organizer_name}
+              onChange={(e) => setEventDraft((prev) => ({ ...prev, organizer_name: e.target.value }))}
+              onBlur={(e) => updateEventForAllGroups({ organizer_name: e.target.value } as any)}
+            />
             <Input
               placeholder="נושא מרכזי / אתגר האירוע"
               value={eventDraft.event_topic}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { useProject } from "@/contexts/ProjectContext";
@@ -359,6 +360,19 @@ const Pitch = () => {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Submissions CTA */}
+            <div className="sketch-card bg-secondary/20 flex items-center justify-between flex-wrap gap-3 mt-6">
+              <div>
+                <h3 className="font-sketch text-xl mb-1">הגשת תוצרים</h3>
+                <p className="font-hand text-base text-muted-foreground">
+                  מצגת + קישור לפיתוח. כל הקבוצות, במקום אחד.
+                </p>
+              </div>
+              <Link to="/submissions" className="sketch-btn inline-flex items-center gap-2">
+                לחדר ההגשות <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </>
         )}

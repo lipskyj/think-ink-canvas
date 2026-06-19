@@ -72,10 +72,14 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
   const seenKey = SEEN_PREFIX + stepKey;
 
   const [stage, setStage] = useState<Stage>("learn");
+  const [learnDone, setLearnDone] = useState(false);
+  const [seeDone, setSeeDone] = useState(false);
   const { content, loading, isFallback, regenerate } = useStepLSD(stepKey, true);
 
   useEffect(() => {
     setStage("learn");
+    setLearnDone(false);
+    setSeeDone(false);
   }, [stepKey]);
 
   const close = () => {

@@ -19,6 +19,7 @@ const STEP_LABELS: Record<string, string> = {
   assumption_selection: "הנחות",
   storyboard: "סטוריבורד",
   prototype_brief: "בריף אב-טיפוס",
+  moscow_prioritization: "MoSCoW — תיעדוף תכונות",
   user_testing: "בדיקות משתמשים",
 };
 
@@ -109,7 +110,7 @@ const PrdGenerator = () => {
     <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent}>
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
-           שלב זה אוסף את כל מה שעבדתם עליו ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.
+           שלב זה אוסף את המחקר, הבריף ותיעדוף ה-MVP, ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.
         </p>
       </div>
 

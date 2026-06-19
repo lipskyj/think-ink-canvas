@@ -118,7 +118,23 @@ export default function MoscowPrioritization() {
     setNewFeature("");
   };
 
+  const mustLimit = Math.max(1, Math.ceil(features.length * 0.3));
+
   const moveFeature = (id: string, bucket: MoscowFeature["bucket"]) => {
+    if (bucket === "must") {
+      const current = features.find((f) => f.id === id);
+      if (current?.bucket !== "must") {
+        const mustCount = features.filter((f) => f.bucket === "must").length;
+        if (mustCount >= mustLimit) {
+          toast({
+            title: "יותר מדי Must",
+            description: `MVP חייב להיות צמצום. מותר עד ${mustLimit} תכונות ב-Must (30% מהרשימה). הורידו אחת קודם.`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
     setFeatures((prev) => prev.map((feature) => (feature.id === id ? { ...feature, bucket } : feature)));
   };
 

@@ -29,6 +29,8 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   const [showAI, setShowAI] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [showExample, setShowExample] = useState(false);
+  const demo = getDemoStep(stepKey);
   const [recapDismissed, setRecapDismissed] = useState<boolean>(() => {
     if (!phaseRecapKey) return true;
     return typeof window !== "undefined" && localStorage.getItem(phaseRecapKey) === "1";

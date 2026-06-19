@@ -80,7 +80,7 @@ export default function JoinClass() {
       studentName: trimmed,
       isLeader: willBeLeader || cls.leader_name === trimmed,
     });
-    navigate("/");
+    navigate("/team");
   };
 
   if (loading) {

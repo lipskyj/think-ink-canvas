@@ -272,6 +272,7 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
           </div>
         )}
       </div>
+      )}
     </Layout>
   );
 }

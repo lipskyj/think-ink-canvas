@@ -41,9 +41,9 @@ Deno.serve(async (req) => {
     const situation = (body.situation || "").trim() || "standing together, smiling, casual pose";
     const stylePrompt = (body.stylePrompt || "").trim() || DEFAULT_STYLE;
 
-    const prompt = `${stylePrompt} A team portrait of ${memberDesc}. Situation: ${situation}. Group of ${
+    const prompt = `STYLE (this is the most important instruction — render strictly in this visual style): ${stylePrompt}\n\nSUBJECT: A team portrait of ${memberDesc}. Situation: ${situation}. Group of ${
       members.length || 3
-    } characters together.`;
+    } characters together. The output MUST clearly match the style described above — do not default to a generic cartoon look.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
       method: "POST",
@@ -52,11 +52,12 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image",
+        model: "google/gemini-3.1-flash-image-preview",
         messages: [{ role: "user", content: prompt }],
         modalities: ["image", "text"],
       }),
     });
+
 
     if (!resp.ok) {
       const errText = await resp.text();

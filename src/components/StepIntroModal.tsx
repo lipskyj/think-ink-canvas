@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { X, Loader2, RefreshCw, Sparkles } from "lucide-react";
+import { X, Loader2, RefreshCw, Sparkles, BookOpen, Eye } from "lucide-react";
 import { useStepLSD } from "@/hooks/useStepLSD";
 import { getStepByKey } from "@/lib/steps";
-import noamCharacter from "@/assets/noam-character.jpg";
+import { getDemoStep } from "@/lib/demoSteps";
 
 const SEEN_PREFIX = "lsd-seen-v1:";
 const STAGES = ["learn", "see"] as const;

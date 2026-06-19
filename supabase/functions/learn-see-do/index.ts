@@ -68,7 +68,7 @@ ${themeBlock}${ctxBlock}
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `הפק תוכן Learn/See לשלב ״${stepTitle}״.` },
@@ -96,13 +96,17 @@ ${themeBlock}${ctxBlock}
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content ?? "";
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(content);
-    } catch {
-      const cleaned = content.replace(/```json?\s*/g, "").replace(/```\s*/g, "").trim();
-      parsed = JSON.parse(cleaned);
+    const tryParse = (s: string) => { try { return JSON.parse(s); } catch { return null; } };
+    const cleaned = content.replace(/```json?\s*/g, "").replace(/```\s*/g, "").trim();
+    let parsed: unknown =
+      tryParse(content) ??
+      tryParse(cleaned) ??
+      tryParse(cleaned.replace(/,\s*([}\]])/g, "$1"));
+    if (!parsed) {
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (match) parsed = tryParse(match[0]);
     }
+    if (!parsed) throw new Error("invalid_json_from_model");
 
     return new Response(JSON.stringify({ lsd: parsed }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

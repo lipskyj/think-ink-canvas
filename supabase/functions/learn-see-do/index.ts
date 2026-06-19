@@ -81,17 +81,15 @@ ${themeBlock}${ctxBlock}
       const status = response.status;
       const txt = await response.text();
       console.error("AI gateway error:", status, txt);
-      if (status === 429)
-        return new Response(JSON.stringify({ error: "rate_limit" }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      if (status === 402)
-        return new Response(JSON.stringify({ error: "credits" }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      throw new Error("ai_error");
+      const isCredit = status === 402 || status === 403 || /credit_limit_reached|credit/i.test(txt);
+      const isRate = status === 429;
+      return new Response(
+        JSON.stringify({
+          error: isCredit ? "credits" : isRate ? "rate_limit" : "ai_error",
+          fallback: true,
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const data = await response.json();

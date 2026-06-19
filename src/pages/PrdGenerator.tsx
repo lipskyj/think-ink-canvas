@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import StepPage from "@/components/StepPage";
+import Phase3Recap from "@/components/Phase3Recap";
 import { useProject } from "@/contexts/ProjectContext";
 import { STEPS } from "@/lib/steps";
 import { supabase } from "@/integrations/supabase/client";

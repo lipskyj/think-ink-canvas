@@ -286,6 +286,31 @@ const EffortImpact = () => {
                 </div>
               ))}
 
+              {/* Unplaced ideas — clustered in the center, waiting to be dragged */}
+              {unplaced.map((idea, idx) => {
+                const offsetX = ((idx % 5) - 2) * 6;
+                const offsetY = (Math.floor(idx / 5) - 1) * 8;
+                return (
+                  <div
+                    key={idea.id}
+                    className={`absolute z-10 sketch-border px-2 py-1 text-xs bg-[hsl(var(--accent)/0.4)] shadow-md cursor-grab active:cursor-grabbing select-none flex items-center gap-1 border-dashed ${
+                      draggingId === idea.id ? "ring-2 ring-foreground scale-105" : ""
+                    }`}
+                    style={{
+                      left: `calc(50% + ${offsetX}px)`,
+                      top: `calc(50% + ${offsetY}px)`,
+                      transform: "translate(-50%, -50%)",
+                      maxWidth: "140px",
+                    }}
+                    onMouseDown={(e) => handleMouseDown(e, idea.id)}
+                    onTouchStart={(e) => handleTouchStart(e, idea.id)}
+                  >
+                    <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground" />
+                    <span className="truncate">{idea.text}</span>
+                  </div>
+                );
+              })}
+
               {/* Placed ideas */}
               {ideas
                 .filter((i) => i.placed)

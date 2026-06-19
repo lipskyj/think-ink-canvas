@@ -179,31 +179,10 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
               className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
-              title="הקדמה"
+              title="מה עושים בשלב הזה?"
             >
-              <BookOpen className="h-3 w-3" /> הקדמה
+              <BookOpen className="h-3 w-3" /> מה עושים בשלב הזה
             </button>
-            {aiEnabled && (
-              <button
-                onClick={() => setShowAI(!showAI)}
-                className={`sketch-btn-outline text-sm flex items-center gap-1 shrink-0 ${showAI ? "bg-foreground text-background" : ""}`}
-              >
-                <Sparkles className="h-3 w-3" /> סייע AI
-              </button>
-            )}
-            <a
-              href={step.learnMoreUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
-            >
-              <ExternalLink className="h-3 w-3" /> למד עוד
-            </a>
-            {!locked && completed && (
-              <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0">
-                פתח מחדש
-              </button>
-            )}
           </>,
           toolbarSlot
         )}

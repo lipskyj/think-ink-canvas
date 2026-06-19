@@ -356,3 +356,79 @@ export default function Team() {
     </Layout>
   );
 }
+
+/** Inline name-entry step shown the first time a user lands in a class. */
+function IdentityGate() {
+  const { session, setSession } = useClass();
+  const { toast } = useToast();
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    if (!session) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setBusy(true);
+    const { data: cls, error: fetchErr } = await supabase
+      .from("classes")
+      .select("student_names, leader_name")
+      .eq("id", session.classId)
+      .single();
+    if (fetchErr || !cls) {
+      toast({ title: "שגיאה", description: fetchErr?.message || "", variant: "destructive" });
+      setBusy(false);
+      return;
+    }
+    const roster: string[] = cls.student_names || [];
+    const willBeLeader = !cls.leader_name;
+    const updates: any = {};
+    if (!roster.includes(trimmed)) updates.student_names = [...roster, trimmed];
+    if (willBeLeader) updates.leader_name = trimmed;
+    if (Object.keys(updates).length) {
+      const { error } = await supabase.from("classes").update(updates).eq("id", session.classId);
+      if (error) {
+        toast({ title: "שגיאה", description: error.message, variant: "destructive" });
+        setBusy(false);
+        return;
+      }
+    }
+    try { localStorage.setItem(`class:${session.classId}:name`, trimmed); } catch {}
+    setSession({
+      ...session,
+      studentName: trimmed,
+      isLeader: willBeLeader || cls.leader_name === trimmed,
+    });
+    setBusy(false);
+  };
+
+  return (
+    <Layout>
+      <div className="max-w-md mx-auto pt-16">
+        <div className="sketch-card space-y-4">
+          <div>
+            <span className="pill-chip pill-chip-coral mb-2 inline-block">הצטרפות לקבוצה</span>
+            <h1 className="font-sketch text-2xl mb-1">איך קוראים לכם?</h1>
+            <p className="font-hand text-sm text-muted-foreground">
+              השם שלכם יופיע לחברי הקבוצה. הראשון שמצטרף הופך לראש הקבוצה.
+            </p>
+          </div>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="השם המלא שלכם"
+            dir="rtl"
+            autoFocus
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+          />
+          <button
+            onClick={submit}
+            disabled={busy || !name.trim()}
+            className="sketch-btn w-full disabled:opacity-50"
+          >
+            {busy ? "רגע..." : "כניסה לקבוצה"}
+          </button>
+        </div>
+      </div>
+    </Layout>
+  );
+}

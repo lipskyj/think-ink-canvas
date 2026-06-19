@@ -5,6 +5,7 @@ import CoherenceTracker from "@/components/CoherenceTracker";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useProject } from "@/contexts/ProjectContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 type Bucket = "must" | "should" | "could" | "wont";
 

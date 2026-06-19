@@ -140,72 +140,73 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
           </div>
         )}
 
-        {/* סרגל עליון מאוחד — כל הניווט והפעולות בשורה אחת */}
-        <div className="flex items-center gap-2 mb-4 flex-nowrap overflow-x-auto">
-          {prev && (
+        {/* סרגל עליון מאוחד — מועבר ל-header דרך portal */}
+        {toolbarSlot && createPortal(
+          <>
+            {prev && (
+              <button
+                onClick={() => navigateWithSave(prev.url)}
+                className="sketch-btn-outline text-sm flex items-center justify-center w-8 h-8 p-0 shrink-0"
+                aria-label="השלב הקודם"
+                title="הקודם"
+              >
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
             <button
-              onClick={() => navigateWithSave(prev.url)}
-              className="sketch-btn-outline text-sm flex items-center justify-center w-9 h-9 p-0 shrink-0"
-              aria-label="השלב הקודם"
-              title="הקודם"
+              onClick={() => navigateWithSave("/")}
+              className="sketch-btn-outline text-sm flex items-center justify-center w-8 h-8 p-0 shrink-0"
+              aria-label="חזרה למפת השלבים"
+              title="מפה"
             >
-              <ArrowRight className="h-4 w-4" />
+              <Home className="h-4 w-4" />
             </button>
-          )}
-          <button
-            onClick={() => navigateWithSave("/")}
-            className="sketch-btn-outline text-sm flex items-center justify-center w-9 h-9 p-0 shrink-0"
-            aria-label="חזרה למפת השלבים"
-            title="מפה"
-          >
-            <Home className="h-4 w-4" />
-          </button>
-          {next && (
+            {next && (
+              <button
+                onClick={() => navigateWithSave(next.url)}
+                className="sketch-btn-outline text-sm flex items-center justify-center w-8 h-8 p-0 shrink-0"
+                aria-label="השלב הבא"
+                title="הבא"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+            )}
+
+            <span className="pill-chip pill-chip-coral shrink-0">שלב {String(step.num).padStart(2, "0")}</span>
+            <span className="pill-chip pill-chip-outline shrink-0 whitespace-nowrap">{step.num} / {TOTAL_STEPS}</span>
+            {completed && <span className="pill-chip pill-chip-mint shrink-0">הושלם</span>}
+
             <button
-              onClick={() => navigateWithSave(next.url)}
-              className="sketch-btn-outline text-sm flex items-center justify-center w-9 h-9 p-0 shrink-0"
-              aria-label="השלב הבא"
-              title="הבא"
+              onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
+              className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
+              title="הקדמה"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <BookOpen className="h-3 w-3" /> הקדמה
             </button>
-          )}
-
-          <span className="pill-chip pill-chip-coral shrink-0">שלב {String(step.num).padStart(2, "0")}</span>
-          <span className="pill-chip pill-chip-outline shrink-0 whitespace-nowrap">{step.num} / {TOTAL_STEPS}</span>
-          {completed && <span className="pill-chip pill-chip-mint shrink-0">הושלם</span>}
-
-          <div className="flex-1" />
-
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent("lsd:open", { detail: { stepKey } }))}
-            className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
-            title="הקדמה"
-          >
-            <BookOpen className="h-3 w-3" /> הקדמה
-          </button>
-          {aiEnabled && (
-            <button
-              onClick={() => setShowAI(!showAI)}
-              className={`sketch-btn-outline text-sm flex items-center gap-1 shrink-0 ${showAI ? "bg-foreground text-background" : ""}`}
+            {aiEnabled && (
+              <button
+                onClick={() => setShowAI(!showAI)}
+                className={`sketch-btn-outline text-sm flex items-center gap-1 shrink-0 ${showAI ? "bg-foreground text-background" : ""}`}
+              >
+                <Sparkles className="h-3 w-3" /> סייע AI
+              </button>
+            )}
+            <a
+              href={step.learnMoreUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
             >
-              <Sparkles className="h-3 w-3" /> סייע AI
-            </button>
-          )}
-          <a
-            href={step.learnMoreUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
-          >
-            <ExternalLink className="h-3 w-3" /> למד עוד
-          </a>
-          {!locked && completed && (
-            <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0">
-              פתח מחדש
-            </button>
-          )}
-        </div>
+              <ExternalLink className="h-3 w-3" /> למד עוד
+            </a>
+            {!locked && completed && (
+              <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0">
+                פתח מחדש
+              </button>
+            )}
+          </>,
+          toolbarSlot
+        )}
 
         {/* כותרת */}
         <div className="mb-6">

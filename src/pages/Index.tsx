@@ -8,6 +8,7 @@ import { Calendar, MapPin, Lightbulb, ArrowLeft, Users, Crown, Loader2, LogIn, P
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 interface EventInfo {
   event_date?: string | null;

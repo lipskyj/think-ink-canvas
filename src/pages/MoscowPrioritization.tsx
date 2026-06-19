@@ -227,7 +227,11 @@ export default function MoscowPrioritization() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {BUCKETS.map((bucket) => (
+        {BUCKETS.filter((bucket) => {
+          // Hide the "unassigned" bank when it's empty so the lanes don't show a ghost column
+          if (bucket.key !== "unassigned") return true;
+          return features.some((feature) => feature.bucket === "unassigned");
+        }).map((bucket) => (
           <BucketLane
             key={bucket.key}
             config={bucket}

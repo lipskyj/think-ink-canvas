@@ -73,6 +73,7 @@ export default function Team() {
           teamName,
           members: members.filter((m) => m.name.trim() || m.gender),
           situation,
+          stylePrompt: getAvatarStyle(styleKey).prompt,
         },
       });
       if (error) throw error;

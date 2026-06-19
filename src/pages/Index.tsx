@@ -400,15 +400,6 @@ const Index = () => {
           >
             ראו דוגמה מקצה לקצה
           </Link>
-          <button
-            onClick={async () => {
-              await loadDemoCase();
-              navigate("/user-persona");
-            }}
-            className="sketch-btn-outline inline-flex items-center gap-2 text-base"
-          >
-            איך נראה תהליך העבודה
-          </button>
         </section>
       </div>
 

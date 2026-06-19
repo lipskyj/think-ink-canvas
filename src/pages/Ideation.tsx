@@ -7,6 +7,7 @@ import { useProject } from "@/contexts/ProjectContext";
 import LinkedDataBanner from "@/components/LinkedDataBanner";
 import SectionHelper from "@/components/SectionHelper";
 import CoherenceTracker from "@/components/CoherenceTracker";
+import Phase1Recap from "@/components/Phase1Recap";
 
 interface Idea {
   text: string;
@@ -252,6 +253,7 @@ const Ideation = () => {
 
   return (
     <StepPage stepKey="ideation" onSave={getData} canComplete={hasContent}>
+      <Phase1Recap />
       <LinkedDataBanner stepKey="ideation" />
       <CoherenceTracker stepKey="ideation" currentData={{ ideas: flatIdeas }} />
 

@@ -1,4 +1,4 @@
-import { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, Trophy, ListChecks, type LucideIcon } from "lucide-react";
+himport { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, Trophy, ListChecks, type LucideIcon } from "lucide-react";
 
 export type ProcessPhase = "problem" | "solution" | "development" | "presentation";
 
@@ -58,13 +58,13 @@ export const STEPS: StepConfig[] = [
   {
     key: "five_whys",
     num: 3,
-    title: "חמישה למה",
+    title: "חמש למה",
     url: "/five-whys",
     icon: Search,
     emoji: "",
     learnMoreUrl: "https://en.wikipedia.org/wiki/Five_whys",
     phase: "problem",
-    description: "טכניקת חמישה למה חופרת מתחת לסימפטומים השטחיים על ידי שאילת 'למה?' שוב ושוב. כל תשובה מקלפת שכבה ומובילה לשורש הבעיה האמיתי.",
+    description: "טכניקת חמש למה חופרת מתחת לסימפטומים השטחיים על ידי שאילת 'למה?' שוב ושוב. כל תשובה מקלפת שכבה ומובילה לשורש הבעיה האמיתי.",
     whyItMatters: "פתרון סימפטומים מבזבז משאבים. טכניקה פשוטה אך עוצמתית זו מבטיחה שאתם מטפלים בגורם האמיתי — ולא רק מדביקים פלסטר.",
   },
   {

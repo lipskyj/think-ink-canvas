@@ -43,7 +43,7 @@ const PHASE_BADGE: Record<string, string> = {
 };
 
 const Index = () => {
-  const { isStepCompleted, isLoading, loadDemoCase } = useProject();
+  const { isStepCompleted, isLoading } = useProject();
   const { session, isClassMode, isLeader, setSession } = useClass();
   const { toast } = useToast();
   const navigate = useNavigate();

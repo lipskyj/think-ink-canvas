@@ -7,6 +7,7 @@ import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
 import CoherenceTracker from "@/components/CoherenceTracker";
 import { useAutoFill } from "@/hooks/useAutoFill";
+import { BRIEF_QUESTIONS } from "@/lib/briefQuestions";
 
 interface BriefState {
   objective: string;
@@ -18,6 +19,7 @@ interface BriefState {
   styleVibe: string;
   styleNotes: string;
   successCriteria: string;
+  briefingAnswers: Record<string, string>;
   // legacy
   keyFeatures?: string;
   fidelity?: string;

@@ -169,8 +169,12 @@ const DEMO_DATA: DemoStep[] = [
     output: (
       <>
         <div className="grid sm:grid-cols-2 gap-3 font-hand text-base">
-          <div className="sketch-border-thin p-3 bg-[hsl(var(--mint)/0.35)]">
+          <div className="relative sketch-border-thin p-3 pr-9 bg-[hsl(var(--mint)/0.5)] ring-2 ring-foreground/40">
+            <Star className="absolute right-2 top-2 h-4 w-4 fill-foreground text-foreground" />
             <strong>ניצחונות מהירים:</strong> מדריך ChatGPT לתלמידים, רשימת סרטוני יוטיוב בעברית
+            <div className="text-[10px] font-sketch tracking-wider uppercase text-foreground/70 mt-1.5">
+              ★ מתחילים מכאן — השפעה גבוהה, מאמץ נמוך
+            </div>
           </div>
           <div className="sketch-border-thin p-3 bg-[hsl(var(--sun)/0.35)]">
             <strong>הימורים גדולים:</strong> אפליקציה עם AI מותאם לתוכנית הישראלית, משחק עולם מתמטי
@@ -183,7 +187,7 @@ const DEMO_DATA: DemoStep[] = [
           </div>
         </div>
         <ChosenBox>
-          <strong>בחרנו:</strong> אפליקציה עם AI — תלמיד מצלם שאלה, ה-AI מסביר צעד-אחר-צעד ומוסיף תרגיל מותאם.
+          <strong>בחרנו (הימור גדול עם פוטנציאל אמיתי):</strong> אפליקציה עם AI — תלמיד מצלם שאלה, ה-AI מסביר צעד-אחר-צעד ומוסיף תרגיל מותאם.
         </ChosenBox>
       </>
     ),

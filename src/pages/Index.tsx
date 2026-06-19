@@ -392,6 +392,12 @@ const Index = () => {
           >
             טען מקרה בוחן מוכן
           </button>
+          <Link
+            to="/walkthrough"
+            className="sketch-btn-outline inline-flex items-center gap-2 text-base mt-3 mr-2"
+          >
+            ראו דוגמה מקצה לקצה
+          </Link>
         </section>
       </div>
 

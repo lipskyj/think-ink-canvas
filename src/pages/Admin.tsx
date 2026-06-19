@@ -170,6 +170,77 @@ export default function Admin() {
     await fetchClasses();
   };
 
+  /* ── Master controls (applied to every group at once) ── */
+  // Derive current global state from the first class row (treat all classes as kept in sync).
+  const ref = classes[0];
+  const masterAiEnabled = useMemo(() => classes.length > 0 && classes.every((c) => c.ai_enabled), [classes]);
+  // Working is "disabled" when EVERY step is locked across every class.
+  const workingDisabled = useMemo(
+    () => classes.length > 0 && classes.every((c) => STEPS.every((s) => c.locked_steps?.[s.key])),
+    [classes],
+  );
+  // Pacing — if no steps are locked anywhere, treat as self-paced. Otherwise admin-paced;
+  // the current step is the first step that's still unlocked everywhere.
+  const adminPaceStep = useMemo(() => {
+    if (classes.length === 0) return null as number | null;
+    // Find the smallest step index that is locked in any class
+    let firstLocked = -1;
+    for (let i = 0; i < STEPS.length; i++) {
+      if (classes.some((c) => c.locked_steps?.[STEPS[i].key])) {
+        firstLocked = i;
+        break;
+      }
+    }
+    if (firstLocked === -1) return null; // self-paced (nothing locked)
+    if (workingDisabled) return null; // fully closed, not "admin pace"
+    return firstLocked; // current open step is firstLocked - 1? actually firstLocked is the first locked step, so open = firstLocked - 1
+  }, [classes, workingDisabled]);
+  const isAdminPaced = adminPaceStep !== null;
+
+  const applyToAllClasses = async (updates: Partial<ClassRow>) => {
+    if (classes.length === 0) return;
+    const dbUpdates: any = { ...updates };
+    const { error } = await supabase.from("classes").update(dbUpdates).in("id", classes.map((c) => c.id));
+    if (error) {
+      toast({ title: "שגיאה", description: error.message, variant: "destructive" });
+      return;
+    }
+    await fetchClasses();
+  };
+
+  const toggleWorkingForAll = async () => {
+    if (workingDisabled) {
+      // Re-open: unlock everything everywhere
+      await applyToAllClasses({ locked_steps: {} });
+      toast({ title: "האירוע פתוח — כל הקבוצות יכולות לעבוד" });
+    } else {
+      // Close: lock every step everywhere
+      const allLocked: Record<string, boolean> = {};
+      STEPS.forEach((s) => { allLocked[s.key] = true; });
+      await applyToAllClasses({ locked_steps: allLocked });
+      toast({ title: "האירוע נסגר — אף קבוצה לא יכולה להתקדם" });
+    }
+  };
+
+  const toggleAiForAll = async () => {
+    await applyToAllClasses({ ai_enabled: !masterAiEnabled } as any);
+    toast({ title: !masterAiEnabled ? "AI הופעל לכל הקבוצות" : "AI כובה לכל הקבוצות" });
+  };
+
+  const setSelfPaced = async () => {
+    await applyToAllClasses({ locked_steps: {} });
+    toast({ title: "מצב חופשי — כל קבוצה מתקדמת בקצב שלה" });
+  };
+
+  const setAdminPaceAtStep = async (openUpToIndex: number) => {
+    // Lock every step AFTER openUpToIndex.
+    const locked: Record<string, boolean> = {};
+    STEPS.forEach((s, i) => { if (i > openUpToIndex) locked[s.key] = true; });
+    await applyToAllClasses({ locked_steps: locked });
+  };
+
+
+
   return (
     <Layout>
       <div className="max-w-4xl mx-auto">

@@ -217,6 +217,24 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
               <BookOpen className="h-3 w-3" /> מה עושים בשלב הזה
             </button>
 
+            {demo && (
+              <button
+                onClick={() => setShowExample((v) => !v)}
+                className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
+                title={showExample ? "חזרה לעבודה שלכם" : "ראו דוגמה לשלב הזה"}
+              >
+                {showExample ? (
+                  <>
+                    <Pencil className="h-3 w-3" /> חזרה לעבודה
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-3 w-3" /> ראו דוגמה
+                  </>
+                )}
+              </button>
+            )}
+
             <UnstuckButton variant="inline" />
           </>,
           toolbarSlot

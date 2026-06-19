@@ -106,14 +106,16 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
       className="w-full max-w-3xl mx-auto px-2 sm:px-4 py-6"
       aria-label={`שלב ${step.num} — ${step.title}`}
     >
-      {/* Skip */}
-      <div className="flex justify-start mb-4">
-        <button
-          onClick={close}
-          className="text-foreground/70 hover:text-foreground transition-colors flex items-center gap-1 text-sm font-sketch tracking-wider uppercase"
-        >
-          <X className="h-4 w-4" /> דלג
-        </button>
+      {/* Skip — only after the typewriter for the current stage is done */}
+      <div className="flex justify-start mb-4 min-h-[24px]">
+        {((stage === "learn" && learnDone) || (stage === "see" && seeDone)) && (
+          <button
+            onClick={close}
+            className="text-foreground/70 hover:text-foreground transition-colors flex items-center gap-1 text-sm font-sketch tracking-wider uppercase animate-fade-in"
+          >
+            <X className="h-4 w-4" /> דלג
+          </button>
+        )}
       </div>
 
       {/* Step chip */}

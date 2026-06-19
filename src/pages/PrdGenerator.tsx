@@ -227,7 +227,7 @@ const PrdGenerator = () => {
         </div>
       )}
 
-      {/* Money-time bridge between Step 9 (PRD) and Step 10 (Pitch) */}
+      {/* Money-time bridge between PRD and Pitch */}
       {prdOutput && (
         <div className="sketch-card mt-8 bg-gradient-to-br from-[hsl(var(--highlight)/0.25)] to-[hsl(var(--accent)/0.18)] border-2 border-foreground">
           <div className="text-center">
@@ -241,7 +241,7 @@ const PrdGenerator = () => {
               <strong>אל תחזרו לכאן עד שיש לכם מוצר עובד שאפשר להראות.</strong>
             </p>
             <div className="font-hand text-base text-muted-foreground mb-5">
-              כשיש לכם לינק לפרוטוטייפ עובד — חוזרים, ועוברים לשלב 10: הפיץ׳ וההצגה.
+              כשיש לכם לינק לפרוטוטייפ עובד — חוזרים, ועוברים לשלב 11: הפיץ׳ וההצגה.
             </div>
             <button
               onClick={() => {

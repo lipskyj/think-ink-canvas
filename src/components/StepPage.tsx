@@ -7,6 +7,7 @@ import { useClass } from "@/contexts/ClassContext";
 import { getStepByKey, getPreviousStep, getNextStep, TOTAL_STEPS } from "@/lib/steps";
 import AIAssistant from "@/components/AIAssistant";
 import StepIntroModal from "@/components/StepIntroModal";
+import UnstuckButton from "@/components/UnstuckButton";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
@@ -15,9 +16,11 @@ interface StepPageProps {
   children: React.ReactNode;
   onSave?: () => any;
   canComplete?: boolean;
+  /** If provided, hides the step header until the recap (stored under this localStorage key) is dismissed. */
+  phaseRecapKey?: string;
 }
 
-export default function StepPage({ stepKey, children, onSave, canComplete = true }: StepPageProps) {
+export default function StepPage({ stepKey, children, onSave, canComplete = true, phaseRecapKey }: StepPageProps) {
   const navigate = useNavigate();
   const { isStepCompleted, saveStepData, completeStep, uncompleteStep, getAllPreviousData, getStepData, getMissingPrerequisites, isLoading } = useProject();
   const { aiEnabled, isStepLocked } = useAdmin();
@@ -25,6 +28,17 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   const [showAI, setShowAI] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [recapDismissed, setRecapDismissed] = useState<boolean>(() => {
+    if (!phaseRecapKey) return true;
+    return typeof window !== "undefined" && localStorage.getItem(phaseRecapKey) === "1";
+  });
+  useEffect(() => {
+    if (!phaseRecapKey) { setRecapDismissed(true); return; }
+    const check = () => setRecapDismissed(localStorage.getItem(phaseRecapKey) === "1");
+    check();
+    const id = setInterval(check, 300);
+    return () => clearInterval(id);
+  }, [phaseRecapKey]);
   const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null);
   useEffect(() => {
     const find = () => setToolbarSlot(document.getElementById("step-toolbar-slot"));
@@ -199,14 +213,18 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             >
               <BookOpen className="h-3 w-3" /> מה עושים בשלב הזה
             </button>
+
+            <UnstuckButton variant="inline" />
           </>,
           toolbarSlot
         )}
 
         {/* כותרת */}
-        <div className="mb-6">
-          <h1 className="display-huge mb-1">{step.title}</h1>
-        </div>
+        {recapDismissed && (
+          <div className="mb-6">
+            <h1 className="display-huge mb-1">{step.title}</h1>
+          </div>
+        )}
 
 
         {/* מידע מקדים */}
@@ -263,11 +281,15 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         {children}
         </fieldset>
 
-        {/* CTA תחתון — רק כפתור ההשלמה */}
+        {/* CTA תחתון — סיימתי, המשך הלאה */}
         {!locked && !completed && canComplete && (
-          <div className="mt-8 flex justify-center">
-            <button onClick={handleComplete} className="sketch-btn text-sm flex items-center gap-1">
-              <CheckCircle className="h-3 w-3" /> השלם והמשך
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={handleComplete}
+              className="sketch-btn text-base flex items-center gap-2 px-6 py-3 shadow-md"
+            >
+              <CheckCircle className="h-4 w-4" /> סיימתי, המשך הלאה
+              <ArrowLeft className="h-4 w-4" />
             </button>
           </div>
         )}

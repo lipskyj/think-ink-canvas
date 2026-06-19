@@ -31,6 +31,7 @@ import Admin from "./pages/Admin";
 import JoinClass from "./pages/JoinClass";
 import Team from "./pages/Team";
 import Submissions from "./pages/Submissions";
+import Walkthrough from "./pages/Walkthrough";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/join/:classId" element={<JoinClass />} />
             <Route path="/team" element={<Team />} />
             <Route path="/submissions" element={<Submissions />} />
+            <Route path="/walkthrough" element={<Walkthrough />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SectionHelperProvider>

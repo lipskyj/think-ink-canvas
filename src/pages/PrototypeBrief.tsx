@@ -72,7 +72,7 @@ const PrototypeBrief = () => {
 
 
   return (
-    <StepPage stepKey="prototype_brief" onSave={getData} canComplete={hasContent}>
+    <StepPage stepKey="prototype_brief" onSave={getData} canComplete={hasContent} phaseRecapKey="phase2_recap_dismissed">
       <Phase2Recap />
       <CoherenceTracker stepKey="prototype_brief" currentData={brief} />
 

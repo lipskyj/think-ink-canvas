@@ -267,6 +267,12 @@ export default function Admin() {
           </div>
           <div className="space-y-3">
             <Input
+              placeholder="שם בית הספר / הארגון המארח"
+              value={eventDraft.organizer_name}
+              onChange={(e) => setEventDraft((prev) => ({ ...prev, organizer_name: e.target.value }))}
+              onBlur={(e) => updateEventForAllGroups({ organizer_name: e.target.value } as any)}
+            />
+            <Input
               placeholder="נושא מרכזי / אתגר האירוע"
               value={eventDraft.event_topic}
               onChange={(e) => setEventDraft((prev) => ({ ...prev, event_topic: e.target.value }))}

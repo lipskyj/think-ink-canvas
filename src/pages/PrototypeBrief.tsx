@@ -7,6 +7,7 @@ import { useProject } from "@/contexts/ProjectContext";
 import SectionHelper from "@/components/SectionHelper";
 import CoherenceTracker from "@/components/CoherenceTracker";
 import { useAutoFill } from "@/hooks/useAutoFill";
+import { BRIEF_QUESTIONS } from "@/lib/briefQuestions";
 
 interface BriefState {
   objective: string;
@@ -18,6 +19,7 @@ interface BriefState {
   styleVibe: string;
   styleNotes: string;
   successCriteria: string;
+  briefingAnswers: Record<string, string>;
   // legacy
   keyFeatures?: string;
   fidelity?: string;
@@ -58,6 +60,7 @@ const PrototypeBrief = () => {
   const [brief, setBrief] = useState<BriefState>({
     objective: "", must: "", should: "", could: "", wont: "",
     assumptions: "", styleVibe: "", styleNotes: "", successCriteria: "",
+    briefingAnswers: {},
   });
   const [suggestedFeatures, setSuggestedFeatures] = useState<SuggestedFeature[]>([]);
   const [aiFeaturesLoading, setAiFeaturesLoading] = useState(false);
@@ -69,6 +72,7 @@ const PrototypeBrief = () => {
         ...prev,
         ...saved,
         must: saved.must || saved.keyFeatures || "",
+        briefingAnswers: saved.briefingAnswers || {},
       }));
       if (Array.isArray(saved.suggestedFeatures)) setSuggestedFeatures(saved.suggestedFeatures.map((f: any) => ({ ...f, id: f.id || crypto.randomUUID() })));
     }
@@ -166,6 +170,48 @@ const PrototypeBrief = () => {
         <p className="font-hand text-lg">
           הבריף הוא חוזה קצר עם עצמכם — מה ייבנה, באיזה סדר עדיפויות, ואיך זה יראה ויורגש.
         </p>
+      </div>
+
+      {/* Guided briefing questions with template chips */}
+      <div className="sketch-card mb-6">
+        <label className="font-sketch text-xl block mb-1">7 שאלות לפני שמתחילים לבנות</label>
+        <p className="font-hand text-muted-foreground text-sm mb-4">
+          ענו על מה שרלוונטי. לחיצה על תבנית מוסיפה אותה לתשובה — אפשר לערוך אחרי.
+        </p>
+        <div className="space-y-5">
+          {BRIEF_QUESTIONS.map((q) => {
+            const value = brief.briefingAnswers[q.key] || "";
+            const setValue = (next: string) =>
+              setBrief((prev) => ({
+                ...prev,
+                briefingAnswers: { ...prev.briefingAnswers, [q.key]: next },
+              }));
+            return (
+              <div key={q.key} className="sketch-border-thin p-3 bg-background rounded">
+                <div className="font-sketch text-base mb-1">{q.title}</div>
+                <div className="font-hand text-xs text-muted-foreground mb-2">{q.hint}</div>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {q.templates.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setValue(value ? `${value}\n• ${t}` : `• ${t}`)}
+                      className="pill-chip pill-chip-outline text-xs cursor-pointer"
+                    >
+                      + {t}
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  className="sketch-input min-h-[70px] resize-none notebook-lines text-sm"
+                  placeholder="כתבו את התשובה שלכם, או לחצו על תבנית למעלה..."
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="space-y-5">

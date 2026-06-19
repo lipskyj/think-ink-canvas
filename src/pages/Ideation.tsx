@@ -351,112 +351,150 @@ const Ideation = () => {
         </div>
       ) : (
         <>
-          {/* Timer Section */}
-          <div className="sketch-border p-5 mb-6 bg-accent/10">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{currentRound.emoji}</span>
-                <h3 className="text-sm uppercase tracking-widest text-muted-foreground font-bold">
-                  {currentRound.title}
-                </h3>
-              </div>
-              <div className="flex items-center gap-2">
-                {!timerRunning && timeLeft > 0 && (
-                  <button onClick={() => setTimerRunning(true)} className="sketch-btn-outline flex items-center gap-1 text-xs px-3 py-1">
-                    <Play className="h-3 w-3" /> המשך
-                  </button>
-                )}
-                {timerRunning && (
-                  <button onClick={() => setTimerRunning(false)} className="sketch-btn-outline flex items-center gap-1 text-xs px-3 py-1">
-                    ⏸ עצור
-                  </button>
-                )}
-                <button onClick={resetTimer} className="p-1 hover:bg-accent rounded-sm">
-                  <RotateCcw className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
+          {(() => {
+            const isLastRound = currentRoundIndex === ROUNDS.length - 1;
+            const hasIdeasHere = currentIdeas.some((i) => i.text.trim());
+            // Phase done: on the final round, after the timer ran out and the team produced ideas — hide the heavy bottom UI.
+            const phaseDone = isLastRound && timerFinished && hasIdeasHere && showBonus;
+            if (phaseDone) {
+              return (
+                <div className="sketch-border p-8 text-center bg-accent/10 animate-fade-in">
+                  <CheckCircle2 className="h-12 w-12 mx-auto text-green-600 mb-3" />
+                  <h3 className="text-2xl font-bold mb-2">סיימתם את כל הסבבים!</h3>
+                  <p className="text-base text-muted-foreground mb-6 max-w-md mx-auto">
+                    סמנו את הרעיונות הכי מבטיחים בסבבים הקודמים (★) — הם יעברו לשלב הבא.
+                  </p>
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <button onClick={goToPrevRound} className="sketch-btn-outline flex items-center gap-1 text-sm">
+                      <ChevronRight className="h-4 w-4" /> חזרה לסבב הקודם לסימון
+                    </button>
+                  </div>
+                  {allStarred.length > 0 && (
+                    <p className="font-hand text-sm text-muted-foreground mt-4">
+                      ⭐ סימנתם {allStarred.length} {allStarred.length === 1 ? "רעיון מבטיח" : "רעיונות מבטיחים"}
+                    </p>
+                  )}
+                </div>
+              );
+            }
+            return (
+              <>
+                {/* Timer Section */}
+                <div className="sketch-border p-5 mb-6 bg-accent/10">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{currentRound.emoji}</span>
+                      <h3 className="text-sm uppercase tracking-widest text-muted-foreground font-bold">
+                        {currentRound.title}
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {!timerRunning && timeLeft > 0 && (
+                        <button onClick={() => setTimerRunning(true)} className="sketch-btn-outline flex items-center gap-1 text-xs px-3 py-1">
+                          <Play className="h-3 w-3" /> המשך
+                        </button>
+                      )}
+                      {timerRunning && (
+                        <button onClick={() => setTimerRunning(false)} className="sketch-btn-outline flex items-center gap-1 text-xs px-3 py-1">
+                          ⏸ עצור
+                        </button>
+                      )}
+                      <button onClick={resetTimer} className="p-1 hover:bg-accent rounded-sm">
+                        <RotateCcw className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
 
-            <div className="relative">
-              <div className="w-full h-3 bg-secondary rounded-full overflow-hidden mb-2">
-                <div
-                  className={`h-full rounded-full transition-all duration-1000 ${
-                    timerFinished ? "bg-destructive" : timerPercent > 75 ? "bg-orange-500" : "bg-foreground"
-                  }`}
-                  style={{ width: `${timerPercent}%` }}
-                />
-              </div>
-              <div className={`text-center font-mono text-3xl font-bold ${timerFinished ? "text-destructive animate-pulse" : ""}`}>
-                {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-              </div>
-              {timerFinished && (
-                <p className="text-center text-destructive font-bold mt-1 animate-fade-in"> הזמן נגמר! סמנו את הרעיונות הטובים ביותר </p>
-              )}
-            </div>
-          </div>
+                  <div className="relative">
+                    <div className="w-full h-3 bg-secondary rounded-full overflow-hidden mb-2">
+                      <div
+                        className={`h-full rounded-full transition-all duration-1000 ${
+                          timerFinished ? "bg-destructive" : timerPercent > 75 ? "bg-orange-500" : "bg-foreground"
+                        }`}
+                        style={{ width: `${timerPercent}%` }}
+                      />
+                    </div>
+                    <div className={`text-center font-mono text-3xl font-bold ${timerFinished ? "text-destructive animate-pulse" : ""}`}>
+                      {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+                    </div>
+                    {timerFinished && (
+                      <p className="text-center text-destructive font-bold mt-1 animate-fade-in"> הזמן נגמר! סמנו את הרעיונות הטובים ביותר </p>
+                    )}
+                  </div>
+                </div>
 
-          {/* Instructions reminder */}
-          <p className="text-sm text-muted-foreground mb-4 text-right">
-            {currentRound.description}
-          </p>
+                {/* Instructions reminder */}
+                <p className="text-sm text-muted-foreground mb-4 text-right">
+                  {currentRound.description}
+                </p>
 
-          {/* Ideas list */}
-          <div className="space-y-3">
-            {currentIdeas.map((idea, i) => (
-              <div key={i} className="flex items-center gap-2 animate-fade-in w-full">
-                {aiEnabled ? (
-                  <button
-                    onClick={async () => {
-                      setAiLoading(true);
-                      try {
-                        const { data, error } = await supabase.functions.invoke("ai-assist", {
-                          body: {
-                            stepKey: "ideation",
-                            stepTitle: currentRound.title,
-                            mode: "section",
-                            sectionKey: "idea",
-                            sectionPrompt: `צור רעיון יצירתי לסבב '${currentRound.title}'. ${currentRound.description}`,
-                            currentData: { ideas: flatIdeas, currentRound: currentRound.id },
-                            previousData,
-                          },
-                        });
-                        if (error) throw error;
-                        const text = (data?.content || "").trim();
-                        if (text) updateIdea(i, text);
-                      } catch (e) {
-                        console.error("AI idea generation failed:", e);
-                      } finally {
-                        setAiLoading(false);
-                      }
-                    }}
-                    disabled={aiLoading}
-                    title="הצע רעיון עם AI"
-                    className="flex-shrink-0 p-2.5 rounded-md border-2 border-foreground/30 hover:border-foreground hover:bg-accent/40 transition-colors disabled:opacity-50"
-                  >
-                    {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                {/* Ideas list */}
+                <div className="space-y-3">
+                  {currentIdeas.map((idea, i) => (
+                    <div key={i} className="flex items-center gap-2 animate-fade-in w-full">
+                      {aiEnabled ? (
+                        <button
+                          onClick={async () => {
+                            setAiLoading(true);
+                            try {
+                              const { data, error } = await supabase.functions.invoke("ai-assist", {
+                                body: {
+                                  stepKey: "ideation",
+                                  stepTitle: currentRound.title,
+                                  mode: "section",
+                                  sectionKey: "idea",
+                                  sectionPrompt: `צור רעיון יצירתי לסבב '${currentRound.title}'. ${currentRound.description}`,
+                                  currentData: { ideas: flatIdeas, currentRound: currentRound.id },
+                                  previousData,
+                                },
+                              });
+                              if (error) throw error;
+                              const text = (data?.content || "").trim();
+                              if (text) updateIdea(i, text);
+                            } catch (e) {
+                              console.error("AI idea generation failed:", e);
+                            } finally {
+                              setAiLoading(false);
+                            }
+                          }}
+                          disabled={aiLoading}
+                          title="הצע רעיון עם AI"
+                          className="flex-shrink-0 p-2.5 rounded-md border-2 border-foreground/30 hover:border-foreground hover:bg-accent/40 transition-colors disabled:opacity-50"
+                        >
+                          {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                        </button>
+                      ) : null}
+                      <input
+                        dir="rtl"
+                        className="sketch-input flex-1 min-w-0 text-lg py-3"
+                        placeholder={currentRound.placeholders[i % currentRound.placeholders.length]}
+                        value={idea.text}
+                        onChange={(e) => updateIdea(i, e.target.value)}
+                      />
+                      <button
+                        onClick={() => toggleStar(i)}
+                        title={idea.starred ? "הסר סימון" : "סמן רעיון מבטיח"}
+                        className={`flex-shrink-0 p-2 rounded-md ${idea.starred ? "text-amber-500" : "text-muted-foreground hover:text-foreground"}`}
+                      >
+                        <Star className={`h-4 w-4 ${idea.starred ? "fill-amber-500" : ""}`} />
+                      </button>
+                      {currentIdeas.length > 1 && (
+                        <button onClick={() => removeIdea(i)} title="הסר" className="flex-shrink-0 p-2 hover:bg-accent rounded-md text-muted-foreground hover:text-foreground">
+                          <X className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 mt-4 flex-wrap">
+                  <button onClick={addIdea} className="sketch-btn-outline flex items-center gap-2 text-sm">
+                    <Plus className="h-4 w-4" /> הוסף רעיון
                   </button>
-                ) : null}
-                <input
-                  dir="rtl"
-                  className="sketch-input flex-1 min-w-0 text-lg py-3"
-                  placeholder={currentRound.placeholders[i % currentRound.placeholders.length]}
-                  value={idea.text}
-                  onChange={(e) => updateIdea(i, e.target.value)}
-                />
-                {currentIdeas.length > 1 && (
-                  <button onClick={() => removeIdea(i)} title="הסר" className="flex-shrink-0 p-2 hover:bg-accent rounded-md text-muted-foreground hover:text-foreground">
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2 mt-4 flex-wrap">
-            <button onClick={addIdea} className="sketch-btn-outline flex items-center gap-2 text-sm">
-              <Plus className="h-4 w-4" /> הוסף רעיון
-            </button>
-          </div>
+                </div>
+              </>
+            );
+          })()}
 
           {/* Navigation buttons — RTL: previous points right, next points left */}
           <div className="flex items-center justify-between mt-8">

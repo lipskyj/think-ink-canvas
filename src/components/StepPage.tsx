@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock, BookOpen, Home } from "lucide-react";
+import { ExternalLink, CheckCircle, ArrowLeft, ArrowRight, Sparkles, AlertTriangle, ChevronUp, Info, Lock, BookOpen, Home, Eye, Pencil } from "lucide-react";
 import Layout from "@/components/Layout";
 import { useProject } from "@/contexts/ProjectContext";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useClass } from "@/contexts/ClassContext";
 import { getStepByKey, getPreviousStep, getNextStep, TOTAL_STEPS } from "@/lib/steps";
+import { getDemoStep } from "@/lib/demoSteps";
 import AIAssistant from "@/components/AIAssistant";
 import StepIntroModal from "@/components/StepIntroModal";
 import UnstuckButton from "@/components/UnstuckButton";
@@ -28,6 +29,8 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
   const [showAI, setShowAI] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [showExample, setShowExample] = useState(false);
+  const demo = getDemoStep(stepKey);
   const [recapDismissed, setRecapDismissed] = useState<boolean>(() => {
     if (!phaseRecapKey) return true;
     return typeof window !== "undefined" && localStorage.getItem(phaseRecapKey) === "1";
@@ -214,6 +217,24 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
               <BookOpen className="h-3 w-3" /> מה עושים בשלב הזה
             </button>
 
+            {demo && (
+              <button
+                onClick={() => setShowExample((v) => !v)}
+                className="sketch-btn-outline text-sm flex items-center gap-1 shrink-0"
+                title={showExample ? "חזרה לעבודה שלכם" : "ראו דוגמה לשלב הזה"}
+              >
+                {showExample ? (
+                  <>
+                    <Pencil className="h-3 w-3" /> חזרה לעבודה
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-3 w-3" /> ראו דוגמה
+                  </>
+                )}
+              </button>
+            )}
+
             <UnstuckButton variant="inline" />
           </>,
           toolbarSlot
@@ -277,9 +298,34 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         )}
 
         {/* תוכן */}
-        <fieldset disabled={locked} className={locked ? "opacity-60 pointer-events-none" : ""}>
-        {children}
-        </fieldset>
+        {showExample && demo ? (
+          <section className="sketch-card p-5 md:p-6 bg-secondary/20 animate-fade-in">
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              <span className="pill-chip pill-chip-coral text-[10px] flex items-center gap-1">
+                <Eye className="h-3 w-3" /> דוגמה לשלב הזה
+              </span>
+              <span className="pill-chip pill-chip-outline text-[10px]">מה הקבוצה לדוגמה כתבה</span>
+              <button
+                onClick={() => setShowExample(false)}
+                className="ml-auto sketch-btn-outline text-xs flex items-center gap-1"
+                title="חזרה לעבודה שלכם"
+              >
+                <Pencil className="h-3 w-3" /> חזרה לעבודה שלי
+              </button>
+            </div>
+            <p className="font-hand text-base text-muted-foreground mb-4">
+              <strong>מה עושים:</strong> {demo.what}
+            </p>
+            <div className="sketch-border-thin p-4 bg-background/70">{demo.output}</div>
+            <p className="font-hand text-xs text-muted-foreground mt-3 text-center">
+              ☝️ הדוגמה לקריאה בלבד — את העבודה שלכם תמלאו בלשונית "חזרה לעבודה שלי".
+            </p>
+          </section>
+        ) : (
+          <fieldset disabled={locked} className={locked ? "opacity-60 pointer-events-none" : ""}>
+          {children}
+          </fieldset>
+        )}
 
         {/* CTA תחתון — סיימתי, המשך הלאה (אדום, גם כשכבר הושלם) */}
         {!locked && (

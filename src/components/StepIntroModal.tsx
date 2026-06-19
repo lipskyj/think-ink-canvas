@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { X, Loader2, RefreshCw, Sparkles } from "lucide-react";
+import { X, Loader2, RefreshCw, Sparkles, BookOpen, Eye } from "lucide-react";
 import { useStepLSD } from "@/hooks/useStepLSD";
 import { getStepByKey } from "@/lib/steps";
-import noamCharacter from "@/assets/noam-character.jpg";
+import { getDemoStep } from "@/lib/demoSteps";
 
 const SEEN_PREFIX = "lsd-seen-v1:";
 const STAGES = ["learn", "see"] as const;
@@ -67,6 +67,15 @@ function Typewriter({
   );
 }
 
+/** Tiny helper — fires onDone exactly once on mount. Used when SEE stage renders static demo content. */
+function DoneOnMount({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    onDone();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
+
 export default function StepIntroModal({ stepKey, onClose }: Props) {
   const step = getStepByKey(stepKey);
   const seenKey = SEEN_PREFIX + stepKey;
@@ -74,7 +83,11 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
   const [stage, setStage] = useState<Stage>("learn");
   const [learnDone, setLearnDone] = useState(false);
   const [seeDone, setSeeDone] = useState(false);
-  const { content, loading, isFallback, regenerate } = useStepLSD(stepKey, true);
+  const demo = getDemoStep(stepKey);
+  const { content: lsdContent, loading, isFallback, regenerate } = useStepLSD(stepKey, !demo);
+  // Prefer hand-crafted demo content when available; fall back to AI/LSD otherwise.
+  const learnText = demo?.learn || lsdContent?.learn || "";
+  const hasContent = !!(demo || lsdContent);
 
   useEffect(() => {
     setStage("learn");
@@ -135,53 +148,61 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
         key={stage}
         className="relative rounded-3xl bg-card border-2 border-foreground p-6 sm:p-10 min-h-[220px] shadow-[6px_6px_0_hsl(var(--foreground))] animate-fade-in"
       >
-        {loading && !content ? (
+        {loading && !hasContent ? (
           <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground font-hand">
             <Loader2 className="h-5 w-5 animate-spin" />
             מכין את זה לצוות שלכם...
           </div>
-        ) : content ? (
+        ) : hasContent ? (
           stage === "learn" ? (
             <Typewriter
-              key={"learn-" + (content.learn?.length ?? 0)}
-              text={content.learn}
+              key={"learn-" + learnText.length}
+              text={learnText}
               className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
               onDone={() => setLearnDone(true)}
             />
           ) : (
-            <div className="space-y-6">
-              <div className="rounded-2xl border-2 border-foreground bg-accent/30 p-5 sm:p-6 shadow-[4px_4px_0_hsl(var(--foreground))]">
-                <div className="flex items-start gap-4">
-                  <img
-                    src={noamCharacter}
-                    alt="נועם, דמות הסטודנט"
-                    loading="lazy"
-                    width={1024}
-                    height={1024}
-                    className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl border-2 border-foreground object-cover shrink-0 shadow-[3px_3px_0_hsl(var(--foreground))]"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="pill-chip pill-chip-coral text-[10px] mb-2">הכירו את נועם</div>
-                    <p className="font-sketch text-xl sm:text-2xl leading-snug">
-                      {content.see.context}
-                    </p>
+            // SEE stage — show the real worked example for this step
+            <div className="space-y-4" onAnimationEnd={() => setSeeDone(true)}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="pill-chip pill-chip-coral text-[10px] flex items-center gap-1">
+                  <Eye className="h-3 w-3" /> דוגמה אמיתית לשלב הזה
+                </span>
+                {demo && (
+                  <span className="pill-chip pill-chip-outline text-[10px]">
+                    מה הקבוצה כתבה
+                  </span>
+                )}
+              </div>
+              {demo ? (
+                <div className="font-hand text-base sm:text-lg leading-relaxed">
+                  <p className="mb-3 text-muted-foreground">
+                    <strong>מה עושים:</strong> {demo.what}
+                  </p>
+                  <div className="sketch-border-thin p-4 bg-secondary/20">
+                    {demo.output}
                   </div>
                 </div>
-              </div>
-
-              <div>
-                <div className="pill-chip pill-chip-outline text-[10px] mb-3">מה הצוות עשה</div>
-                <Typewriter
-                  key={"see-" + (content.see.execution?.length ?? 0)}
-                  text={content.see.execution}
-                  className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
-                  onDone={() => setSeeDone(true)}
-                />
-              </div>
+              ) : (
+                <>
+                  <p className="font-sketch text-lg sm:text-xl leading-snug">
+                    {lsdContent?.see.context}
+                  </p>
+                  <Typewriter
+                    key={"see-" + (lsdContent?.see.execution?.length ?? 0)}
+                    text={lsdContent?.see.execution || ""}
+                    className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
+                    onDone={() => setSeeDone(true)}
+                  />
+                </>
+              )}
+              {/* Auto-mark see as done when demo (static) is shown */}
+              {demo && <DoneOnMount onDone={() => setSeeDone(true)} />}
             </div>
           )
         ) : null}
       </div>
+
 
       {/* Footer */}
       <div className="flex items-center justify-between mt-6 gap-3 flex-wrap">

@@ -97,13 +97,16 @@ export const DEMO_STEPS: DemoStep[] = [
     num: 3,
     phase: "הגדרת הבעיה",
     phaseColor: "pill-chip-coral",
-    title: "חמישה למה",
+    title: "חמש למה",
     what: "שואלים 'למה' חמש פעמים כדי להגיע משורש הבעיה.",
     learn:
-      "כמעט כל צוות עוצר ב'למה' השני — שם נמצאת התשובה הברורה. אבל הזהב מתחיל ב'למה' השלישי, רביעי וחמישי, כשנגמרות לכם התשובות המוכנות. כל תשובה צריכה להתחיל ב'כי' ולעורר 'למה?' חדש. אם עצרתם כי 'כי ככה זה' — תחפרו עוד צעד אחד. שם מתחבאת הבעיה האמיתית שכדאי לפתור.",
+      "כמעט כל צוות עוצר ב'למה' השני — שם נמצאת התשובה הברורה. אבל הזהב מתחיל ב'למה' השלישי, רביעי וחמישי, כשנגמרות לכם התשובות המוכנות. כל תשובה צריכה להתחיל ב'כי' ולעורר 'למה?' חדש. אם עצרתם כי 'כי ככה זה' — תחפרו עוד צעד אחד. שם מתחבאת הבעיה האמיתית שכדאי לפתור. טיפ: לא חייבים חמש למה בדיוק — שלושה עמוקים שווים יותר מחמישה שטחיים.",
     output: (
       <>
-        <div className="flex items-center gap-2 mb-3"><PersonaChip /><span className="font-hand text-sm text-muted-foreground">— שואלים עליה למה</span></div>
+        <div className="sketch-border-thin p-3 bg-[hsl(var(--coral)/0.2)] mb-4 font-hand text-base">
+        <strong>הסימפטום (נקודת ההתחלה):</strong> דנה לא מצליחה להבין מתמטיקה ולשפר את ציוניה
+      </div>
+      <div className="flex items-center gap-2 mb-3"><PersonaChip /><span className="font-hand text-sm text-muted-foreground">— שואלים עליה למה</span></div>
         <div className="space-y-3 font-hand text-base">
           <div className="sketch-border-thin p-3 bg-background/50">
             <div><strong>1.</strong> כי ההסברים של המורה מהירים ולא מותאמים לכל תלמיד.</div>
@@ -205,7 +208,7 @@ export const DEMO_STEPS: DemoStep[] = [
     output: (
       <>
         <div className="grid sm:grid-cols-2 gap-3 font-hand text-base">
-          <div className="relative sketch-border-thin p-3 pr-9 bg-[hsl(var(--mint)/0.5)] ring-2 ring-foreground/40">
+          <div className="relative sketch-border-thin p-3 pr-9 bg-[hsl(var(--mint)/0.5)]">
             <Star className="absolute right-2 top-2 h-4 w-4 fill-foreground text-foreground" />
             <strong>ניצחונות מהירים:</strong> מדריך ChatGPT לתלמידים, רשימת סרטוני יוטיוב בעברית
             <div className="text-[10px] font-sketch tracking-wider uppercase text-foreground/70 mt-1.5">

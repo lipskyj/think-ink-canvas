@@ -8,6 +8,7 @@ import { getStepByKey, getPreviousStep, getNextStep, TOTAL_STEPS } from "@/lib/s
 import AIAssistant from "@/components/AIAssistant";
 import StepIntroModal from "@/components/StepIntroModal";
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 interface StepPageProps {
   stepKey: string;

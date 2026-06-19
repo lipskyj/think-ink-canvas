@@ -146,6 +146,7 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
               key={"learn-" + (content.learn?.length ?? 0)}
               text={content.learn}
               className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
+              onDone={() => setLearnDone(true)}
             />
           ) : (
             <div className="space-y-6">
@@ -174,6 +175,7 @@ export default function StepIntroModal({ stepKey, onClose }: Props) {
                   key={"see-" + (content.see.execution?.length ?? 0)}
                   text={content.see.execution}
                   className="font-hand text-xl sm:text-2xl leading-relaxed whitespace-pre-line block"
+                  onDone={() => setSeeDone(true)}
                 />
               </div>
             </div>

@@ -133,62 +133,55 @@ const Index = () => {
         <section className="text-center pt-4 pb-14 relative">
           {publicEvent ? (
             <>
-              {/* Festive confetti accents */}
-              <div className="pointer-events-none absolute inset-0 overflow-hidden -z-10" aria-hidden>
-                <span className="absolute top-6 left-[12%] text-3xl rotate-[-15deg] opacity-70">✨</span>
-                <span className="absolute top-20 right-[10%] text-4xl rotate-[20deg] opacity-60">🎉</span>
-                <span className="absolute bottom-10 left-[20%] text-2xl rotate-[10deg] opacity-50">🎊</span>
-                <span className="absolute bottom-20 right-[18%] text-3xl rotate-[-8deg] opacity-60">⭐</span>
-              </div>
-
               {publicEvent.organizer_logo_url && (
                 <img
                   src={publicEvent.organizer_logo_url}
                   alt="לוגו המארגן"
-                  className="h-28 max-w-[260px] object-contain mx-auto mb-6"
+                  className="h-32 max-w-[280px] object-contain mx-auto mb-8"
                 />
               )}
               <span className="pill-chip pill-chip-coral mb-8 inline-block text-base px-4 py-1.5">
-                🎯 האקתון לחשיבה עיצובית
+                האקתון לחשיבה עיצובית
               </span>
               {publicEvent.event_topic && (
                 <h1
-                  className="display-mega leading-[0.86] mb-10 px-2"
-                  style={{ fontSize: "clamp(3.5rem, 10vw, 8rem)" }}
+                  className="display-mega leading-[0.86] mb-12 px-2"
+                  style={{ fontSize: "clamp(4rem, 12vw, 9.5rem)" }}
                 >
                   {publicEvent.event_topic}
                 </h1>
               )}
-              <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 font-sketch text-foreground mb-6">
+              <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-8 font-sketch text-foreground mb-8">
                 {(publicEvent.event_date || publicEvent.event_time) && (
-                  <span className="inline-flex items-center gap-3 sketch-card !py-3 !px-5">
-                    <Calendar className="h-9 w-9" strokeWidth={2.2} />
-                    <span style={{ fontSize: "clamp(1.5rem, 2.6vw, 2.25rem)" }}>
+                  <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
+                    <Calendar className="h-12 w-12" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
                       {[publicEvent.event_date, publicEvent.event_time].filter(Boolean).join(" · ")}
                     </span>
                   </span>
                 )}
                 {publicEvent.event_location && (
-                  <span className="inline-flex items-center gap-3 sketch-card !py-3 !px-5">
-                    <MapPin className="h-9 w-9" strokeWidth={2.2} />
-                    <span style={{ fontSize: "clamp(1.5rem, 2.6vw, 2.25rem)" }}>
+                  <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
+                    <MapPin className="h-12 w-12" strokeWidth={2.2} />
+                    <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
                       {publicEvent.event_location}
                     </span>
                   </span>
                 )}
-                <span className="inline-flex items-center gap-3 sketch-card !py-3 !px-5">
-                  <Users className="h-9 w-9" strokeWidth={2.2} />
-                  <span style={{ fontSize: "clamp(1.5rem, 2.6vw, 2.25rem)" }}>
+                <span className="inline-flex items-center gap-4 sketch-card !py-5 !px-7">
+                  <Users className="h-12 w-12" strokeWidth={2.2} />
+                  <span style={{ fontSize: "clamp(2rem, 3.4vw, 3rem)" }}>
                     {teamCount} {teamCount === 1 ? "קבוצה" : "קבוצות"}
                   </span>
                 </span>
               </div>
               {publicEvent.event_description && (
-                <p className="font-hand text-2xl md:text-3xl max-w-3xl mx-auto leading-snug text-foreground/80 whitespace-pre-wrap mt-6">
+                <p className="font-hand text-2xl md:text-3xl max-w-3xl mx-auto leading-snug text-foreground/80 whitespace-pre-wrap mt-8">
                   {publicEvent.event_description}
                 </p>
               )}
             </>
+
 
           ) : (
             <>

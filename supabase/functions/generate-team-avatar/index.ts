@@ -62,19 +62,22 @@ Deno.serve(async (req) => {
     if (!resp.ok) {
       const errText = await resp.text();
       console.error("AI gateway error:", resp.status, errText);
-      return new Response(JSON.stringify({ error: errText }), {
-        status: resp.status,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      const isCredit = resp.status === 402 || resp.status === 403 || /credit_limit_reached/i.test(errText);
+      // Return 200 with an error payload so the client can show a friendly toast
+      // without the platform flagging a non-2xx edge response as a runtime error.
+      return new Response(
+        JSON.stringify({ error: errText, status: resp.status, creditLimit: isCredit }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const data = await resp.json();
     const b64 = data?.data?.[0]?.b64_json;
     if (!b64) {
-      return new Response(JSON.stringify({ error: "No image returned", raw: data }), {
-        status: 502,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "No image returned" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     return new Response(

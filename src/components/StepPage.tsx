@@ -213,14 +213,18 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
             >
               <BookOpen className="h-3 w-3" /> מה עושים בשלב הזה
             </button>
+
+            <UnstuckButton variant="inline" />
           </>,
           toolbarSlot
         )}
 
         {/* כותרת */}
-        <div className="mb-6">
-          <h1 className="display-huge mb-1">{step.title}</h1>
-        </div>
+        {recapDismissed && (
+          <div className="mb-6">
+            <h1 className="display-huge mb-1">{step.title}</h1>
+          </div>
+        )}
 
 
         {/* מידע מקדים */}
@@ -277,11 +281,15 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         {children}
         </fieldset>
 
-        {/* CTA תחתון — רק כפתור ההשלמה */}
+        {/* CTA תחתון — סיימתי, המשך הלאה */}
         {!locked && !completed && canComplete && (
-          <div className="mt-8 flex justify-center">
-            <button onClick={handleComplete} className="sketch-btn text-sm flex items-center gap-1">
-              <CheckCircle className="h-3 w-3" /> השלם והמשך
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={handleComplete}
+              className="sketch-btn text-base flex items-center gap-2 px-6 py-3 shadow-md"
+            >
+              <CheckCircle className="h-4 w-4" /> סיימתי, המשך הלאה
+              <ArrowLeft className="h-4 w-4" />
             </button>
           </div>
         )}

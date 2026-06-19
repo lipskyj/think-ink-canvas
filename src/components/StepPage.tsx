@@ -7,6 +7,7 @@ import { useClass } from "@/contexts/ClassContext";
 import { getStepByKey, getPreviousStep, getNextStep, TOTAL_STEPS } from "@/lib/steps";
 import AIAssistant from "@/components/AIAssistant";
 import StepIntroModal from "@/components/StepIntroModal";
+import UnstuckButton from "@/components/UnstuckButton";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
@@ -15,9 +16,11 @@ interface StepPageProps {
   children: React.ReactNode;
   onSave?: () => any;
   canComplete?: boolean;
+  /** If provided, hides the step header until the recap (stored under this localStorage key) is dismissed. */
+  phaseRecapKey?: string;
 }
 
-export default function StepPage({ stepKey, children, onSave, canComplete = true }: StepPageProps) {
+export default function StepPage({ stepKey, children, onSave, canComplete = true, phaseRecapKey }: StepPageProps) {
   const navigate = useNavigate();
   const { isStepCompleted, saveStepData, completeStep, uncompleteStep, getAllPreviousData, getStepData, getMissingPrerequisites, isLoading } = useProject();
   const { aiEnabled, isStepLocked } = useAdmin();

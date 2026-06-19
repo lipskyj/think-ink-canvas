@@ -307,12 +307,19 @@ const Index = () => {
                     >
                       <Pencil className="h-3.5 w-3.5" />
                     </button>
-                    {group.team_avatar_url && (
+                    {group.team_avatar_url ? (
                       <img
                         src={group.team_avatar_url}
                         alt={group.name}
                         className="w-24 h-24 mx-auto mb-3 object-cover rounded-md sketch-border-thin"
                       />
+                    ) : (
+                      <div
+                        className="w-24 h-24 mx-auto mb-3 rounded-md sketch-border-thin bg-[hsl(var(--sun)/0.35)] flex items-center justify-center font-sketch text-4xl"
+                        aria-hidden
+                      >
+                        {(group.name || "?").trim().charAt(0).toUpperCase()}
+                      </div>
                     )}
                     <h3 className="font-sketch text-2xl mb-3 leading-tight">{group.name}</h3>
                     {group.student_names && group.student_names.length > 0 && (

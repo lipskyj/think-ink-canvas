@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useHackathon } from "@/contexts/HackathonContext";
+import { useClass } from "@/contexts/ClassContext";
 import { formatHMS, SPRINT_BLOCKS } from "@/lib/hackathon";
 import { Timer, Play, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const { state, remainingSec, enableMode, resetTimer } = useHackathon();
+  const { isClassMode } = useClass();
   const timerOn = state.enabled;
   const totalSec = state.durationMin * 60;
   const pct = timerOn ? Math.max(0, Math.min(100, (remainingSec / totalSec) * 100)) : 0;
@@ -18,6 +20,21 @@ const Layout = ({ children }: LayoutProps) => {
   const critical = remainingSec < 10 * 60;
   const block = SPRINT_BLOCKS.find((b) => b.key === state.currentBlock);
   const barColor = critical ? "bg-red-500" : low ? "bg-amber-500" : "bg-emerald-500";
+
+  // Public/landing mode (no group connected): render a clean shell — no sidebar, no step toolbar.
+  if (!isClassMode) {
+    return (
+      <div className="min-h-screen flex flex-col w-full relative" dir="rtl">
+        <div className="vibe-backdrop" aria-hidden>
+          <span className="vibe-blob-3" />
+          <span className="vibe-blob-4" />
+        </div>
+        <main className="flex-1 flex flex-col relative z-10">
+          <div className="flex-1 p-6 md:p-8 overflow-auto">{children}</div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider defaultOpen={false}>

@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Sparkles, Loader2, Plus, X, Crown, ArrowRight, RefreshCw, Save, Check } from "lucide-react";
+import { Users, Sparkles, Loader2, Plus, X, Crown, ArrowRight, ArrowLeft, RefreshCw, Save, Check, Rocket } from "lucide-react";
 import { TEAM_AVATAR_STYLES, type TeamAvatarStyleKey, getAvatarStyle } from "@/lib/teamAvatarStyles";
 
 type Gender = "male" | "female" | "other";
@@ -381,20 +381,35 @@ export default function Team() {
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           <Link to="/" className="sketch-btn-outline text-sm flex items-center gap-2">
             <ArrowRight className="h-4 w-4" /> חזרה
           </Link>
-          {isLeader && (
-            <button
-              onClick={saveAll}
-              disabled={saving}
-              className="sketch-btn text-sm flex items-center gap-2 disabled:opacity-50"
+          <div className="flex items-center gap-2 flex-wrap">
+            {isLeader && (
+              <button
+                onClick={saveAll}
+                disabled={saving}
+                className="sketch-btn-outline text-sm flex items-center gap-2 disabled:opacity-50"
+              >
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                שמור
+              </button>
+            )}
+            <Link
+              to="/user-persona"
+              className="sketch-btn text-sm flex items-center gap-2"
+              style={{
+                background: "hsl(var(--destructive))",
+                color: "hsl(var(--destructive-foreground))",
+                borderColor: "hsl(var(--destructive))",
+              }}
+              title="עוברים לשלב הראשון של התהליך"
             >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-              שמור
-            </button>
-          )}
+              <Rocket className="h-4 w-4" /> התחילו עכשיו
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
 
         {isLeader && (

@@ -166,7 +166,13 @@ const EffortImpact = () => {
     };
   }, [draggingId, handleMouseMove, handleMouseUp, handleTouchMove]);
 
-  const getData = useCallback(() => ({ ideas }), [ideas]);
+  const bestChoice = useMemo(() => {
+    const placedQuickWins = ideas.filter((i) => i.placed && i.x < 50 && i.y < 50);
+    const candidates = placedQuickWins.length ? placedQuickWins : ideas.filter((i) => i.placed);
+    return [...candidates].sort((a, b) => (b.y - b.x) - (a.y - a.x))[0] || null;
+  }, [ideas]);
+
+  const getData = useCallback(() => ({ ideas, bestChoice }), [ideas, bestChoice]);
   const hasContent = ideas.some((i) => i.placed);
   const previousData = getAllPreviousData("effort_impact");
 
@@ -304,7 +310,7 @@ const EffortImpact = () => {
                     key={idea.id}
                     className={`absolute z-10 sketch-border px-2 py-1 text-xs bg-background shadow-md cursor-grab active:cursor-grabbing select-none flex items-center gap-1 ${
                       draggingId === idea.id ? "ring-2 ring-foreground scale-105" : ""
-                    } ${idea.x < 50 && idea.y < 50 ? "border-foreground/60 font-bold" : ""}`}
+                    } ${bestChoice?.id === idea.id ? "bg-[hsl(var(--highlight))] border-foreground font-bold ring-4 ring-[hsl(var(--accent))] z-20 scale-110" : idea.x < 50 && idea.y < 50 ? "border-foreground/60 font-bold" : ""}`}
                     style={{
                       left: `${idea.x}%`,
                       top: `${idea.y}%`,
@@ -314,7 +320,7 @@ const EffortImpact = () => {
                     onMouseDown={(e) => handleMouseDown(e, idea.id)}
                     onTouchStart={(e) => handleTouchStart(e, idea.id)}
                   >
-                    {idea.x < 50 && idea.y < 50 && <Star className="h-3 w-3 shrink-0" />}
+                    {bestChoice?.id === idea.id ? <Trophy className="h-3.5 w-3.5 shrink-0" /> : idea.x < 50 && idea.y < 50 && <Star className="h-3 w-3 shrink-0" />}
                     <span className="truncate">{idea.text}</span>
                   </div>
                 ))}
@@ -330,6 +336,16 @@ const EffortImpact = () => {
 
       {/* Summary by quadrant */}
       {hasContent && (
+        <>
+        {bestChoice && (
+          <div className="sketch-border p-5 mt-6 bg-[hsl(var(--highlight))] text-[hsl(var(--highlight-foreground))]">
+            <div className="flex items-center gap-2 mb-1">
+              <Trophy className="h-5 w-5" />
+              <span className="font-sketch text-xl">הבחירה הטובה ביותר — לבנות קודם</span>
+            </div>
+            <p className="font-hand text-2xl leading-snug">{bestChoice.text}</p>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
 
 
@@ -356,6 +372,7 @@ const EffortImpact = () => {
             ) : null
           )}
         </div>
+        </>
       )}
       </>)}
     </StepPage>

@@ -281,21 +281,38 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
         {children}
         </fieldset>
 
-        {/* CTA תחתון — סיימתי, המשך הלאה */}
-        {!locked && !completed && (
+        {/* CTA תחתון — סיימתי, המשך הלאה (אדום, גם כשכבר הושלם) */}
+        {!locked && (
           <div className="mt-10 flex flex-col items-center gap-2">
             <button
-              onClick={handleComplete}
-              disabled={!canComplete}
+              onClick={async () => {
+                if (completed) {
+                  await persistCurrentStep(true);
+                  navigate(next?.url ?? "/");
+                } else {
+                  await handleComplete();
+                }
+              }}
+              disabled={!completed && !canComplete}
               className="sketch-btn text-base flex items-center gap-2 px-6 py-3 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-              title={!canComplete ? "מלאו את השלב כדי להמשיך" : undefined}
+              style={{
+                background: "hsl(var(--destructive))",
+                color: "hsl(var(--destructive-foreground))",
+                borderColor: "hsl(var(--destructive))",
+              }}
+              title={!canComplete && !completed ? "מלאו את השלב כדי להמשיך" : undefined}
             >
-              <CheckCircle className="h-4 w-4" /> סיימתי, המשך הלאה
+              <CheckCircle className="h-4 w-4" />
+              {completed ? "המשיכו לשלב הבא" : "סיימתי, המשך הלאה"}
               <ArrowLeft className="h-4 w-4" />
             </button>
-            {!canComplete && (
-              <p className="font-hand text-xs text-muted-foreground">מלאו את השלב כדי להמשיך</p>
-            )}
+            <p className="font-hand text-xs text-muted-foreground">
+              {completed
+                ? "השלב נשמר ✓"
+                : !canComplete
+                  ? "מלאו את השלב כדי להמשיך"
+                  : "העבודה שלכם נשמרת אוטומטית בכל הקלדה ✓"}
+            </p>
           </div>
         )}
       </div>

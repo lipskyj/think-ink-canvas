@@ -373,6 +373,27 @@ const Index = () => {
 
         {/* Extra entry points — standalone, no box */}
         <section className="flex flex-wrap items-center justify-center gap-3 mt-6">
+          <button
+            onClick={async () => {
+              const { data, error } = await supabase
+                .from("classes")
+                .insert({ name: "קבוצה חדשה", student_names: [] })
+                .select("id, join_code")
+                .single();
+              if (error || !data) {
+                toast({ title: "שגיאה ביצירת הקבוצה", description: error?.message || "", variant: "destructive" });
+                return;
+              }
+              if (data.join_code) {
+                await supabase.from("classes").update({ name: `קבוצה ${data.join_code}` }).eq("id", data.id);
+              }
+              window.dispatchEvent(new CustomEvent("classes:changed"));
+              navigate(`/join/${data.id}`);
+            }}
+            className="sketch-btn inline-flex items-center gap-2 text-base"
+          >
+            <Users className="h-4 w-4" /> פתחו קבוצה חדשה
+          </button>
           <Link
             to="/walkthrough"
             className="sketch-btn-outline inline-flex items-center gap-2 text-base"

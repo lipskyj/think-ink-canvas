@@ -281,59 +281,6 @@ const PrototypeBrief = () => {
           <textarea className="sketch-input min-h-[80px] resize-none notebook-lines" placeholder="לדוגמה: לוודא שמשתמשים מבינים את הצעת הערך תוך 10 שניות..." value={brief.objective} onChange={(e) => update("objective", e.target.value)} />
         </div>
 
-        {/* MoSCoW — drag-and-drop board with AI-suggested features */}
-        <div className="sketch-card">
-          <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-            <label className="font-sketch text-xl">MoSCoW — תיעדוף תכונות</label>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={seedFromPreviousSteps}
-                className="sketch-btn-outline flex items-center gap-2 text-sm"
-                title="טען מחדש רעיונות מהשלבים הקודמים"
-              >
-                <Plus className="h-4 w-4" /> מהשלבים הקודמים
-              </button>
-              {aiEnabled && (
-                <button
-                  onClick={generateAiFeatures}
-                  disabled={aiFeaturesLoading}
-                  className="sketch-btn flex items-center gap-2 text-sm"
-                >
-                  {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                  {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
-                </button>
-              )}
-            </div>
-          </div>
-          <p className="font-hand text-muted-foreground text-sm mb-2">
-            ה-AI מציע תכונות (leaderboard, צ׳אט, גלריה, התראות...). גררו כל תכונה ל-Must / Should / Could / Won't.
-          </p>
-
-          <AddFeatureRow
-            onAdd={(name) => setSuggestedFeatures((prev) => [...prev, { id: crypto.randomUUID(), name, description: "", bucket: "unassigned" }])}
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-            {BUCKETS.map((b) => (
-              <BucketLane
-                key={b.key}
-                config={b}
-                features={suggestedFeatures.filter((f) => f.bucket === b.key)}
-                onDrop={(id) => setSuggestedFeatures((prev) => prev.map((f) => (f.id === id ? { ...f, bucket: b.key } : f)))}
-                onRemove={(id) => setSuggestedFeatures((prev) => prev.filter((f) => f.id !== id))}
-              />
-            ))}
-          </div>
-
-          {suggestedFeatures.length === 0 && (
-            <p className="font-hand text-sm text-muted-foreground mt-3 text-center">
-              עדיין אין תכונות. לחצו על "הצע תכונות עם AI" או הוסיפו ידנית.
-            </p>
-          )}
-        </div>
-
-
-
         {/* Style / vibe with visual swatches */}
         <div className="sketch-card">
           <label className="font-sketch text-xl block mb-1">סגנון והעדפות עיצוב</label>

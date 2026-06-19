@@ -49,7 +49,14 @@ const PointOfView = () => {
     setInsight(derived.insight);
   };
 
-  const getData = useCallback(() => ({ user, need, insight }), [user, need, insight]);
+  // Strip redundant connector words so the template doesn't double them
+  const cleanNeed = need.trim().replace(/^(צריך|צריכה|צריכים|צריכות|רוצה|רוצים)\s+/u, "");
+  const cleanInsight = insight.trim().replace(/^(כי|מפני ש|מכיוון ש|בגלל ש|בגלל)\s+/u, "");
+
+  const getData = useCallback(
+    () => ({ user, need: cleanNeed, insight: cleanInsight }),
+    [user, cleanNeed, cleanInsight]
+  );
   const hasContent = !!(user.trim() || need.trim() || insight.trim());
 
   return (

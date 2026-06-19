@@ -52,6 +52,9 @@ const Index = () => {
   const [groups, setGroups] = useState<GroupRow[]>([]);
   const [codeInput, setCodeInput] = useState("");
   const [joining, setJoining] = useState(false);
+  const [editGroup, setEditGroup] = useState<GroupRow | null>(null);
+  const [editCode, setEditCode] = useState("");
+  const [editAttempts, setEditAttempts] = useState(0);
 
   useEffect(() => {
     supabase

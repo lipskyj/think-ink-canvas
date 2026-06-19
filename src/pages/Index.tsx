@@ -57,11 +57,25 @@ const Index = () => {
   const [editAttempts, setEditAttempts] = useState(0);
 
   useEffect(() => {
-    supabase
-      .from("classes")
-      .select("id, name, join_code, student_names, team_avatar_url, event_date, event_time, event_location, event_topic, event_description, organizer_logo_url, organizer_name")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => setGroups((data || []) as GroupRow[]));
+    const fetchGroups = () =>
+      supabase
+        .from("classes")
+        .select("id, name, join_code, student_names, team_avatar_url, event_date, event_time, event_location, event_topic, event_description, organizer_logo_url, organizer_name")
+        .order("created_at", { ascending: false })
+        .then(({ data }) => setGroups((data || []) as GroupRow[]));
+    fetchGroups();
+    // Live-update when any group edits its avatar / name / roster
+    const channel = supabase
+      .channel("classes-home")
+      .on("postgres_changes", { event: "*", schema: "public", table: "classes" }, fetchGroups)
+      .subscribe();
+    // Also refetch when the tab regains focus (covers navigation back)
+    const onFocus = () => fetchGroups();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener("focus", onFocus);
+    };
   }, []);
 
   // Public event banner (shown to everyone, not only inside a class). Use the latest non-empty event fields across groups.

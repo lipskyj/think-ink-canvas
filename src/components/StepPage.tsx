@@ -132,6 +132,48 @@ export default function StepPage({ stepKey, children, onSave, canComplete = true
           </div>
         )}
 
+        {/* סרגל ניווט עליון — RTL: קודם בימין, הבא בשמאל */}
+        <div className="flex items-center justify-between mb-6 gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            {prev && (
+              <button
+                onClick={() => navigateWithSave(prev.url)}
+                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
+                aria-label="השלב הקודם"
+                title="הקודם"
+              >
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
+            <button
+              onClick={() => navigateWithSave("/")}
+              className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
+              aria-label="חזרה למפת השלבים"
+              title="מפה"
+            >
+              <Home className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {!locked && completed && (
+              <button onClick={handleUncomplete} className="sketch-btn-outline text-sm flex items-center gap-1">
+                פתח מחדש
+              </button>
+            )}
+            {next && (
+              <button
+                onClick={() => navigateWithSave(next.url)}
+                className="sketch-btn-outline text-sm flex items-center justify-center w-10 h-10 p-0"
+                aria-label="השלב הבא"
+                title="הבא"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* כותרת */}
         <div className="flex items-start justify-between mb-8 gap-4 flex-wrap">
           <div className="flex-1 min-w-0">

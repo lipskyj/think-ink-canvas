@@ -37,7 +37,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "noam",
     label: "נועם",
     description: "סקיצה רכה, צבעים שטוחים, סגנון הבית",
-    emoji: "✏️",
+    sample: sampleNoam,
     prompt:
       "Flat-color cartoon illustration in a friendly storybook style: warm cream background, confident hand-drawn black outlines, soft flat colors (mustard yellow, coral pink, mint green, warm browns), expressive simple faces, slightly sketchy lines, modern children's-book feel, no gradients, no shading complexity, no photorealism, no text, no logos.",
   },
@@ -45,7 +45,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "pixel",
     label: "Pixel Art",
     description: "רטרו, 8-ביט, נוסטלגי",
-    emoji: "👾",
+    sample: samplePixel,
     prompt:
       "16-bit pixel-art illustration, retro arcade game style, vibrant saturated colors, crisp pixel edges, limited palette, dramatic lighting, no text, no logos.",
   },
@@ -53,7 +53,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "anime",
     label: "אנימה",
     description: "עיניים גדולות, סגנון יפני",
-    emoji: "🎌",
+    sample: sampleAnime,
     prompt:
       "Modern Japanese anime illustration, large expressive eyes, sharp cel-shading, vibrant hair colors, dynamic pose, detailed background, no text, no logos.",
   },
@@ -61,7 +61,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "comics",
     label: "קומיקס",
     description: "קווים מודגשים, צבעים עזים",
-    emoji: "💥",
+    sample: sampleComics,
     prompt:
       "Western comic book illustration, bold black ink outlines, halftone dot shading, saturated primary colors, dynamic action pose, dramatic angle, no text, no logos.",
   },
@@ -69,7 +69,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "caricature",
     label: "קריקטורה",
     description: "מוגזם, מצחיק, אקספרסיבי",
-    emoji: "😜",
+    sample: sampleCaricature,
     prompt:
       "Exaggerated cartoon caricature, oversized heads, expressive funny faces, playful colors, energetic group composition, comedic feel, no text, no logos.",
   },
@@ -77,7 +77,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "flat",
     label: "Flat",
     description: "וקטור נקי, מודרני",
-    emoji: "🧊",
+    sample: sampleFlat,
     prompt:
       "Modern flat vector illustration, geometric shapes, clean lines, pastel corporate-style color palette, minimal shading, friendly diverse characters, no text, no logos.",
   },
@@ -85,7 +85,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "watercolor",
     label: "אקוורל",
     description: "כתמים רכים, ציורי",
-    emoji: "🎨",
+    sample: sampleWatercolor,
     prompt:
       "Soft watercolor illustration, organic paint bleeds, warm pastel palette, loose pencil sketch underneath, paper texture, dreamy artistic feel, no text, no logos.",
   },
@@ -93,7 +93,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "lowpoly",
     label: "Low Poly",
     description: "משולשים, תלת-מימד מודרני",
-    emoji: "🔷",
+    sample: sampleLowpoly,
     prompt:
       "Low-poly 3D illustration, faceted triangular geometry, gradient lighting, modern minimal palette, isometric framing, no text, no logos.",
   },
@@ -101,7 +101,7 @@ export const TEAM_AVATAR_STYLES: TeamAvatarStyle[] = [
     key: "sticker",
     label: "מדבקה",
     description: "מתאר עבה, ססגוני",
-    emoji: "🌟",
+    sample: sampleSticker,
     prompt:
       "Die-cut sticker style illustration, thick white outline around characters, bold saturated colors, glossy shading, playful group portrait centered on a plain background, no text, no logos.",
   },

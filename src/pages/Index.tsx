@@ -432,8 +432,8 @@ const Index = () => {
                   setSession({
                     classId: editGroup.id,
                     className: editGroup.name,
-                    studentName: "",
-                    isLeader: false,
+                    studentName: "__editor__",
+                    isLeader: true,
                   });
                   setEditGroup(null);
                   navigate("/team");
@@ -441,6 +441,7 @@ const Index = () => {
                   setEditAttempts((n) => n + 1);
                   toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
                 }
+
               }}
               className="sketch-btn disabled:opacity-50"
             >

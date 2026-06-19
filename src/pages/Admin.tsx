@@ -72,7 +72,7 @@ export default function Admin() {
   useEffect(() => {
     if (!classes.length) return;
     if (eventDraftHydrated.current) return;
-    const source = classes.find((cls) => cls.event_topic || cls.event_description || cls.event_date || cls.event_time || cls.event_location || cls.organizer_logo_url) || classes[0];
+    const source = classes.find((cls) => cls.event_topic || cls.event_description || cls.event_date || cls.event_time || cls.event_location || cls.organizer_logo_url || (cls as any).organizer_name) || classes[0];
     eventDraftHydrated.current = true;
     setEventDraft({
       event_topic: source.event_topic || "",
@@ -81,6 +81,7 @@ export default function Admin() {
       event_time: source.event_time || "",
       event_location: source.event_location || "",
       organizer_logo_url: source.organizer_logo_url || "",
+      organizer_name: (source as any).organizer_name || "",
     });
   }, [classes]);
 

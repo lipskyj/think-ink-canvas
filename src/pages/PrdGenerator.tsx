@@ -108,7 +108,7 @@ const PrdGenerator = () => {
   const hasContent = prdOutput.trim().length > 0;
 
   return (
-    <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent}>
+    <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent} phaseRecapKey="phase3_recap_dismissed">
       <Phase3Recap />
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">

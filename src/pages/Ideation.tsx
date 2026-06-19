@@ -252,7 +252,7 @@ const Ideation = () => {
   );
 
   return (
-    <StepPage stepKey="ideation" onSave={getData} canComplete={hasContent}>
+    <StepPage stepKey="ideation" onSave={getData} canComplete={hasContent} phaseRecapKey="phase1_recap_dismissed">
       <Phase1Recap />
       <LinkedDataBanner stepKey="ideation" />
       <CoherenceTracker stepKey="ideation" currentData={{ ideas: flatIdeas }} />

@@ -32,7 +32,7 @@ export default function Phase1Recap() {
     if (empathySummary)
       out.push({ num: 2, title: "מפת אמפתיה", body: empathySummary });
     if (lastWhy)
-      out.push({ num: 3, title: "שורש הבעיה (חמישה למה)", body: lastWhy });
+      out.push({ num: 3, title: "שורש הבעיה (חמש למה)", body: lastWhy });
     if (pov.user || pov.need || pov.insight)
       out.push({
         num: 4,

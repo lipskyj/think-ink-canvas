@@ -285,16 +285,25 @@ const PrototypeBrief = () => {
         <div className="sketch-card">
           <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
             <label className="font-sketch text-xl">MoSCoW — תיעדוף תכונות</label>
-            {aiEnabled && (
+            <div className="flex flex-wrap gap-2">
               <button
-                onClick={generateAiFeatures}
-                disabled={aiFeaturesLoading}
-                className="sketch-btn flex items-center gap-2 text-sm"
+                onClick={seedFromPreviousSteps}
+                className="sketch-btn-outline flex items-center gap-2 text-sm"
+                title="טען מחדש רעיונות מהשלבים הקודמים"
               >
-                {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
+                <Plus className="h-4 w-4" /> מהשלבים הקודמים
               </button>
-            )}
+              {aiEnabled && (
+                <button
+                  onClick={generateAiFeatures}
+                  disabled={aiFeaturesLoading}
+                  className="sketch-btn flex items-center gap-2 text-sm"
+                >
+                  {aiFeaturesLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                  {suggestedFeatures.length ? "ייצר תכונות מחדש" : "הצע תכונות עם AI"}
+                </button>
+              )}
+            </div>
           </div>
           <p className="font-hand text-muted-foreground text-sm mb-2">
             ה-AI מציע תכונות (leaderboard, צ׳אט, גלריה, התראות...). גררו כל תכונה ל-Must / Should / Could / Won't.

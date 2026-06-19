@@ -78,6 +78,52 @@ const PrototypeBrief = () => {
     }
   }, [getStepData]);
 
+  // Auto-derive suggested features from earlier steps the first time the user
+  // lands here (starred ideas → unassigned cards they can drag into Must / Should / Could).
+  useEffect(() => {
+    if (suggestedFeatures.length > 0) return;
+    const prev = getAllPreviousData("prototype_brief") as Record<string, any>;
+    const derived: SuggestedFeature[] = [];
+
+    // Starred ideas from the Ideation step
+    const ideation = prev?.ideation;
+    if (ideation?.ideas && Array.isArray(ideation.ideas)) {
+      for (const idea of ideation.ideas) {
+        const text = (idea?.text || "").trim();
+        if (text) derived.push({ id: crypto.randomUUID(), name: text, description: "", bucket: "unassigned" });
+      }
+    }
+
+    // Top-quadrant items from the Effort/Impact matrix (high impact, low effort)
+    const matrix = prev?.effort_impact;
+    if (matrix?.items && Array.isArray(matrix.items)) {
+      for (const it of matrix.items) {
+        const text = (it?.text || it?.name || "").trim();
+        const isQuickWin = (it?.impact ?? 0) >= 0.5 && (it?.effort ?? 1) <= 0.5;
+        if (text && isQuickWin) derived.push({ id: crypto.randomUUID(), name: text, description: "Quick win", bucket: "unassigned" });
+      }
+    }
+
+    // How Might We questions — useful framing fragments
+    const hmw = prev?.how_might_we;
+    if (hmw?.questions && Array.isArray(hmw.questions)) {
+      for (const q of hmw.questions.slice(0, 3)) {
+        const text = (typeof q === "string" ? q : q?.text || "").trim();
+        if (text) derived.push({ id: crypto.randomUUID(), name: text, description: "מתוך HMW", bucket: "unassigned" });
+      }
+    }
+
+    // De-dup by name
+    const seen = new Set<string>();
+    const unique = derived.filter((d) => {
+      const k = d.name.toLowerCase();
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+    if (unique.length > 0) setSuggestedFeatures(unique);
+  }, [suggestedFeatures.length, getAllPreviousData]);
+
   // Keep textual must/should/could/wont in sync with the drag-and-drop board.
   useEffect(() => {
     if (suggestedFeatures.length === 0) return;

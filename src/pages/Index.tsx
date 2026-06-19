@@ -282,7 +282,13 @@ const Index = () => {
                         const entered = window.prompt(`כדי לערוך את "${group.name}" הזינו את קוד הקבוצה (${group.join_code?.length || 2} תווים):`);
                         if (!entered) return;
                         if (entered.trim().toUpperCase() === (group.join_code || "").toUpperCase()) {
-                          navigate(`/join/${group.id}`);
+                          setSession({
+                            classId: group.id,
+                            className: group.name,
+                            studentName: group.student_names?.[0] || "",
+                            isLeader: true,
+                          });
+                          navigate(`/team`);
                         } else {
                           toast({ title: "קוד שגוי", description: "בדקו עם המארגן", variant: "destructive" });
                         }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { useStepLSD } from "@/hooks/useStepLSD";
 import { getStepByKey } from "@/lib/steps";

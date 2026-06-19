@@ -58,7 +58,7 @@ const UnstuckButton = ({ variant = "fixed" }: Props) => {
           <Zap className="h-3 w-3 text-amber-500" /> תקועים?
         </button>
         {open && (
-          <div className="fixed bottom-4 left-4 z-50 sketch-card p-4 bg-background shadow-lg max-w-sm border-2 border-foreground" dir="rtl">
+          <div className="fixed top-16 left-4 z-50 sketch-card p-4 bg-background shadow-lg max-w-sm border-2 border-foreground" dir="rtl">
             <div className="flex items-start gap-2 mb-2">
               <Zap className="text-amber-500" size={18} />
               <div className="flex-1 font-hand text-base whitespace-pre-wrap min-h-[3em]">

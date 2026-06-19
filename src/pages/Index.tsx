@@ -382,11 +382,11 @@ const Index = () => {
           <button
             onClick={async () => {
               await loadDemoCase();
-              navigate("/effort-impact");
+              navigate("/user-persona");
             }}
             className="sketch-btn-outline inline-flex items-center gap-2 text-base"
           >
-            טען מקרה בוחן מוכן
+            איך נראה תהליך העבודה
           </button>
         </section>
       </div>

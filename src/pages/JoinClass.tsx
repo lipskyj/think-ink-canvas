@@ -12,9 +12,9 @@ interface ClassRow {
 }
 
 /**
- * Auto-join: validate the class exists, set the session (leader by default
- * when none yet, or pick the existing leader's identity for shared edits),
- * then drop the user straight into the long team editor.
+ * Auto-join: validate the class exists, set a placeholder session, then drop
+ * the user into the long Team editor. The Team page asks for the user's name
+ * the first time around and decides leader status from there.
  */
 export default function JoinClass() {
   const { classId } = useParams<{ classId: string }>();
@@ -37,11 +37,15 @@ export default function JoinClass() {
           return;
         }
         const cls = data as ClassRow;
+        // Restore prior identity for this class from localStorage if available
+        const remembered = (() => {
+          try { return localStorage.getItem(`class:${cls.id}:name`) || ""; } catch { return ""; }
+        })();
         setSession({
           classId: cls.id,
           className: cls.name,
-          studentName: cls.leader_name || cls.student_names?.[0] || "",
-          isLeader: true,
+          studentName: remembered,
+          isLeader: !!remembered && remembered === cls.leader_name,
         });
         setStatus("ready");
       });

@@ -63,7 +63,7 @@ const PointOfView = () => {
     <StepPage stepKey="pov_statement" onSave={getData} canComplete={hasContent}>
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-foreground/80">
-          ה-POV נוצר אוטומטית מהפרסונה, מפת האמפתיה וחמישה למה. אפשר לערוך אם רוצים.
+          ה-POV נוצר אוטומטית מהפרסונה, מפת האמפתיה וחמש למה. אפשר לערוך אם רוצים.
         </p>
       </div>
 
@@ -122,7 +122,7 @@ const PointOfView = () => {
 
       {!hasContent && (
         <p className="font-hand text-muted-foreground text-center">
-          השלימו קודם את פרסונת המשתמש, מפת האמפתיה וחמישה למה כדי שנוכל לחולל POV עבורכם.
+          השלימו קודם את פרסונת המשתמש, מפת האמפתיה וחמש למה כדי שנוכל לחולל POV עבורכם.
         </p>
       )}
     </StepPage>

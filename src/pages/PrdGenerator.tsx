@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import StepPage from "@/components/StepPage";
-import Phase3Recap from "@/components/Phase3Recap";
+
 import { useProject } from "@/contexts/ProjectContext";
 import { STEPS } from "@/lib/steps";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +15,7 @@ const STEP_LABELS: Record<string, string> = {
   journey_map: "מפת מסע",
   pov_statement: "הצהרת נקודת מבט",
   how_might_we: "איך נוכל",
-  five_whys: "חמישה למה",
+  five_whys: "חמש למה",
   ideation: "יצירת רעיונות",
   assumption_selection: "הנחות",
   storyboard: "סטוריבורד",
@@ -108,8 +108,7 @@ const PrdGenerator = () => {
   const hasContent = prdOutput.trim().length > 0;
 
   return (
-    <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent} phaseRecapKey="phase3_recap_dismissed">
-      <Phase3Recap />
+    <StepPage stepKey="prd_generator" onSave={getData} canComplete={hasContent}>
       <div className="sketch-border p-5 mb-6 bg-secondary/20">
         <p className="font-hand text-lg text-muted-foreground">
            שלב זה אוסף את המחקר, הבריף ותיעדוף ה-MVP, ומייצר פרומפט PRD מוכן להדבקה במערכת text-to-code כמו Lovable.

@@ -183,6 +183,12 @@ const FiveWhys = () => {
         </p>
       )}
 
+      {problem.trim() && (
+        <div className="mt-4 sketch-border-thin p-3 bg-secondary/30 font-hand text-sm text-muted-foreground text-center">
+          💡 לא חייבים להגיע ל-5 — אם הרגשתם ש"זה זה" כבר ב-3 או ב-4, עצרו. שורש הבעיה האמיתי שווה יותר מספירה.
+        </div>
+      )}
+
       {whys[4] && (
         <div className="mt-6 sketch-border p-5 bg-secondary/30 animate-fade-in">
           <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-2"> שורש הבעיה</h3>

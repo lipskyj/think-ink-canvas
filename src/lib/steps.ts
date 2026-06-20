@@ -1,4 +1,4 @@
-himport { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, Trophy, ListChecks, type LucideIcon } from "lucide-react";
+import { Heart, Layers, User, Target, HelpCircle, Search, Lightbulb, Film, FileText, Map, FlaskConical, Crosshair, ShieldCheck, FileOutput, Presentation, Trophy, ListChecks, type LucideIcon } from "lucide-react";
 
 export type ProcessPhase = "problem" | "solution" | "development" | "presentation";
 

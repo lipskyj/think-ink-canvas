@@ -100,13 +100,17 @@ export const DEMO_STEPS: DemoStep[] = [
     title: "חמש למה",
     what: "שואלים 'למה' חמש פעמים כדי להגיע משורש הבעיה.",
     learn:
-      "כמעט כל צוות עוצר ב'למה' השני — שם נמצאת התשובה הברורה. אבל הזהב מתחיל ב'למה' השלישי, רביעי וחמישי, כשנגמרות לכם התשובות המוכנות. כל תשובה צריכה להתחיל ב'כי' ולעורר 'למה?' חדש. אם עצרתם כי 'כי ככה זה' — תחפרו עוד צעד אחד. שם מתחבאת הבעיה האמיתית שכדאי לפתור. טיפ: לא חייבים חמש למה בדיוק — שלושה עמוקים שווים יותר מחמישה שטחיים.",
+      "מתחילים תמיד מסימפטום מוחשי אחד — מה שבאמת מציק או נראה לעין. ואז שואלים 'למה?' שוב ושוב. כמעט כל צוות עוצר ב'למה' השני — שם נמצאת התשובה הברורה. אבל הזהב מתחיל ב'למה' השלישי, רביעי וחמישי, כשנגמרות לכם התשובות המוכנות. כל תשובה צריכה להתחיל ב'כי' ולעורר 'למה?' חדש. חשוב: לא חייבים להגיע ל-5 — לפעמים שורש הבעיה האמיתי נמצא כבר ב-3 או ב-4. ברגע שמרגישים 'זה זה, פה זה מתחיל' — עוצרים. עדיף 3 'למה' עמוקים מאשר 5 שטחיים.",
     output: (
       <>
-        <div className="sketch-border-thin p-3 bg-[hsl(var(--coral)/0.2)] mb-4 font-hand text-base">
-        <strong>הסימפטום (נקודת ההתחלה):</strong> דנה לא מצליחה להבין מתמטיקה ולשפר את ציוניה
-      </div>
-      <div className="flex items-center gap-2 mb-3"><PersonaChip /><span className="font-hand text-sm text-muted-foreground">— שואלים עליה למה</span></div>
+        <div className="sketch-border p-4 bg-[hsl(var(--coral)/0.25)] mb-4 font-hand text-base">
+          <div className="text-[10px] font-sketch tracking-wider uppercase text-foreground/70 mb-1">
+            הסימפטום שראינו (נקודת ההתחלה)
+          </div>
+          <strong>דנה נכשלת שוב ושוב במבחני מתמטיקה ולא מצליחה לשפר את הציון.</strong>
+          <div className="text-sm text-muted-foreground mt-2">↩ למה זה קורה?</div>
+        </div>
+        <div className="flex items-center gap-2 mb-3"><PersonaChip /><span className="font-hand text-sm text-muted-foreground">— שואלים עליה למה, צעד אחר צעד</span></div>
         <div className="space-y-3 font-hand text-base">
           <div className="sketch-border-thin p-3 bg-background/50">
             <div><strong>1.</strong> כי ההסברים של המורה מהירים ולא מותאמים לכל תלמיד.</div>
@@ -116,20 +120,21 @@ export const DEMO_STEPS: DemoStep[] = [
             <div><strong>2.</strong> כי יש 35 תלמידים בכיתה ואין זמן לתשומת לב אישית.</div>
             <div className="text-sm text-muted-foreground mt-1">↩ למה?</div>
           </div>
-          <div className="sketch-border-thin p-3 bg-background/50">
-            <div><strong>3.</strong> כי תלמידים מתביישים לשאול שאלות בכיתה.</div>
-            <div className="text-sm text-muted-foreground mt-1">↩ למה?</div>
+          <div className="sketch-border-thin p-3 bg-[hsl(var(--mint)/0.35)]">
+            <div><strong>3.</strong> כי תלמידים מתביישים לשאול ואין להם מקום בטוח להתאמן בקצב שלהם.</div>
+            <div className="text-[11px] font-sketch tracking-wider uppercase text-foreground/70 mt-2">
+              ⛔ פה עצרנו — הרגשנו ש"זה זה". לא חייבים להגיע ל-5.
+            </div>
           </div>
-          <div className="sketch-border-thin p-3 bg-background/50">
-            <div><strong>4.</strong> כי אין כלים ללמוד ולתרגל בקצב האישי, בבית.</div>
-            <div className="text-sm text-muted-foreground mt-1">↩ למה?</div>
+          <div className="sketch-border-thin p-3 bg-background/40 opacity-50">
+            <div><strong>4.</strong> (אפשרי) כי אין כלים ללמוד ולתרגל בקצב האישי, בבית.</div>
           </div>
-          <div className="sketch-border-thin p-3 bg-background/50">
-            <div><strong>5.</strong> כי הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית.</div>
+          <div className="sketch-border-thin p-3 bg-background/40 opacity-50">
+            <div><strong>5.</strong> (אפשרי) כי הכלים הקיימים לא מותאמים לתוכנית הלימודים הישראלית.</div>
           </div>
         </div>
         <ChosenBox>
-          <strong>שורש הבעיה:</strong> אין פלטפורמת תרגול אישית בעברית שמאפשרת ללמוד ללא בושה, בקצב שלהם
+          <strong>שורש הבעיה (נעצרנו ב-3):</strong> אין מקום בטוח שבו דנה יכולה להתאמן ולשאול ללא בושה, בעברית ובקצב שלה.
         </ChosenBox>
       </>
     ),
@@ -226,7 +231,7 @@ export const DEMO_STEPS: DemoStep[] = [
           </div>
         </div>
         <ChosenBox>
-          <strong>בחרנו (הימור גדול עם פוטנציאל אמיתי):</strong> אפליקציה עם AI — תלמיד מצלם שאלה, ה-AI מסביר צעד-אחר-צעד ומוסיף תרגיל מותאם.
+          <strong>בחרנו (ניצחונות מהירים):</strong> מדריך ChatGPT לתלמידים + רשימת סרטוני יוטיוב מובחרים בעברית — השפעה גבוהה, מאמץ נמוך, יוצאים לדרך מיד.
         </ChosenBox>
       </>
     ),
